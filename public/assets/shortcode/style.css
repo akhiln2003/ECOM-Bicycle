@@ -1,0 +1,40 @@
+@import url("css/font-awesome.min.css");
+@import url("css/pe-icon-7-stroke.min.css");
+
+.tab-shortcode li a {
+    border: 1px solid #1b1b1b;
+    color: #1b1b1b;
+    display: block;
+    font-family: roboto;
+    line-height: 30px;
+    margin-right: 10px;
+    padding: 0 20px;
+    margin-bottom: 10px;
+}
+.tab-shortcode {
+    margin-bottom: 50px;
+}
+.tab-shortcode li a.active {
+    background: #ff6600 repeat scroll 0 0;
+    border-color: #ff6600;
+    color: #fff;
+}
+.html-css pre {
+  padding: 10px 30px;
+}
+.shortcode-content .map-contact {
+  margin-bottom: 45px;
+}
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
