@@ -308,7 +308,7 @@ input:focus, textarea:focus {outline: 0px;}
 }
 .sticky .logo img {
     transition:.4s;
-  width: 100%;
+  width: 70%;
 }
 /* slider text */
 [data-bg-image] {

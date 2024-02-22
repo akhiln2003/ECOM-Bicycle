@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 
-const user = mongoose.Schema({
+const userScchema = mongoose.Schema({
     name :{
         type : String,
         required:true   
@@ -16,11 +16,11 @@ const user = mongoose.Schema({
       required:true
     },
     dateofbirth:{
-      type: Number,
+      type: Date,
       required:true
       
     },
-    genter:{
+    gender:{
       type:String,
       required:true
     },
@@ -36,16 +36,16 @@ const user = mongoose.Schema({
       type : Number,
       default:0
     },
-    is_blocked :{
+    blocked :{
       type:Boolean,
       default:false
     },
-    is_verified :{
+    verified :{
       type : Boolean,
       default:false
     },
     
 });
 
-const User = mongoose.model("User", user);
+const User = mongoose.model("User", userScchema);
 module.exports = User;

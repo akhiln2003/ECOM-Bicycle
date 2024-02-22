@@ -1,17 +1,24 @@
+const connectdb = require('./config/connectingDB');
+connectdb.connectDB();
 
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
+
+
+const flash = require('express-flash');
+app.use(flash());
+
 app.set('view engine', 'ejs')
 
 app.use(express.json());
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/ECOM_BICYCLE');
+
 
 app.use(express.static(path.join(__dirname,'public')));
 app.use(express.static(path.join(__dirname,'public/assets')));
+
 
 
 // app.use(express.static(path.join(__dirname,'public/uploads')));
@@ -19,6 +26,10 @@ app.use(express.static(path.join(__dirname,'public/assets')));
  //For user rout
 const userRout = require('./routes/usersRoute');
 app.use('/',userRout);
+
+
+const adminRoute = require('./routes/adminRoute');
+app.use('/admin',adminRoute)
 
 
 
