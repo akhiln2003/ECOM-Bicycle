@@ -2,7 +2,7 @@
 
 
    //form validation
-  function validateForm() {
+   function validateForm() {
     // Clear previous error messages and borders
     clearErrorsAndBorders();
 
@@ -25,7 +25,8 @@
     // Validate mobile number (10 digits)
     const mobileRegex = /^(?:(\d)\1{9}|[^0\D])\d{9}$/;
         // Validate password and confirm password match
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*\d.*\d.*\d.*\d)[a-zA-Z\d]{8,10}$/;
+        const passwordRegex =/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
+
 
     if (!nameRegex.test(name)) {
       showError('nameError', 'Only use Alphabets');
@@ -88,63 +89,6 @@
 
   
 
-// signupPage validation
-function validate(){
-  let username = document.getElementById('uname')
-  let password = document.getElementById('pass')
-  let phone = document.getElementById('uphone')
-  let confirmpass = document.getElementById('confpass')
-
-  if(!/^\w+$/.test(username.value)){
-    username.style.border = 'solid 1px red'
-    userError.textContent = "only allow letters numbers and underscores"
-  
-  setTimeout(()=>{
-    username.style.border ='' ;
-    userError.textContent ='' ;
-  },3000)
-
-  return false
-}
-
-else if(phone.value.trim().length < 10 || !/^\d+$/.test(phone.value)||!/^(?!0{10}$)\d+$/.test(phone.value)){
-  phone.style.border = 'solid 1px red'
-  phoneErr.textContent = "Mobile number should be an Number with  10 digits"
-  setTimeout(()=>{
-    phone.style.border = ''
-    phoneErr.textContent = ''
-  },3000)
-  return false
-}
-
-  else if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(password.value)){
-    password.style.border = 'solid 1px red'
-    passwordError.textContent = 'Password must be atleast 6 charcaters long and contain at least one uppercase letter one lowercase letter,and one number'
-    setTimeout(()=>{
-      password.style.border = '';
-      passwordError.textContent = '';
-    },3000)
-    return false
-  }
-
-
-  else if(password.value !== confirmpass.value){
-    confirmpass.style.border = 'solid 1px red'
-    passwordError2.textContent= 'Password should be same'
-    setTimeout(()=>{
-      confirmpass.style.border = '';
-      passwordError2.textContent = '';
-    },3000)
-    return false
-  }
-
-  else{
-    true
-  }
-}
-
-
-
 
 ////////////////////////////////////////////////
 
@@ -177,5 +121,3 @@ else if(phone.value.trim().length < 10 || !/^\d+$/.test(phone.value)||!/^(?!0{10
   document.getElementById('resend').addEventListener('click', function () {
     resend();
   });
-
-

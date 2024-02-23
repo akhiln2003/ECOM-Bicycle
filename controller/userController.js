@@ -46,9 +46,7 @@ const loadRegister = async(req, res) => {
 const insertuser = async(req,res)=>{
 
     try {
-        const email =req.body.email;
-        const name = req.body.name;
-        const mobile = req.body.mobile;
+         const {email,name,mobile}=req.body;
         const findUserByEmale = await User.findOne({email:email});
         const findUserByName = await User.findOne({name:name});
         const findUserByMobile = await User.findOne({mobile:mobile});

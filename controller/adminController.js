@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 
+                // LOGIN AND LOGOUT SECTON START //
+
     // Loading Admin Login
 const adminLogin = async(req,res)=>{
     try {
@@ -39,8 +41,12 @@ const varifyLogin = async(req,res)=>{
     }
  }
 
+                            // LOGIN AND LOGOUT SECTON END //
+                            
+                            // DASHBOADR SECTON START //
 
-        // lodDAshboard
+
+        // lodDashboard
  const loadDashboard = async(req,res)=>{
     try {
         res.render('dashboard');
@@ -48,6 +54,10 @@ const varifyLogin = async(req,res)=>{
         console.log(error);
     }
  }
+                              // DASHBOADR SECTON END //
+
+                             // CUSTOMERS SECTON START //
+
         //customers listing
  const loadCustomers = async(req,res)=>{
     try {
@@ -59,7 +69,7 @@ const varifyLogin = async(req,res)=>{
     }
  }
 
-        //Bblock and Unblock user
+        //Bblock and Unblock customers
 const blockUser = async(req,res)=>{
     try {
         const  id= req.body.id;
@@ -74,7 +84,12 @@ const blockUser = async(req,res)=>{
         console.log(error);
     }
 }
-       // Load Products
+
+                          // CUSTOMERS  SECTION END  //
+
+                         //  PRODUCT  SECTON START//
+             
+            // Load Products           
 const loadProducts =  async(req,res)=>{
     try {
         res.render('products');
@@ -82,6 +97,7 @@ const loadProducts =  async(req,res)=>{
         console.log(error);
     }
 }
+            //Add Products
 const loadAddproduct = async(req,res)=>{
     try {
         res.render('addProduct');
@@ -89,6 +105,53 @@ const loadAddproduct = async(req,res)=>{
         console.log(error);
     }
 }
+                              // PRODUCT SECTON START //
+
+                              // CATEGORY SECTON START //
+            
+            // Load Category         
+const loadCategory = async(req,res)=>{
+    try {
+        res.render('category');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+        // Add Category
+const loadAddcategory = async(rdq,res)=>{
+    try {
+        res.render('addCategory');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+                            // CATEGORY SECTON END // 
+
+                            // CATEGORY BRAND END // 
+
+        //Brand
+const loadBrand = async(req,res)=>{
+    try {
+        res.render('brands');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+        // Add Brand
+const loadAddBrand = async(req,res)=>{
+    try {
+        res.render('addBrand');
+    } catch (error) {
+        console.log(error);
+    }
+}
+        
+
+                            // CATEGORY BRAAND END // 
+
 module.exports = {
     adminLogin,
     varifyLogin,
@@ -97,6 +160,10 @@ module.exports = {
     loadCustomers,
     blockUser,
     loadProducts,
-    loadAddproduct
+    loadAddproduct,
+    loadCategory,
+    loadAddcategory,
+    loadBrand,
+    loadAddBrand
 
 }
