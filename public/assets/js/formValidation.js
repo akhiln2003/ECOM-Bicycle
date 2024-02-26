@@ -1,123 +1,89 @@
+// Form validation function
+function validateForm() {
+  // Clear previous error messages and borders
+  clearErrorsAndBorders();
 
+  // Get form fields
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const mobile = document.getElementById('mobile').value;
+  const dateOfBirth = document.getElementById('dateOfBirth').value;
+  const gender = document.getElementById('gender').value;
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('ConformPassword').value;
 
+  // Validation regex patterns
+  const nameRegex = /^[a-zA-Z\s]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const mobileRegex = /^(?:(\d)\1{9}|[^0\D])\d{9}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.)[a-zA-Z\d]{6,}$/;
 
-   //form validation
-   function validateForm() {
-    // Clear previous error messages and borders
-    clearErrorsAndBorders();
-
-    // Get form fields
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const mobile = document.getElementById('mobile').value;
-    const dateOfBirth = document.getElementById('dateOfBirth').value;
-    const gender = document.getElementById('gender').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('ConformPassword').value;
-    console.log(password , confirmPassword)
-
-    // Validate name (non-empty)
-    const nameRegex = /^[a-zA-Z\s]+$/;
-    
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    // Validate mobile number (10 digits)
-    const mobileRegex = /^(?:(\d)\1{9}|[^0\D])\d{9}$/;
-        // Validate password and confirm password match
-        const passwordRegex =/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
-
-
-    if (!nameRegex.test(name)) {
+  // Validate name
+  if (!nameRegex.test(name)) {
       showError('nameError', 'Only use Alphabets');
-      
+      removeErrorsAfterDelay('nameError');
       return false;
-    }
-
-    else if (!emailRegex.test(email)) {
+  }
+  // Validate email
+  else if (!emailRegex.test(email)) {
       showError('emailError', 'Invalid email address');
+      removeErrorsAfterDelay('emailError');
       return false;
-    }
-
-   else if (!mobileRegex.test(mobile)) {
+  }
+  // Validate mobile
+  else if (!mobileRegex.test(mobile)) {
       showError('mobileError', 'Invalid mobile number');
+      removeErrorsAfterDelay('mobileError');
       return false;
-    }
-
-    // Validate date of birth
-    else if (!dateOfBirth) {
+  }
+  // Validate date of birth
+  else if (!dateOfBirth) {
       showError('dateOfBirthError', 'Please select a valid date of birth');
+      removeErrorsAfterDelay('dateOfBirthError');
       return false;
-    }
-
-    // Validate gender
-   else if (gender === 'Select') {
+  }
+  // Validate gender
+  else if (gender === 'Select') {
       showError('genderError', 'Please select your gender');
+      removeErrorsAfterDelay('genderError');
       return false;
-    }
-
-    else if (!passwordRegex.test(password)) {
-      showError('passwordError', 'Passwords do not match or do not meet the criteria');
-      
+  }
+  // Validate Password
+  else if (!passwordRegex.test(password)) {
+      showError('passwordError', 'Passwords do not meet the criteria');
+      removeErrorsAfterDelay('passwordError');
       return false;
-    }
-    else if(!passwordRegex.test(confirmPassword) || password != confirmPassword){
-     showError('ConformPasswordError', 'Passwords do not match');
-     return false;
-  
-    }
-    else{
-    return true;
   }
+  // Validate confirmPassword
+  else if (!passwordRegex.test(confirmPassword) || password != confirmPassword) {
+      showError('ConformPasswordError', 'Passwords do not match');
+      removeErrorsAfterDelay('ConformPasswordError');
+      return false;
+  } else {
+      return true;
   }
+}
 
-  function clearErrorsAndBorders() {
-    console.log('hai')
-    const errorElements = document.querySelectorAll('.forml');
-    errorElements.forEach((element) => (element.innerText = ''));
+// Function to remove errors after a delay
+function removeErrorsAfterDelay(errorId) {
+  setTimeout(() => {
+      document.getElementById(errorId).innerText = '';
+      document.getElementById(errorId.replace('Error', '')).classList.remove('error-border');
+  }, 3000); 
+}
 
-    const inputElements = document.querySelectorAll('.error-border');
-    inputElements.forEach((element) => element.classList.remove('error-border'));
-  }
+// Function to clear errors and borders
+function clearErrorsAndBorders() {
+  const errorElements = document.querySelectorAll('.forml');
+  errorElements.forEach((element) => (element.innerText = ''));
 
-  function showError(id, message) {
-    document.getElementById(id).innerText = message;
-    document.getElementById(id.replace('Error', '')).classList.add('error-border');
-   return false;
-  }
+  const inputElements = document.querySelectorAll('.error-border');
+  inputElements.forEach((element) => element.classList.remove('error-border'));
+}
 
-
-  
-
-
-////////////////////////////////////////////////
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<OTP resend>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-  function resend() {
-    console.log("Hello");
-    clearInterval(countdownInterval);
-    startCountdown(60);
-  }
-
-  let countdownInterval;
-
-  function startCountdown(initialValue) {
-    let val = initialValue;
-    countdownInterval = setInterval(() => {
-      if(val===0){
-        clearInterval(countdownInterval)
-      }
-      document.querySelector('#time').innerHTML = `${val}`;
-      val = val - 1;
-    }, 1000);
-  }
-
-  startCountdown(60);
-
-  document.getElementById('resend').addEventListener('click', function () {
-    resend();
-  });
+// Function to show error
+function showError(id, message) {
+  document.getElementById(id).innerText = message;
+  document.getElementById(id.replace('Error', '')).classList.add('error-border');
+  return false;
+}

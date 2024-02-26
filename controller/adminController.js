@@ -56,114 +56,11 @@ const varifyLogin = async(req,res)=>{
  }
                               // DASHBOADR SECTON END //
 
-                             // CUSTOMERS SECTON START //
-
-        //customers listing
- const loadCustomers = async(req,res)=>{
-    try {
-        const users = await User.find();
-        res.render('customers',{users:users});
-
-    } catch (error) {
-        console.log(error);
-    }
- }
-
-        //Bblock and Unblock customers
-const blockUser = async(req,res)=>{
-    try {
-        const  id= req.body.id;
-      const user = await User.findOne({_id:id});
-      if(user.blocked){
-        await User.updateOne({_id:id},{$set:{blocked:false}});
-      }else{
-        await User.updateOne({_id:id},{$set:{blocked:true}});
-      }
-      res.json({blocked:true});
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-                          // CUSTOMERS  SECTION END  //
-
-                         //  PRODUCT  SECTON START//
-             
-            // Load Products           
-const loadProducts =  async(req,res)=>{
-    try {
-        res.render('products');
-    } catch (error) {
-        console.log(error);
-    }
-}
-            //Add Products
-const loadAddproduct = async(req,res)=>{
-    try {
-        res.render('addProduct');
-    } catch (error) {
-        console.log(error);
-    }
-}
-                              // PRODUCT SECTON START //
-
-                              // CATEGORY SECTON START //
-            
-            // Load Category         
-const loadCategory = async(req,res)=>{
-    try {
-        res.render('category');
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-        // Add Category
-const loadAddcategory = async(rdq,res)=>{
-    try {
-        res.render('addCategory');
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-                            // CATEGORY SECTON END // 
-
-                            // CATEGORY BRAND END // 
-
-        //Brand
-const loadBrand = async(req,res)=>{
-    try {
-        res.render('brands');
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-        // Add Brand
-const loadAddBrand = async(req,res)=>{
-    try {
-        res.render('addBrand');
-    } catch (error) {
-        console.log(error);
-    }
-}
-        
-
-                            // CATEGORY BRAAND END // 
 
 module.exports = {
     adminLogin,
     varifyLogin,
     loadDashboard,
     adminLogOut,
-    loadCustomers,
-    blockUser,
-    loadProducts,
-    loadAddproduct,
-    loadCategory,
-    loadAddcategory,
-    loadBrand,
-    loadAddBrand
 
 }

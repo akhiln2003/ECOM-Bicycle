@@ -21,153 +21,88 @@
                 </div>
                 <div class="card">
                         <div class="row">
-                            <div class="card mb-4">
+                            
                                 <div class="card-body">
                                     <div class="table-responsive"id="Reload">
                                         <table class="table table-hover" >
                                             <thead>
                                                 </th>
+                                                    <th>No</th>
                                                     <th>Name</th>
                                                     <th>Description</th>
-                                                    <th class="text-end">Action</th>
+                                                    <th>Edit</th>
+                                                    <th class="text-end">Delete</th>
                                                 </tr>
                                             </thead>
                                         <tbody>
-                                            <tr>
-                                               
-                                                <td><b>Cake & Milk</b></td>
-                                                <td>Cake & Milk</td>
+                                            <% let num =0 %>
+                                            <% if(category.length >0 ){ %>
+                                                <% if(category.map((value,index)=>{ %> 
+                                                    <% if(value.isDeleted == false){ %>
+                                                        <% num++ %>
+                                                    <tr>
+                                                        <td><%= num %></td>
+                                                        <td><%= value.categoryName %></td>
+                                                        <td><%= value.description %></td>
+                                                        <td><a href="/admin/editCategory?id=<%= value._id %>" ><i class="material-icons md-edit"></i></a></td>
+                                                        <td class="text-end">
+                                                            <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="deleteCategory('<%= value._id %>')"> Delete </button>        
+                                                        </td>
+                                                    </tr>
+                                                    <%}%>
+                                                    <% })) %>
+                                                <% } %>
                                                 
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Oganic Kiwi</b></td>
-                                                <td>EU standard</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Peach</b></td>
-                                                <td>Peach</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Red Apple</b></td>
-                                                <td>Red Apple</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Snack</b></td>
-                                                <td>Snack</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                </td>
-                                                <td><b>Vegetables</b></td>
-                                                <td>Vegetables</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Strawberry</b></td>
-                                                <td>Strawberry</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Black plum</b></td>
-                                                <td>Black plum</td>
-                                                <td class="text-end">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                    <!-- dropdown //end -->
-                                                </td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                            <!-- .col// -->
+                           
                         </div>
                         <!-- .row // -->
                 </div>
                 <!-- card .// -->
             </section>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <%- include("../layout/admin/footer.ejs") -%>
+<script>
+
+    function deleteCategory( categoryId) {
+    
+        const data ={id:categoryId}
+        Swal.fire({
+            icon:"warning",
+            title:'are you sure',
+            showCancelButton: 'true',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'yes!',
+                confirmButtonColor: '#3085d6'
+        }).then((response)=>{
+            if(response.isConfirmed){
+                  $.ajax({
+            method:'POST',
+            url:"/admin/deleteCategory",
+            data:JSON.stringify(data),
+            contentType:"application/json",
+            success: (response)=>{
+                if(response.deleted){
+                    Swal.fire({
+                        icon:'success',
+                        title:'deleted'
+                    })
+                    $('#Reload').load('/admin/category    #Reload')
+                }
+            }
+        })
+            }
+        })
+      
+
+    }
 
     
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<%- include("../layout/admin/footer.ejs") -%>
+

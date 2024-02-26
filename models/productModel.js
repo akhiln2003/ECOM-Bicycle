@@ -2,15 +2,19 @@ const mongoose =require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
   const productSchema = mongoose.Schema({
-    name:{
+    productName:{
         type:String,
         require:true
     },
-    price:{
+    productPrice:{
         type:Number,
         require:true
     },
     previousPrice:{
+        type:Number,
+        require:true
+    },
+    productQuentity:{
         type:Number,
         require:true
     },
