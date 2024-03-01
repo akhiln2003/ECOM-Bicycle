@@ -1,0 +1,413 @@
+
+	  
+<%-include('../layout/user/header.ejs') %>
+
+<%-include('../layout/user/navbar.ejs') %>
+    
+<style>
+.zoomable-image {
+        overflow: hidden;
+        position: relative;
+        cursor: zoom-in; 
+    }
+
+    .zoomable-image:hover {
+        cursor: zoom-out; 
+    }
+
+    .zoomable-image img {
+        transition: transform 0.3s ease-in-out;
+    }
+
+</style>
+    
+
+		<section class="product-details section-padding-top" style="margin-top: 60px;">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="left">
+							<!-- Single-pro-slider Big-photo start -->
+							<div class="large-slider zoom-gallery">
+								<div>
+									
+									<div class="zoomable-image" onmousemove="zoomImage(event)" onmouseleave="resetZoom()">
+										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>" width="555" height="587" alt="" id="zoomedImage" />
+									</div>
+									
+									
+									<% for(i=0;i<product.image.length;i++){ %>
+												<a href="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" title="Product Title"><img src="img/icon/zoom.png" width="21" height="22" alt="" /></a>
+
+										<%} %>
+									
+								</div>
+								
+							</div>	
+							<!-- Single-pro-slider Big-photo end -->	
+							
+							<!-- Single-pro-slider Small-photo start -->
+							<div class="thumb-slider slider-nav">
+								<% for(i=0;i<4;i++){ %>
+									<div>
+										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" width="117" height="123" alt="" />
+									</div>
+									<% } %>
+								
+							</div>
+							<!-- Single-pro-slider Small-photo end -->
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="right">
+							<div class="singl-pro-title">
+								<h3><%= product.productName %></h3>
+								<h1> ₹ <%= product.productPrice %></h1>
+								<hr />
+								<p><%= product.description %></p>
+								<hr />
+								<div class="color-brand clearfix">
+									<div class="s-select">
+										<div class="custom-select">
+											<select class="form-control">
+												<option>Color</option>
+												<option>Red </option>
+												<option>Green </option>
+												<option>Blue</option>
+											</select>
+										</div>
+									</div>
+									<div class="s-select">
+										<div class="custom-select">
+											<select class="form-control">
+												<option>Brend</option>
+												<option>Men </option>
+												<option>Fashion </option>
+												<option>Shirt</option>
+											</select>
+										</div>
+									</div>
+									<div class="s-select s-plus-minus">
+										<form action="#">
+											<div class="plus-minus">
+												<a class="dec qtybutton">-</a>
+												<input type="text" value="02" name="qtybutton" class="plus-minus-box">
+												<a class="inc qtybutton">+</a>
+											</div>
+										</form>
+									</div>
+								</div>
+								<div class="actions-btn">
+									<ul class="clearfix text-center">
+										<% if(product.stock > 0){ %>
+											<li>
+												<a href="cart.html"><i class="fa fa-shopping-cart"></i>AddToCart</a>
+											</li>
+											<% }else{ %>
+												<li>
+													<a href="" style="color: red; text-decoration: none;">Out Of stock</a>
+												</li>
+												<% } %>
+										
+										<li>
+											<a href="cart.html"><i class="fa fa-heart-o"></i></a>
+										</li>
+										<li>
+											<a href="#"><i class="fa fa-compress"></i></a>
+										</li>
+										<li>
+											<a href="#"><i class="fa fa-share-alt"></i></a>
+										</li>
+									</ul>
+								</div>
+								<hr />
+								
+								<div class="specific-pro">
+									<ul>
+										<li class="specific-pro-title">
+											Product Specifications
+										</li>
+										<li>
+											<span>Frame</span>
+											<p>Optimized Construction carbon frame with 130mm travel.</p>
+										</li>
+										<li>
+											<span>Fork</span>
+											<p>RockShox Revelation RLT 27.5, 130mm, 15mm thru</p>
+										</li>
+										<li>
+											<span>Rear Shock</span>
+											<p>Fox Float CTD Boost Valve rear shock with Coat</p>
+										</li>
+										<li>
+											<span>Headset</span>
+											<p>Cane Creek 40</p>
+										</li>
+										<li>
+											<span>Shifters</span>
+											<p>SRAM GX 11 Speed Trigger Shifter</p>
+										</li>
+										<li>
+											<span>Front Derailleur</span>
+											<p>n\a</p>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="pro-des-tab">
+							<div class="tab-menu">
+								<ul class="nav">
+									<li>
+										<a class="active" data-bs-toggle="tab" href="#des">PRODUCT DESCRIPTION</a>
+									</li>
+									<li>
+										<a data-bs-toggle="tab" href="#reviews">REVIEWS</a>
+									</li>
+									<li>
+										<a data-bs-toggle="tab" href="#tags">TAGS</a>
+									</li>
+									<li>
+										<a data-bs-toggle="tab" href="#size">SIZE GUIDE</a>
+									</li>
+									<li>
+										<a data-bs-toggle="tab" href="#custom">CUSTOM TAB</a>
+									</li>
+								</ul>
+							</div>
+							<div class="tab-content margin50">
+								<div class="tab-pane fade show active" id="des">
+									<div class="des-text">
+										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero.</p><br />
+										<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>
+									</div>
+								</div>
+								<div class="tab-pane fade single-blog-page" id="reviews">
+									<div class="leave-comment">
+										<h4>leave your review</h4>
+										<form action="#">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="input-text">
+														<input type="text" name="name" placeholder="Your Name">
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="input-text">
+														<input type="text" name="email" placeholder="Email" required="">
+													</div>
+												</div>
+												<div class="col-12">
+													<div class="input-text">
+														<textarea name="comment" id="comment" placeholder="Comment" rows="4"></textarea>
+													</div>
+												</div>
+												<div class="col-12">
+													<div class="submit-text">
+														<input type="submit" name="submit" value="submit comments">
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="tags">
+									<div class="tag-btn clearfix">
+										<a href="#">Bike</a>
+										<a href="#">Wheel</a>
+										<a href="#">Aparel</a>
+										<a href="#">GPS</a>
+										<a href="#">Track</a>
+										<a href="#">Accessories</a>
+										<a href="#">Men</a>
+										<a href="#">Women</a>
+										<a href="#">Power</a>
+									</div>
+								</div>
+								<div class="tab-pane fade in" id="size">
+									<div class="size-btn clearfix">
+										<a href="#">X</a>
+										<a href="#">m</a>
+										<a href="#">l</a>
+										<a href="#">Xm</a>
+										<a href="#">xxl</a>
+									</div>
+								</div>
+								<div class="tab-pane fade" id="custom">
+									<div class="des-text">
+										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero.</p><br />
+										<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- product details area end -->
+        <!-- related product section start -->
+		<section class="related-area riding-one">
+			<div class="container">
+				<div class="related-title">
+					<h5>Related Products</h5>
+				</div>
+				<div class="row text-center my-5">
+					<div class="col-12">
+						<div class="related-slider single-products">
+							<div class="product-item-wrap">
+								<div class="product-item">
+									<% if(Array.isArray(product)){  %>
+										<% products.forEach((product,index)=>{ %>
+
+											<div class="pro-img">
+												<a href="/productDetails?id=<%= product._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= product.image[index] %>" width="263" height="299" alt="Product" /></a>
+												<div class="tag-n-s">
+													<span>New</span>
+												</div>
+											</div>
+											<div class="riding-title clearfix">
+												<div class="product-title text-start floatleft">
+													<a href="#"><h3 class="title"><%= product.productName %></h3></a>
+													<div class="ratting">
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star"></i>
+														<i class="fa fa-star gray-star"></i>
+													</div>
+													<p><span>₹ <%= product.productPrice %></span></p>
+												</div>
+											</div>
+
+										   <% }) %>
+										  <%}%>
+									
+									
+								</div>
+							</div>
+							<% relatedProduct.forEach((product,index)=>{ %>
+								<div class="product-item-wrap">
+									<div class="product-item">
+										<div class="pro-img">
+											<a href="product-details.html"><img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>" width="263" height="299" alt="Product" /></a>
+										</div>
+										<div class="riding-title clearfix">
+											<div class="product-title text-start floatleft">
+												<a href="#"><h3 class="title"><%= product.productName %></h3></a>
+												<div class="ratting">
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star gray-star"></i>
+													<i class="fa fa-star gray-star"></i>
+												</div>
+												<p><span><%= product.productPrice %></span> <del>$175</del></p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<% }) %>
+							
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+        <!-- related product section end -->
+		<!-- footer section start -->
+		<footer>
+			<!-- brand logo area start -->
+			<div class="brand-logo-area">
+				<div class="container">
+					<div class="row">
+						<div class="col-12">
+							<div class="brand-logo">
+								<ul class="clearfix">
+									<li>
+										<a href="#"><img src="img/brand/1.png" width="170" height="88" alt="Brand Logo" /></a>
+									</li>
+									<li>
+										<a href="#"><img src="img/brand/2.png" width="170" height="88" alt="Brand Logo" /></a>
+									</li>
+									<li>
+										<a href="#"><img src="img/brand/3.png" width="170" height="88" alt="Brand Logo" /></a>
+									</li>
+									<li>
+										<a href="#"><img src="img/brand/4.png" width="170" height="88" alt="Brand Logo" /></a>
+									</li>
+									<li>
+										<a href="#"><img src="img/brand/5.png" width="170" height="88" alt="Brand Logo" /></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- brand logo area end -->
+			<!-- contact area start -->
+			<div class="map-contact clearfix">
+				<div class="googleMap-info half-width">
+					<iframe title="Google map" class="contact-map-size"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1613802584124!5m2!1sen!2sbd"
+                        allowfullscreen="" loading="lazy">
+                    </iframe>
+				</div>
+				<div class="footer-contact half-width">
+					<form id="contact-form" action="https://whizthemes.com/mail-php/other/mail.php">
+						<div class="input-text">
+							<input type="text" name="con_name" placeholder="Your Name" />
+							<input type="text" name="con_email" placeholder="Email" required />
+							<input type="text" name="con_subject" placeholder="Subject" />
+							<textarea name="con_message" placeholder="Message" rows="4"></textarea>
+						</div>
+						<div class="submit-text">
+							<button type="submit" name="submit">submit</button>
+						</div>
+						<p class="form-message"></p>
+					</form>
+				</div>
+			</div>
+			<!-- contact area end -->
+			<div class="footer-logo-text">
+				<div class="container text-center">
+					<a href="index.html"><img src="img/logo2.png" width="175" height="75" alt="Logo" /></a>
+					<p>There are many variations of passages of Lorem Ipsum available, but the majority have</p>
+					<p> suffered alteration in some form, by injected humour, or randomised</p>
+				</div>
+			</div>
+
+
+			<script>
+				function zoomImage(event) {
+					const zoomedImage = document.getElementById('zoomedImage');
+					const boundingRect = zoomedImage.getBoundingClientRect();
+			
+					const mouseX = event.clientX - boundingRect.left;
+					const mouseY = event.clientY - boundingRect.top;
+			
+					const percentX = mouseX / boundingRect.width;
+					const percentY = mouseY / boundingRect.height;
+			
+					const scale = 2; // Adjust the scale factor for your desired zoom level
+			
+					zoomedImage.style.transformOrigin = `${percentX * 100}% ${percentY * 100}%`;
+					zoomedImage.style.transform = `scale(${scale})`;
+				}
+			
+				function resetZoom() {
+					const zoomedImage = document.getElementById('zoomedImage');
+					zoomedImage.style.transformOrigin = 'center center';
+					zoomedImage.style.transform = 'scale(1)';
+				}
+			</script>
+			
+			
+            <%- include('../layout/user/footbar.ejs') %>
+            <%- include('../layout/user/footer.ejs') %>

@@ -99,7 +99,8 @@ const insertuser = async(req,res)=>{
 
         });
                 // creatin otp
-        const createdOtp = `${Math.floor(1000+Math.random()*9000)}`
+        const createdOtp = `${Math.floor(1000+Math.random()*9000)}`;
+        console.log(createdOtp);
         const mailOption = {
             from:"4khiln@gmail.com",
             to:email,
@@ -110,8 +111,8 @@ const insertuser = async(req,res)=>{
         const hashedOtp = await bcrypt.hash(createdOtp,10);
         const newOtpVerification = await new userOtpVerification({email:email,otp:hashedOtp});
         await newOtpVerification.save();
-        await transporter.sendMail(mailOption);
         res.redirect(`/otp?email=${email}`);
+        await transporter.sendMail(mailOption);
 
     } catch (error) {
         console.log(error);
@@ -126,7 +127,7 @@ const insertuser = async(req,res)=>{
         console.log(error);
     }
  }
-    // OTTP verification
+    // OTP verification
  const verifyOtp = async(req,res)=>{
     try {
        const email = req.body.email;
@@ -154,7 +155,7 @@ const insertuser = async(req,res)=>{
             });
         }
        }else{
-        req.flash('expite',"Incorrect OTP");
+        req.flash('expire',"Incorrect OTP");
         res.redirect(`/otp?email=${email}`);
        }
        const user = await User.findOne({email:email});
@@ -168,8 +169,6 @@ const insertuser = async(req,res)=>{
             }
             res.redirect('/login');
         }else{
-            console.log("user blocked for this site");
-
             req.flash('blocked',"you are blocked for this contact with admin");
             res.redirect(`/otp?email=${email}`);
         }
@@ -181,6 +180,44 @@ const insertuser = async(req,res)=>{
         console.log(error);
     }
  }
+    // login verification
+ const verifyLogin = async(req,res)=>{
+    try {
+        const {email,password}=req.body;
+    const user =  await User.findOne({email:email});
+    if(user){
+       if(user.verified){
+        if(user.blocked){
+            req.flash('exists',"This user is blocked in this site");
+            res.redirect('/login');
+        }else{
+            const DBpassword = user.password;
+            const comparePassword = await bcrypt.compare(password,DBpassword);
+            if(comparePassword){
+                req.session.user = {
+                    _id:user._id,
+                    name:user.name,
+                    email:user.email
+                }
+                res.redirect('/')
+            }else{
+                req.flash('exists',"Incorrect Password");
+                res.redirect('/login');
+            }
+        }
+       }else{
+        req.flash('exists',"user not verified");
+        res.redirect('/login');
+       }
+    }else{
+        req.flash('exists',"user not registered");
+        res.redirect('/login');
+    }
+    } catch (error) {
+        console.log(error);
+    }
+    
+ }
 
 module.exports = {
     loadHome,
@@ -188,6 +225,7 @@ module.exports = {
     loadRegister,
     insertuser,
     loadOtp,
-    verifyOtp
+    verifyOtp,
+    verifyLogin
 
 }

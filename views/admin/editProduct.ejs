@@ -1,0 +1,166 @@
+<%- include("../layout/admin/header.ejs") -%>  
+
+        <div class="screen-overlay"></div>
+
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <%- include("../layout/admin/sidbar.ejs") -%>
+      </aside>
+        <main class="main-wrap">
+    
+            <%- include("../layout/admin/navbar.ejs") -%>  
+            <section class="content-main">
+                <div class="row">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Add Product</h2>
+                            <p>Product Adding   </p>
+                        </div>
+                        <a href="/admin/products" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go Back</a>
+                    </div>
+                    <% if (messages.existCategory) { %>
+                        <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>
+                            <div >
+                                <strong>Hey !</strong>
+                              <%= messages.existCategory %>
+                            </div>
+                          </div>             
+                    <% } %> 
+                    <div class="col-9" style="margin-left: 6rem; margin-top: 2rem;">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row gx-5">
+                                   
+                                    <div class="col-lg-9">
+                                        <section class="content-body p-xl-4">
+                                            <form  method="post" onsubmit="return productValidation()" enctype="multipart/form-data">
+                                                <div class="row mb-4">
+                                                    <label  class="col-lg-3 col-form-label">Product name*</label>
+                                                    <div class="col-lg-9">
+                                                        <input id="name" name="productName" value="<%= product.productName %>" type="text" class="form-control" placeholder="Type here" />
+                                                         <div id="nameError" class="forml" style="color: red;"></div>
+
+                                                    </div>
+                                                    <!-- col.// -->
+                                                </div>
+                                                <!-- row.// -->
+                                                <div class="row mb-4">
+                                                    <label class="col-lg-3 col-form-label">Product Price*</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="hidden" name="id" value="<%= product._id %>">
+                                                        <input name="productPrice" value="<%= product.productPrice %>" id="Price" type="text" class="form-control" placeholder="Type here" />
+                                                        <div id="priceError" class="forml" style="color: red;"></div>
+
+                                                    </div>
+                                                    <!-- col.// -->
+                                                </div>
+                                               
+                                                <!-- row.// -->
+                                                <div class="row mb-4">
+                                                    <label class="col-lg-3 col-form-label">Quantity*</label>
+                                                    <div class="col-lg-9">
+                                                        <input name="productQuentity" value="<%= product.stock %>" id="quantity" type="number" class="form-control" placeholder="Type here" />
+                                                        <div id="quantityError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <!-- col.// -->
+                                                </div>
+                                                <!-- row.// -->
+                                                <div class="row mb-4">
+                                                    <label class="col-lg-3 col-form-label" style="margin-top: 2rem;">Category & Brand *</label>
+                                                    <!-- <div class="col-lg-4">
+                                                        <small class="text-muted font-sm mb-10">Brand</small>
+                                                        <select name="brand" multiple size="4" class="form-control select-multiple">
+                                                            <option></option>
+                                                            <option></option>
+                                                            <option></option>
+                                                        </select>
+                                                    </div> -->
+                                                    <!-- col.// -->
+                                                    <div class="col-lg-4">
+                                                        <label for="category" class="text-muted font-sm mb-10">Category</label>
+                                                        <select name="category" id="category" class="form-control">
+                                                            <% category.forEach(category => { %>
+                                                                <option value="<%= category._id %>"><%= category.categoryName %></option>
+                                                            <% }); %>
+                                                        </select>
+                                                        <div id="categoryError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    
+                                                     
+                                                    <!-- col.// -->
+                                                </div>
+                                                <!-- row.// -->
+                                                
+                                                <div class="row mb-4">
+                                                    <label class="col-lg-3 col-form-label">Description*</label>
+                                                    <div class="col-lg-9">
+                                                        <textarea id="description" name="description" class="form-control" placeholder="Type here" rows="4"><%= product.description %></textarea>
+                                                        <div id="descriptionError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <!-- col.// -->
+                                                </div>
+                                                <!-- row.// -->                                                                                            
+                                                    <div class="row mb-4">
+                                                        <% for(let i=0 ; i<4 ; i++){ %>
+                                                        <div class="col-md-6">
+                                                            <div class="card">
+                                                                <div class="card-header">
+                                                                    <h4>Media 1</h4>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="input-upload">
+                                                                        <img src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" alt="Preview" id="imagePreview<%= i %>"/>
+                                                                        <input id="image1" name="image" class="form-control" type="file" accept="image/*" onchange="previewImage(this,'imagePreview<%= i %>')"  />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <% } %>
+                                                    </div>
+                                                <br />
+                                                    <div>
+                                                        <button type="submit" class="btn btn-light rounded font-sm mr-5 text-body hover-up">Submit</button>
+                                                        <button  class="btn btn-light rounded font-sm mr-5 text-body hover-up ">Back</button>
+                                                    </div>
+                                                
+                                            </form>
+                                        </section>
+                                        <!-- content-body .// -->
+                                    </div>
+                                    <!-- col.// -->
+                                </div>
+                                <!-- row.// -->
+                            </div>
+                            <!-- card body end// -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- content-main end// -->
+        </main>
+    <script src="/assets/js/productValidation.js"></script>
+
+        <script>
+            function previewImage(input,imageId){
+                const preview = document.getElementById(imageId);
+                const file = input.files[0];
+                
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                
+                preview.src = 'assets/imgs/theme/upload.svg';
+            }
+            }
+        </script>
+        <%- include("../layout/admin/footer.ejs") -%>
+        

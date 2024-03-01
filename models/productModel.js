@@ -10,15 +10,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
         type:Number,
         require:true
     },
-    previousPrice:{
-        type:Number,
-        require:true
-    },
-    productQuentity:{
-        type:Number,
-        require:true
-    },
-    discription:{
+    
+    description:{
         type:String,
         require:true
     },
@@ -26,30 +19,34 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
         type: ObjectId,
         ref:'Category',
         required:true
-    },
-    brand:{
-        type: ObjectId,
-        ref:'Brand',
+    }, stock :{
+        type:Number,
         required:true
-    },
-    offer:{
-        type:String,
-        require:true
-    },
+      },
+      dateJoined: {
+        type: Date,
+        default: Date.now
+      },
+      
+    // brand:{
+    //     type: ObjectId,
+    //     ref:'Brand',
+    //     required:true
+    // },
+    // offer:{
+    //     type:String,
+    //     require:true
+    // },
     image:{
         type:Array,
         validate:[arrayLimit,"you can pass only 4 images"]
     },
-    is_Listed :{
+    isDeleted :{
         type :Boolean,
         default:false,
         required:true
       },
-      stock :{
-        type:Number,
-        required:true
-      }
-      
+     
     
   });
 
@@ -57,7 +54,7 @@ function arrayLimit(value){
    return value.length <=4
       }
     
-const products = mongoose.model('product',productSchema);
+const products = mongoose.model('Product',productSchema);
 
 module.exports = products;
 

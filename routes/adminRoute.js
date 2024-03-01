@@ -1,6 +1,7 @@
 const express = require('express');
 const admin_route = express();
 const auth = require('../middleware/adminAuth');
+const multer = require('../middleware/multer');
 const adminController = require("../controller/adminController");
 const brandController = require("../controller/brandController");
 const categoryController = require("../controller/categoryController");
@@ -38,6 +39,12 @@ admin_route.post('/blockUser',auth.isLogOut,customerController.blockUser);
                             // PRODUCTS
 admin_route.get('/products',auth.isLogOut,productController.loadProducts);
 admin_route.get('/addProduct',auth.isLogOut,productController.loadAddproduct);
+admin_route.post('/addProduct',auth.isLogOut,multer.upload.array('image'),productController.addProducts);
+admin_route.get('/editProduct',auth.isLogOut,productController.loadEditproduct);
+admin_route.post('/editProduct',auth.isLogOut,multer.upload.array('image'),productController.editProducts);
+admin_route.post('/deleteProduct',auth.isLogOut,productController.isDeleted)
+
+
 
                             // CATEGORY
 admin_route.get('/category',auth.isLogOut,categoryController.loadCategory);

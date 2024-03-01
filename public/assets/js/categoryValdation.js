@@ -1,16 +1,15 @@
 
 
 
-   //Category validation
+                  //Category validation
    function categoryValidation() {
-    const name = document.getElementById('name')
+    const name = document.getElementById('name').value;
     const description = document.getElementById('description').value;
 
                     //Validation nameRegex 
     const nameRegex =/^[a-zA-Z\s]+$/;
    
-    if (nameRegex.test(name)) {
-      console.log("this is inside name rejex");
+    if (!nameRegex.test(name)) {
       showError('nameError', 'Only use Alphabets');
       removeErrorsAfterDelay('nameError');
       return false;
@@ -21,7 +20,6 @@
       return false
     }
     else if(description <= 10 || description.value.trim() === "") {
-      console.log("this is discription rejsx");
       showError('descriptionError', 'must need morethan 10 letters');
       removeErrorsAfterDelay('descriptionError');
       return false;

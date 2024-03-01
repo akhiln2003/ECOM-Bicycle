@@ -62,8 +62,7 @@ const updateCategory = async(req,res)=>{
     const{id,categoryName,description} = req.body;
 
     const exist = await Category.findOne({categoryName:categoryName,isDeleted:false,_id:{$ne:id}});
-    if(exist){
-        console.log("this is inside ex");
+    if(exist){  
         req.flash('existCategory',"Already exists a category with this name");
         res.redirect(`/admin/editcategory?id=${id}`);
     }else{

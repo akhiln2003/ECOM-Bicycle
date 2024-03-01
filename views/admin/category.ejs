@@ -1,13 +1,13 @@
-<%- include("../layout/admin/header.ejs") -%>  
+<%- include("../layout/admin/header.ejs") -%>
 
-        <div class="screen-overlay"></div>
+    <div class="screen-overlay"></div>
 
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <%- include("../layout/admin/sidbar.ejs") -%>
-      </aside>
-        <main class="main-wrap">
-    
-            <%- include("../layout/admin/navbar.ejs") -%>  
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <%- include("../layout/admin/sidbar.ejs") -%>
+    </aside>
+    <main class="main-wrap">
+
+        <%- include("../layout/admin/navbar.ejs") -%>
 
             <section class="content-main">
                 <div class="content-header">
@@ -16,93 +16,103 @@
                         <p>Add, edit or delete a category</p>
                     </div>
                     <div>
-                        <a href="/admin/addcategory" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Add New Category</a>
+                        <a href="/admin/addcategory" class="btn btn-primary"><i
+                                class="text-muted material-icons md-post_add"></i>Add New Category</a>
                     </div>
                 </div>
                 <div class="card">
-                        <div class="row">
-                            
-                                <div class="card-body">
-                                    <div class="table-responsive"id="Reload">
-                                        <table class="table table-hover" >
-                                            <thead>
-                                                </th>
-                                                    <th>No</th>
-                                                    <th>Name</th>
-                                                    <th>Description</th>
-                                                    <th>Edit</th>
-                                                    <th class="text-end">Delete</th>
-                                                </tr>
-                                            </thead>
-                                        <tbody>
-                                            <% let num =0 %>
-                                            <% if(category.length >0 ){ %>
-                                                <% if(category.map((value,index)=>{ %> 
-                                                    <% if(value.isDeleted == false){ %>
+                    <div class="row">
+
+                        <div class="card-body">
+                            <div class="table-responsive" id="Reload">
+                                <table class="table table-hover">
+                                    <thead>
+                                        </th>
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Edit</th>
+                                        <th class="text-end">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% let num=0 %>
+                                            <% if(category.length>0 ){ %>
+                                                <% if(category.map((value,index)=>{ %>
+                                                    <% if(value.isDeleted==false){ %>
                                                         <% num++ %>
-                                                    <tr>
-                                                        <td><%= num %></td>
-                                                        <td><%= value.categoryName %></td>
-                                                        <td><%= value.description %></td>
-                                                        <td><a href="/admin/editCategory?id=<%= value._id %>" ><i class="material-icons md-edit"></i></a></td>
-                                                        <td class="text-end">
-                                                            <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="deleteCategory('<%= value._id %>')"> Delete </button>        
-                                                        </td>
-                                                    </tr>
-                                                    <%}%>
-                                                    <% })) %>
-                                                <% } %>
-                                                
-                                        </tbody>
-                                    </table>
-                                </div>
-                           
+                                                            <tr>
+                                                                <td>
+                                                                    <%= num %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= value.categoryName %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= value.description %>
+                                                                </td>
+                                                                <td><a href="/admin/editCategory?id=<%= value._id %>"><i
+                                                                            class="material-icons md-edit"></i></a></td>
+                                                                <td class="text-end">
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                                                        onclick="deleteCategory('<%= value._id %>')">
+                                                                        Delete </button>
+                                                                </td>
+                                                            </tr>
+                                                            <%}%>
+                                                                <% })) %>
+                                                                    <% } %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
                         </div>
                         <!-- .row // -->
-                </div>
-                <!-- card .// -->
+                    </div>
+                    <!-- card .// -->
             </section>
 
-<script>
+            <script>
 
-    function deleteCategory( categoryId) {
-    
-        const data ={id:categoryId}
-        Swal.fire({
-            icon:"warning",
-            title:'are you sure',
-            showCancelButton: 'true',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'yes!',
-                confirmButtonColor: '#3085d6'
-        }).then((response)=>{
-            if(response.isConfirmed){
-                  $.ajax({
-            method:'POST',
-            url:"/admin/deleteCategory",
-            data:JSON.stringify(data),
-            contentType:"application/json",
-            success: (response)=>{
-                if(response.deleted){
+                function deleteCategory(categoryId) {
+
+                    const data = { id: categoryId }
                     Swal.fire({
-                        icon:'success',
-                        title:'deleted'
+                        icon: "warning",
+                        title: 'are you sure',
+                        showCancelButton: 'true',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'yes!',
+                        confirmButtonColor: '#3085d6'
+                    }).then((response) => {
+                        if (response.isConfirmed) {
+                            $.ajax({
+                                method: 'POST',
+                                url: "/admin/deleteCategory",
+                                data: JSON.stringify(data),
+                                contentType: "application/json",
+                                success: (response) => {
+                                    if (response.deleted) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'deleted'
+                                        })
+                                        $('#Reload').load('/admin/category   #Reload')
+                                    }
+                                }
+                            })
+                        }
                     })
-                    $('#Reload').load('/admin/category    #Reload')
+
+
                 }
-            }
-        })
-            }
-        })
-      
 
-    }
 
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
-<%- include("../layout/admin/footer.ejs") -%>
-
+            <%- include("../layout/admin/footer.ejs") -%>
