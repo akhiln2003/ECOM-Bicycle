@@ -14,7 +14,7 @@ const loadProductDetails = async(req,res)=>{
     try {
         const id = req.query.id;
         const product = await Product.findOne({_id:id});
-        const category = product.category
+        const category = product.category;
         const relatedProduct =  await Product.find({category:category});
         res.render('productDetails',{product,relatedProduct});
     } catch (error) {
