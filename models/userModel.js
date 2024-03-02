@@ -15,15 +15,6 @@ const userScchema = mongoose.Schema({
       type: String,
       required:true
     },
-    dateofbirth:{
-      type: Date,
-      required:true
-      
-    },
-    gender:{
-      type:String,
-      required:true
-    },
     password :{
       type: String,
       required:true
