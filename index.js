@@ -1,7 +1,8 @@
 const connectdb = require('./config/connectingDB');
+const userRout = require('./routes/usersRoute');
+const express = require('express');
 connectdb.connectDB();
 
-const express = require('express');
 const path = require('path');
 const app = express();
 
@@ -24,7 +25,6 @@ app.use(express.static(path.join(__dirname,'public/assets')));
 // app.use(express.static(path.join(__dirname,'public/uploads')));
 
  //For user rout
-const userRout = require('./routes/usersRoute');
 app.use('/',userRout);
 
 

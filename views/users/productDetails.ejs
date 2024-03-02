@@ -79,7 +79,15 @@
 							<div class="singl-pro-title">
 								<h3><%= product.productName %></h3>
 								<h1> ₹ <%= product.productPrice %></h1>
+								<div class="ratting">
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star gray-star"></i>
+								</div>
 								<hr />
+								
 								<p><%= product.description %></p>
 								<hr />
 								<div class="color-brand clearfix">
@@ -275,10 +283,10 @@
 				<div class="row text-center my-5">
 					<div class="col-12">
 						<div class="related-slider single-products">
-							<div class="product-item-wrap">
-								<div class="product-item">
-									<% if(Array.isArray(product)){  %>
-										<% products.forEach((product,index)=>{ %>
+							<% if(Array.isArray(product)){  %>
+								<% products.forEach((product,index)=>{ %>
+									<div class="product-item-wrap">
+										<div class="product-item">
 
 											<div class="pro-img">
 												<a href="/productDetails?id=<%= product._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= product.image[index] %>" width="263" height="299" alt="Product" /></a>
@@ -300,12 +308,12 @@
 												</div>
 											</div>
 
+											
+										</div>
+									</div>
 										   <% }) %>
 										  <%}%>
 									
-									
-								</div>
-							</div>
 							<% relatedProduct.forEach((product,index)=>{ %>
 								<div class="product-item-wrap">
 									<div class="product-item">
