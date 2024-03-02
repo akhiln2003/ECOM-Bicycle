@@ -60,8 +60,7 @@ const loadEditcategory = async(req,res)=>{
  
 const updateCategory = async(req,res)=>{
     const{id,categoryName,description} = req.body;
-
-    const exist = await Category.findOne({categoryName:categoryName,isDeleted:false,_id:{$ne:id}});
+    const exist = await Category.findOne({categoryName: { $regex: new RegExp(`^${categoryName}$`, 'i') },isDeleted:false,_id:{$ne:id}});
     if(exist){  
         req.flash('existCategory',"Already exists a category with this name");
         res.redirect(`/admin/editcategory?id=${id}`);
