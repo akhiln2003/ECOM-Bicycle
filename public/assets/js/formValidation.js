@@ -7,8 +7,6 @@ function validateForm() {
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   const mobile = document.getElementById('mobile').value;
-  const dateOfBirth = document.getElementById('dateOfBirth').value;
-  const gender = document.getElementById('gender').value;
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('ConformPassword').value;
 
@@ -34,18 +32,6 @@ function validateForm() {
   else if (!mobileRegex.test(mobile)) {
       showError('mobileError', 'Invalid mobile number');
       removeErrorsAfterDelay('mobileError');
-      return false;
-  }
-  // Validate date of birth
-  else if (!dateOfBirth) {
-      showError('dateOfBirthError', 'Please select a valid date of birth');
-      removeErrorsAfterDelay('dateOfBirthError');
-      return false;
-  }
-  // Validate gender
-  else if (gender === 'Select') {
-      showError('genderError', 'Please select your gender');
-      removeErrorsAfterDelay('genderError');
       return false;
   }
   // Validate Password
