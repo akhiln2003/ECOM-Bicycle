@@ -35,6 +35,25 @@ const userScchema = mongoose.Schema({
       type : Boolean,
       default:false
     },
+    address:[
+      {
+        name:{
+          type:String
+        },
+        state:{
+          type:String
+        },
+        city:{
+          type:String
+        },
+        pin:{
+          type:Number
+        },
+        phone:{
+          type:Number
+        }
+      }
+    ]
     
 });
 

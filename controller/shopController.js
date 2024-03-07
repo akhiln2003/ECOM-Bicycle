@@ -18,6 +18,7 @@ const loadProductDetails = async(req,res)=>{
         const relatedProduct =  await Product.find({category:category});
         res.render('productDetails',{product,relatedProduct});
     } catch (error) {
+        res.render('error404')
         console.log(error);
     }
 }

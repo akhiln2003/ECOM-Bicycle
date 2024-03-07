@@ -219,6 +219,14 @@ const insertuser = async(req,res)=>{
     
  }
 
+ const logOut = async(req,res)=>{
+    try {
+        req.session.user =  null;
+        res.redirect('/');
+    } catch (error) {
+        console.log(error);
+    }
+ }
 module.exports = {
     loadHome,
     loadLogin,
@@ -226,6 +234,7 @@ module.exports = {
     insertuser,
     loadOtp,
     verifyOtp,
-    verifyLogin
+    verifyLogin,
+    logOut
 
 }

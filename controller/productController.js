@@ -70,6 +70,7 @@ const loadEditproduct = async(req,res)=>{
 
             res.render('editProduct',{product,category});
         } catch (error) {
+            res.render('error404')
             console.log(error);
         }
 }

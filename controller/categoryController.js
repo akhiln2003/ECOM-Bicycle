@@ -52,6 +52,7 @@ const loadEditcategory = async(req,res)=>{
         res.render('editCategory',{categoryEdit});
 
     } catch (error) {
+        res.render('error404');
         console.log(error);
     }
 }
@@ -59,7 +60,8 @@ const loadEditcategory = async(req,res)=>{
         //  updating catagory
  
 const updateCategory = async(req,res)=>{
-    const{id,categoryName,description} = req.body;
+    try {
+        const{id,categoryName,description} = req.body;
     const exist = await Category.findOne({categoryName: { $regex: new RegExp(`^${categoryName}$`, 'i') },isDeleted:false,_id:{$ne:id}});
     if(exist){  
         req.flash('existCategory',"Already exists a category with this name");
@@ -68,6 +70,11 @@ const updateCategory = async(req,res)=>{
         await Category.findByIdAndUpdate({_id:id},{$set:{categoryName:categoryName,description:description}});
         res.redirect('/admin/category');
     }
+    } catch (error) {
+        
+        console.log(error);
+    }
+    
 
 }        
 
