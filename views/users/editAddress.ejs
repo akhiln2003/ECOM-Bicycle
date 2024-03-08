@@ -23,30 +23,33 @@
             <form method="post" onsubmit=" return validation()" >
                 <div class="form-group" >
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" >
+                    <input type="hidden" value="<%= user._id %>" name="id">
+                    <input type="hidden" value="<%= index %>" name="index">
+                    <input type="text" class="form-control" id="name" name="name" value="<%= userAddress.name  %>" >
                     <div id="nameError" class="forml" style="color: red;"></div>
                 </div>
                 <div class="form-group" style="margin-top: 1rem; " >
                     <label for="state">State:</label>
-                    <input type="text" class="form-control" id="state" name="state" placeholder="Enter your state" >
+                    <input type="text" class="form-control" id="state" name="state" value="<%= userAddress.state %>" >
                     <div id="stateError" class="forml" style="color: red;"></div>
                 </div>
                 <div class="form-group" style="margin-top: 1rem; " >
                     <label for="country">city:</label>
-                    <input type="text" class="form-control" id="city" name="city" placeholder="Enter your city" >
+                    <input type="text" class="form-control" id="city" name="city" value="<%= userAddress.city %>" >
                     <div id="cityError" class="forml" style="color: red;"></div>
                 </div>
                 <div class="form-group" style="margin-top: 1rem; " >
                     <label for="pin">PIN:</label>
-                    <input type="text" class="form-control" id="pin" name="pin" placeholder="Enter your PIN code" >
+                    <input type="text" class="form-control" id="pin" name="pin" value="<%= userAddress.pin %>" >
                     <div id="pinError" class="forml" style="color: red;"></div>
                 </div>
                 <div class="form-group" style="margin-bottom: 2rem; margin-top: 1rem; " >
                     <label for="phone">Phone Number:</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" >
+                    <input type="tel" class="form-control" id="phone" name="phone" value="<%= userAddress.phone %>" >
                     <div id="phoneError" class="forml" style="color: red;"></div>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location='/address'">Cancel</button>
             </form>
         </div>
     </div>

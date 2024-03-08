@@ -1,9 +1,12 @@
+const session = require('express-session');
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const { response } = require('express');
 
 
 
             // Load profile
+
 const loadProfile  =  async(req,res)=>{
     try {
         const id  = req.session.user._id;
@@ -15,9 +18,11 @@ const loadProfile  =  async(req,res)=>{
 }
 
             // Load Address
+
 const loadAddress = async(req,res)=>{
     try {
-        const user  = req.session._id;
+        const id = req.session.user._id;
+        const user  = await User.findOne({_id:id});
         res.render('address',{user});
     } catch (error) {
         console.log(error);
@@ -25,6 +30,7 @@ const loadAddress = async(req,res)=>{
 }
 
             //  Load Edit Profile
+
 const loadEditprofile = async (req, res) => {
     try {
        const id = req.query.id;
@@ -37,6 +43,7 @@ const loadEditprofile = async (req, res) => {
 }
 
             // Update profiel
+
 const updateProfile = async(req,res)=>{
     try {
       const{id,editName,editPhone} = req.body;
@@ -61,6 +68,7 @@ const updateProfile = async(req,res)=>{
     }
 }
         // Lod Change Password 
+
 const loadChangepassword = async(req,res)=>{
     try {
         res.render('changePassword');
@@ -70,6 +78,7 @@ const loadChangepassword = async(req,res)=>{
 }
 
         //Chandge Password
+
 const changePassword = async(req,res)=>{
     try {
         const {id,current,newPassword} = req.body;
@@ -90,6 +99,7 @@ const changePassword = async(req,res)=>{
     }
 }
 
+        // Add Prodict 
 
 const loadAddaddress = async(req,res)=>{
     try {
@@ -98,6 +108,75 @@ const loadAddaddress = async(req,res)=>{
         console.log(error);
     }
 }
+
+            // insert Address
+
+const insertAddress = async(req,res)=>{
+    try {
+       const id = req.session.user._id;
+       const {name,state,city,pin,phone}=req.body;
+      await User.findOneAndUpdate({_id:id},{
+        $push:{
+        address:{
+        name:name,
+        state:state,
+        city:city,
+        pin:pin,
+        phone:phone
+        }
+      }});
+      res.redirect('/address')
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const deletAddress =async(req,res)=>{
+    try {
+     const {userid,addressid} = req.body;
+      await User.findOneAndUpdate({_id:userid},{$pull:{address:{_id:addressid}}});
+      res.redirect('/address');
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const loadEditaddress = async(req,res)=>{
+    try {
+
+        const index =  req.query.index
+        const userid = req.session.user._id;
+        const user = await User.findOne({_id:userid });
+        const userAddress = user.address[index]
+        res.render('editAddress',{user,index,userAddress});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const updatEditaddress = async(req,res)=>{
+    try {
+       const {id,index,name,state,city,pin,phone} = req.body;
+       await User.findOneAndUpdate({_id:id},{
+        $set:{
+            [`address.${index}.name`]: name,
+            [`address.${index}.state`]: state,
+            [`address.${index}.city`]: city,
+            [`address.${index}.pin`]: pin,
+            [`address.${index}.phone`]: phone
+
+        }
+       })
+       res.redirect('/address')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 module.exports = {
     loadProfile,
     loadAddress,
@@ -105,5 +184,9 @@ module.exports = {
     updateProfile,
     loadChangepassword,
     changePassword,
-    loadAddaddress
+    loadAddaddress,
+    insertAddress,
+    deletAddress,
+    loadEditaddress,
+    updatEditaddress
 }

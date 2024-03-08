@@ -55,6 +55,10 @@ user_route.post('/editProfile',auth.isLogOut,profileController.updateProfile);
 user_route.get('/changePassword',auth.isLogOut,profileController.loadChangepassword);
 user_route.post('/changePassword',auth.isLogOut,profileController.changePassword);
 user_route.get('/addAddress',auth.isLogOut,profileController.loadAddaddress);
+user_route.post('/addAddress',auth.isLogOut,profileController.insertAddress);
+user_route.get('/editAddress',auth.isLogOut,profileController.loadEditaddress);
+user_route.post('/editAddress',auth.isLogOut,profileController.updatEditaddress);
+user_route.post('/deletAddress',auth.isLogOut,profileController.deletAddress);
 
 
 

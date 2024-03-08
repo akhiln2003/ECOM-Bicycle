@@ -121,7 +121,7 @@
            
             <div class="col-md-8">
                 <!-- Address Listing Table -->
-                <table class="address-table" >
+                <table class="address-table" id="Reload" >
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -133,17 +133,19 @@
                     </thead>
                     <tbody>
                        
+                        <% user.address.forEach((value,i)=>{ %>
                         <tr>
-                            <td>John Doe</td>
-                            <td>California, USA</td>
-                            <td>12345</td>
-                            <td>(555) 123-4567</td>
+                            <td><%= value.name %></td>
+                            <td><%= value.state %> / <%= value.city %></td>
+                            <td><%= value.pin %></td>
+                            <td><%= value.phone %></td>
                             <td>
-                                <a class="btn btn-success" href="">Edit</a>
-                                <a class="btn btn-danger" href="">Delete</a>
+                                <a class="btn btn-success" href="/editAddress?index=<%=i%>",>Edit</a>
+                                <a class="btn btn-danger" onclick="return deleteAddress('<%= user._id %>' , '<%= value._id %>')" >Delete</a>
                                
                             </td>
                         </tr>
+                        <% }) %>
                        
                     </tbody>
                 </table>
@@ -152,6 +154,41 @@
         </div>
     </div>
 </div>
+
+<script>
+    function deleteAddress (userid,addressid){
+        const data = {userid:userid,addressid:addressid};
+        Swal.fire({
+            icon: "warning",
+            title: 'are you sure',
+            showCancelButton: 'true',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'yes!',
+            confirmButtonColor: '#3085d6'
+       })
+    .then((response)=>{
+             if (response.isConfirmed) {
+                fetch('/deletAddress',{
+                    method:'POST',
+                    headers: {
+                                'Content-Type': 'application/json',
+                            },
+                    body:JSON.stringify(data),
+                }).then((reselt)=>{
+                    if(reselt.ok){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'deleted'
+                        })
+                        $('#Reload').load('/address  #Reload')
+                    }
+                })
+            }
+        })
+     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 		<%-include('../layout/user/footbar.ejs') %>
         <%-include('../layout/user/footer.ejs') %>
