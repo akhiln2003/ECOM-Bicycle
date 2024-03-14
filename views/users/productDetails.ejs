@@ -112,11 +112,11 @@
 										</div>
 									</div>
 									<div class="s-select s-plus-minus">
-										<form action="#">
+										<form action="#" >
 											<div class="plus-minus">
-												<a class="dec qtybutton">-</a>
-												<input type="text" value="02" name="qtybutton" class="plus-minus-box">
-												<a class="inc qtybutton">+</a>
+												<a class="dec qtybutton" style="text-decoration: none;">-</a>
+												<input id="quantity" type="text" value="1" name="qtybutton" class="plus-minus-box">
+												<a class="inc qtybutton " style="text-decoration: none;">+</a>
 											</div>
 										</form>
 									</div>
@@ -124,24 +124,28 @@
 								<div class="actions-btn">
 									<ul class="clearfix text-center">
 										<% if(product.stock > 0){ %>
-											<li>
-												<a href="cart.html"><i class="fa fa-shopping-cart"></i>AddToCart</a>
-											</li>
+											<% if(inCart){ %>
+												<li>
+													<a  style="text-decoration: none;" href="/cart"><i ></i>ViewCart</a>
+												</li>
+												<% }else{ %>
+													<li>
+														<a  style="text-decoration: none;" onclick=" addToCart('<%= product._id  %>')"><i class="fa fa-shopping-cart" ></i>AddToCart</a>
+													</li>
+													
+										<%}%>
 											<% }else{ %>
 												<li>
-													<a href="" style="color: red; text-decoration: none;">Out Of stock</a>
+													<a href="" style="color: red; text-decoration: none; "><i ></i>Out of stock</a>
 												</li>
 												<% } %>
+												
 										
 										<li>
 											<a href="cart.html"><i class="fa fa-heart-o"></i></a>
 										</li>
-										<li>
-											<a href="#"><i class="fa fa-compress"></i></a>
-										</li>
-										<li>
-											<a href="#"><i class="fa fa-share-alt"></i></a>
-										</li>
+										
+										
 									</ul>
 								</div>
 								<hr />
@@ -192,12 +196,7 @@
 									<li>
 										<a data-bs-toggle="tab" href="#reviews">REVIEWS</a>
 									</li>
-									<li>
-										<a data-bs-toggle="tab" href="#tags">TAGS</a>
-									</li>
-									<li>
-										<a data-bs-toggle="tab" href="#size">SIZE GUIDE</a>
-									</li>
+									
 									<li>
 										<a data-bs-toggle="tab" href="#custom">CUSTOM TAB</a>
 									</li>
@@ -239,28 +238,6 @@
 										</form>
 									</div>
 								</div>
-								<div class="tab-pane fade" id="tags">
-									<div class="tag-btn clearfix">
-										<a href="#">Bike</a>
-										<a href="#">Wheel</a>
-										<a href="#">Aparel</a>
-										<a href="#">GPS</a>
-										<a href="#">Track</a>
-										<a href="#">Accessories</a>
-										<a href="#">Men</a>
-										<a href="#">Women</a>
-										<a href="#">Power</a>
-									</div>
-								</div>
-								<div class="tab-pane fade in" id="size">
-									<div class="size-btn clearfix">
-										<a href="#">X</a>
-										<a href="#">m</a>
-										<a href="#">l</a>
-										<a href="#">Xm</a>
-										<a href="#">xxl</a>
-									</div>
-								</div>
 								<div class="tab-pane fade" id="custom">
 									<div class="des-text">
 										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero.</p><br />
@@ -280,8 +257,8 @@
 				<div class="related-title">
 					<h5>Related Products</h5>
 				</div>
-				<div class="row text-center my-5">
-					<div class="col-12">
+				<div class="row text-center my-5" >
+					<div class="col-12" id="Reload"	>
 						<div class="related-slider single-products">
 							<% if(Array.isArray(product)){  %>
 								<% products.forEach((product,index)=>{ %>
@@ -409,6 +386,41 @@
 
 
 			<script>
+				function addToCart(productId,userId){
+					const quantity = document.getElementById('quantity').value;
+					const data ={productId,userId,quantity}	
+							fetch('/addtocart',{ 
+								method: 'POST',
+								headers:{
+									'Content-Type': 'application/json'
+								},
+								body:JSON.stringify(data)
+							}).then((result)=>{
+								if(result.ok){
+									Swal.fire({
+									icon: "success",
+									title: 'Item Added to Cart',
+									confirmButtonText: 'OK',
+									confirmButtonColor: '#3085d6'
+								}).then((response)=>{
+									if(response.isConfirmed){
+
+										location.reload()
+									}
+								})
+								}
+							})
+						
+					
+
+						}
+
+
+
+
+
+
+
 				function zoomImage(event) {
 					const zoomedImage = document.getElementById('zoomedImage');
 					const boundingRect = zoomedImage.getBoundingClientRect();
@@ -432,6 +444,7 @@
 				}
 			</script>
 			
-			
+			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
             <%- include('../layout/user/footbar.ejs') %>
             <%- include('../layout/user/footer.ejs') %>

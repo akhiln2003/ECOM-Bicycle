@@ -1,0 +1,225 @@
+<%- include('../layout/user/header.ejs') %>
+<%- include('../layout/user/navbar.ejs') %>
+
+        <style>
+            .goto {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background: url('/assets/img/emtycart.png') center/cover no-repeat;
+                background-size: 700px 600px;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .shop-container {
+                background: rgba(255, 255, 255, 0.8);
+                /* Semi-transparent white background */
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+            }
+
+            .plus-minus {
+                display: flex;
+                align-items: center;
+            }
+
+            .quantity-button {
+                display: block;
+                width: 30px;
+                height: 30px;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                color: #333;
+                font-size: 20px;
+                line-height: 30px;
+                cursor: pointer;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+            .quantity-button:hover {
+                background-color: #e0e0e0;
+            }
+
+            .quantity-input {
+                width: 50px;
+                height: 30px;
+                text-align: center;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                margin: 0 10px;
+            }
+        </style>
+        <!-- Breadcrumb Section -->
+        <section class="breadcrumb-section" style="margin-top: 100px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2>CART</h2>
+                        <div class="breadcrumb-text">
+                            <a style="color: black; text-decoration: none; " href="/">Home</a> >
+                            <span>Cart</span>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- cart page content section start -->
+        <section class="cart-page " id="Reload">
+            <% if(cart && cart.products.length>0){ %>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive table-one margin-minus section-padding-bottom">
+                                <table class="spacing-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th> Price</th>
+                                            <th>QTY</th>
+                                            <th>Total</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <% cart.products.forEach((product)=>{ %>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <a href="#"><img
+                                                            src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
+                                                            width="240" height="190" alt="Add Product" /></a>
+
+                                                </td>
+                                                <td>
+                                                    <%= product.productId.productName %>
+                                                </td>
+                                                <td> ₹ <%= product.productId.productPrice %>
+                                                </td>
+                                                <td>
+                                                    <form action="#">
+                                                        <div class="plus-minus text-center">
+                                                            <a onclick="updateProductQuantity('<%= product.productId._id %>', -1)"
+                                                                class="quantity-button minus"
+                                                                style="text-decoration: none;">-</a>
+                                                            <input type="text" readonly value="<%= product.quantity %>"
+                                                                name="qtybutton" class="quantity-input">
+                                                            <a onclick="updateProductQuantity('<%= product.productId._id %>', 1)"
+                                                                class="quantity-button plus"
+                                                                style="text-decoration: none;">+</a>
+                                                        </div>
+                                                    </form>
+                                                </td>
+
+                                                <td> ₹ <%= product.totalPrice %>
+                                                </td>
+                                                <td><i class="fa fa-trash"
+                                                        onclick=" removeProduct('<%= product.productId._id  %>')"></i>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                        <% }) %>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-4" style="margin-bottom: 2rem;">
+                        <div class="estimate-text responsive">
+
+                            <div class="default-btn text-right">
+                                <a class="btn-style" href="checkout.html">PROCCED TO CHECKOUT</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <% } else{%>
+                    <div class="goto">
+                        <div class="shop-container">
+                            <h1>Your Cart is Empty</h1>
+                            <a style="text-decoration: none; margin-top: 2rem;" class="shop-btn" href="/shop">Shop
+                                Now</a>
+                        </div>
+                    </div>
+                    <%}%>
+        </section>
+        <!-- cart page content section end -->
+
+        <script>
+            // REMOVIN PRODUCT IN CART FUNCTION
+
+            function removeProduct(id) {
+                const data = { id: id };
+                Swal.fire({
+                    icon: "warning",
+                    title: "Are You Sure",
+                    showCancelButton: "true",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!",
+                    confirmButtonColor: "#3085d6"
+                }).then((response) => {
+                    if (response.isConfirmed) {
+                        fetch('/removeToCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data),
+                        }).then((reselt) => {
+                            if (reselt.ok) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'deleted'
+                                })
+                                $('#Reload').load('/cart  #Reload')
+                            }
+                        })
+                    }
+
+                })
+            }
+
+
+            function updateProductQuantity(productId, count) {
+                const data = { productId, count };
+                fetch('/updateQuantity', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then((data) => data.json())
+                    .then((response) => {
+                        if(response.ok){
+                            location.reload()
+                        }else if (response.min) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Minimum QTY Reached'
+                            })
+                            
+                        } else if (response.max) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Maximum QTY Reached'
+                            })
+
+                        }
+                    })
+
+            }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+		<%-include('../layout/user/footbar.ejs') %>
+        <%-include('../layout/user/footer.ejs') %>

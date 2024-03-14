@@ -10,7 +10,7 @@ const { response } = require('express');
 const loadProfile  =  async(req,res)=>{
     try {
         const id  = req.session.user._id;
-        const user = await User.findOne({_id:id}) 
+        const user = await User.findOne({_id:id});
         res.render('profile',{user});
     } catch (error) {
         console.log(error);
@@ -176,6 +176,13 @@ const updatEditaddress = async(req,res)=>{
     }
 }
 
+const loadOrders  = async(req,res)=>{
+    try {
+        res.render('orders');
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 module.exports = {
     loadProfile,
@@ -188,5 +195,6 @@ module.exports = {
     insertAddress,
     deletAddress,
     loadEditaddress,
-    updatEditaddress
+    updatEditaddress,
+    loadOrders
 }

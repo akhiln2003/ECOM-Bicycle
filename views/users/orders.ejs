@@ -1,0 +1,38 @@
+<%-include('../layout/user/header.ejs') %>
+
+<%-include('../layout/user/navbar.ejs') %>
+
+<div class="container mt-5">
+    <h1 class="mb-4">Orders</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Total Amount</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Sample data, replace with actual order data -->
+            <tr>
+                <th scope="row">1</th>
+                <td>John Doe</td>
+                <td>$100.00</td>
+                <td>Shipped</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jane Smith</td>
+                <td>$75.50</td>
+                <td>Processing</td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+</div>
+
+
+<%-include('../layout/user/footbar.ejs') %>
+<%-include('../layout/user/footer.ejs') %>
