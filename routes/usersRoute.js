@@ -8,6 +8,8 @@ const userController = require("../controller/userController");
 const shopController =  require('../controller/shopController');
 const  profileController =  require('../controller/userProfilecontroller');
 const cartController = require('../controller/cartController');
+const checkoutController =  require('../controller/checkoutController');
+
 
 user_route.use(session({secret: process.env.sessionSecret,resave:false,saveUninitialized:false}));
 user_route.use((req, res, next) => {
@@ -68,7 +70,12 @@ user_route.get('/cart',auth.isLogOut,cartController.loadCart);
 user_route.post('/addtocart',auth.isLogOut,cartController.addtoCart);
 user_route.post('/removeToCart',auth.isLogOut,cartController.removeToCart);
 user_route.post('/updateQuantity',auth.isLogOut,cartController.updateQuantity);
+user_route.get('/checkout',auth.isLogOut,cartController.loadProccedToCheckout);
 
 
+
+user_route.post('/addaddressCheckout',auth.isLogOut,profileController.checkoutAddAddress);
+user_route.post('/placeOrder',auth.isLogOut,checkoutController.placeOrder);
+user_route.get('/orderSuccess/:id',auth.isLogOut,checkoutController.loadOrderSuccess);
 
 module.exports = user_route;

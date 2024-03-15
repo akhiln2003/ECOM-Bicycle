@@ -1,0 +1,308 @@
+
+<%- include('../layout/user/header.ejs') %>
+<%- include('../layout/user/navbar.ejs') %>
+
+<style>
+      .place-order-btn {
+      background-color: rgb(177, 177, 177);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    /* Change button color on hover */
+    .place-order-btn:hover {
+      background-color:#ff6600 ;
+      
+    }
+</style>
+
+
+         <!-- Breadcrumb Section -->
+         <section class="breadcrumb-section" style="margin-top: 100px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2>Procced To Checkout</h2>
+                        <div class="breadcrumb-text">
+                            <a style="color: black; text-decoration: none; " href="/">Home</a> >
+                            <a style="color: black; text-decoration: none; " href="/cart">Cart</a> >
+                            <span>Procced To Checkout</span>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+		<section class="cart-page section-padding">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="row">
+							<div class="single-check responsive">
+
+                                <div class="single-check p-3 border rounded">
+                                    <div class="check-title mb-3">
+                                        <h3 class="m-0">Shipping Addresses</h3>
+                                    </div>
+                                    <div class="address-list">
+                                        <% user.address.forEach((address, index) => { %>
+                                        <div class="address-item mb-3 border p-3 rounded">
+                                           
+                                            <div class="form-check mt-2">
+                                                <p class="m-0">
+                                                    <span>Name: </span><strong><%= address.name %></strong> <br>
+                                                    <span>State: </span><%= address.state %> / 
+                                                    <span>City: </span><%= address.city %> /
+                                                    <span>Pin: </span><%= address.pin %> /
+                                                    <span>Phone: </span><%= address.phone %>
+                                                </p>
+                                                <hr>
+                                                <input style="display: inline-block;" class="form-check-input" type="radio" name="addressRadio" id="selectedAddress<%= index %>" value="<%= index %>">
+                                                <label class="form-check-label" for="selectedAddress<%= index %>" style="margin-left: 5px;">Select Address</label>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                    </div>
+                                    <!-- Button to add a new address -->
+                                    <button class="btn btn-success mt-2" data-toggle="modal" data-target="#addAddressModal">Add Address</button>
+                                </div>
+                                
+                                <!-- Modal for adding a new address -->
+                                <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" action="/addaddressCheckout" onsubmit="return validation()">
+                                                    <div class="form-group" >
+                                                        <label for="name">Name:</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" >
+                                                        <div id="nameError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <div class="form-group" style="margin-top: 1rem; " >
+                                                        <label for="state">State:</label>
+                                                        <input type="text" class="form-control" id="state" name="state" placeholder="Enter your state" >
+                                                        <div id="stateError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <div class="form-group" style="margin-top: 1rem; " >
+                                                        <label for="country">city:</label>
+                                                        <input type="text" class="form-control" id="city" name="city" placeholder="Enter your city" >
+                                                        <div id="cityError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <div class="form-group" style="margin-top: 1rem; " >
+                                                        <label for="pin">PIN:</label>
+                                                        <input type="text" class="form-control" id="pin" name="pin" placeholder="Enter your PIN code" >
+                                                        <div id="pinError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <div class="form-group" style="margin-bottom: 2rem; margin-top: 1rem; " >
+                                                        <label for="phone">Phone Number:</label>
+                                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" >
+                                                        <div id="phoneError" class="forml" style="color: red;"></div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+								
+                                <div class="single-check p-bottom50 clearfix">
+                                    <div class="check-title">
+                                        <h3 style="margin: 0;">Your Orders</h3>
+                                    </div>
+                                    <div class="table-responsive table-two">
+                                        <table class="order-table text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% cart.products.forEach((Product)=>{ %>
+                                                <tr>
+                                                    <td class="td-text">
+                                                        
+                                                        <div class="order-dsc">
+                                                            <p><%= Product.productId.productName%></p>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="qty-input">
+                                                            <%= Product.quantity %>
+                                                        </div>
+                                                    </td>
+                                                    <td> ₹ <%= Product.totalPrice %></td>
+                                                </tr>
+                                                <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>  
+
+
+
+                                
+
+                                
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						
+						<div class="single-check p-bottom50">
+							<div class="check-title">
+								<h3 style="margin: 0;">Coupon Code</h3>
+							</div>
+							<div class="single-input check-coupon">
+								<form action="#">
+									<div class="input-text">
+										<input type="text" name="coupon" />
+									</div>
+									<div class="submit-text">
+										<input type="submit" name="submit" value="Submit">
+									</div>
+								</form>
+							</div>
+						</div>
+                        <% let subtotal = cart.products.reduce((acc,value)=>{
+                          return  acc+= value.totalPrice
+                        },0)  %>
+                        <div class="single-check p-bottom50"  style="margin-top: 2rem;">
+                            <div class="check-title">
+                                <h3 style="margin: 0;">Totals</h3>
+                            </div>
+                            <div class="subtotal clearfix">
+                                <p>Subtotal <strong class="floatright"> ₹ <%= subtotal %></strong></p>
+                                <p>Shipping <strong class="floatright">free delivery</strong></p>
+                                <p>Total <strong class="floatright"><span> ₹ <%= subtotal %></span></strong></p>
+                            </div>
+                        </div>
+						
+						<div class="single-check p-3 border rounded" style="margin-top: 3rem;">
+                            <div class="check-title mb-3">
+                                <h3 class="m-0">Payment Option</h3>
+                            </div>
+                            <div class="address-list">
+                                <div class="address-item mb-3 border p-3 rounded">
+                                    <div class="form-check mt-2">
+                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery" value="COD">
+                                        <label class="form-check-label" for="cashOnDelivery" style="margin-left: 5px;">cash On Delivery</label><hr>
+                                    </div>
+                                    <!-- <div class="form-check mt-2">
+                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="razorpay">
+                                        <label class="form-check-label" for="razorpay" style="margin-left: 5px;">Razorpay</label><hr>
+                                    </div>
+                                    <div class="form-check mt-2">
+                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet">
+                                        <label class="form-check-label" for="wallet" style="margin-left: 5px;">Wallet</label> 
+                                    </div> -->
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <button style="margin-left: 25rem; margin-top: 2rem;" id="placeOrder" class="place-order-btn" data-subTotal="<%= subtotal %>" onclick="placeOrder()">Place Order</button>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- cart page content section end -->
+        
+
+
+
+
+        <script>
+
+            function placeOrder(total){
+                try {
+                    const radioButtonAddress = document.querySelector('input[name="addressRadio"]:checked')
+                    const index = radioButtonAddress ? radioButtonAddress.value :  null;
+                    if(index){
+                        const radioButtonPayment = document.querySelector('input[name="paymentMethod"]:checked');
+                        const payment = radioButtonPayment ? radioButtonPayment.value : null;
+                        if(payment){
+                            const subTotal = document.getElementById('placeOrder').getAttribute('data-subTotal');
+                           if(subTotal){
+                            const data = {index:index,payment:payment,subTotal:subTotal};
+                            fetch('/placeOrder',{
+                                method:'POST',
+                                headers:{
+                                    'Content-Type': 'application/json'
+                                },
+                                body:JSON.stringify(data)
+                            }).then((result)=>result.json())
+                            .then((data)=>{
+                                if(data.ok){
+                                    location.href = `/orderSuccess/${data.orderId}`
+                                }else if(data.quan == true){
+                                    Swal.fire({
+                                    icon: 'warning',
+                                    text: `Sorry you product ${data.quantityLess} is Out Of Stock'`,
+                                    showConfirmButton: false
+                                });
+                                }
+                            })
+                           }
+                        }else{
+                            //payment
+                            Swal.fire({
+                            icon: 'warning',
+                            text: "Select Payment Methode ",
+                            showConfirmButton: false,
+                            showConfirmButton:'#d33'
+                        });
+                        }
+                    }else{
+
+                    //address
+                    Swal.fire({
+                    icon: 'warning',
+                    text: "Select  Address",
+                    showConfirmButton: false,
+                    showConfirmButton: '#d33'
+                });
+
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+
+
+        </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
+
+
+
+		<!-- Add these script tags before the closing body tag -->
+<script src="/assets/js/addAddressValidation.js"></script>      
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+            <%-include('../layout/user/footbar.ejs') %>
+            <%-include('../layout/user/footer.ejs') %>

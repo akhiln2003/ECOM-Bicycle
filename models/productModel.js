@@ -19,7 +19,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
         type: ObjectId,
         ref:'Category',
         required:true
-    }, stock :{
+    }, 
+    stock :{
         type:Number,
         required:true
       },

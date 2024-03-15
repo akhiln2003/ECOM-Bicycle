@@ -1,5 +1,8 @@
 const Product =  require('../models/productModel');
 const Cart = require('../models/cartModel');
+const User = require('../models/userModel');
+const { logOut } = require('./userController');
+
 
 
 
@@ -124,9 +127,25 @@ const updateQuantity = async(req,res)=>{
         console.log(error);
     }
 }
+
+
+            //  Load Procced To Checkout page
+const loadProccedToCheckout = async(req,res)=>{
+    try {
+        const id = req.session.user._id;
+        const user = await User.findOne({_id:id});
+        const cart  =  await Cart.findOne({userId:id}).populate('products.productId');
+       res.render('checkout',{user,cart});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 module.exports ={
     loadCart,
     addtoCart,
     removeToCart,
-    updateQuantity
+    updateQuantity,
+    loadProccedToCheckout
 }

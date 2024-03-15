@@ -184,6 +184,27 @@ const loadOrders  = async(req,res)=>{
     }
 }
 
+const checkoutAddAddress =  async(req,res)=>{
+    try {
+       const id = req.session.user._id;
+       const {name,state,city,pin,phone}=req.body;
+      await User.findOneAndUpdate({_id:id},{
+        $push:{
+        address:{
+        name:name,
+        state:state,
+        city:city,
+        pin:pin,
+        phone:phone
+        }
+      }});
+      res.redirect('/checkout')
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     loadProfile,
     loadAddress,
@@ -196,5 +217,6 @@ module.exports = {
     deletAddress,
     loadEditaddress,
     updatEditaddress,
-    loadOrders
+    loadOrders,
+    checkoutAddAddress
 }
