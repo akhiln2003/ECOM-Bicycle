@@ -3,7 +3,26 @@ const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 
-
+const checkoutAddAddress =  async(req,res)=>{
+    try {
+       const id = req.session.user._id;
+       const {name,state,city,pin,phone}=req.body;
+      await User.findOneAndUpdate({_id:id},{
+        $push:{
+        address:{
+        name:name,
+        state:state,
+        city:city,
+        pin:pin,
+        phone:phone
+        }
+      }});
+      res.redirect('/checkout')
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 const placeOrder = async(req,res)=>{
     try {
@@ -55,19 +74,9 @@ const placeOrder = async(req,res)=>{
 }
 
 
-const loadOrderSuccess = async(req,res)=>{
-    try {
-        const orderId = req.params.id;
-        const orderDetails = Product.findOne({_id:orderId}).populate('products.productId');
-        res.render('orderSuccess',{orderDetails});
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
 
 module.exports = {
     placeOrder,
-    loadOrderSuccess
+    checkoutAddAddress
+    
 }

@@ -1,0 +1,204 @@
+
+<%- include('../layout/user/header.ejs') %>
+<%- include('../layout/user/navbar.ejs') %>
+
+ <style>
+     .address-table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    .address-table th, .address-table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .address-table th {
+        background-color: #929292;
+    }
+       
+
+       
+
+        
+    </style>
+    
+
+
+<!-- Breadcrumb Section -->
+<section class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12" style="margin-top: 100px;">
+                <h2>Order Details</h2>
+                <div class="breadcrumb-text">
+                    <a style="color: black; text-decoration: none; " href="/profile">Pofile</a> >
+                    <a style="color: black; text-decoration: none; " href="/orderHistory">OrderHistory</a> >
+                    <span>Order Details</span>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="container-fluid ">
+    <div class="main-body">
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                
+                <div class="card mt-3">
+                    <div class="user-headerrr">
+                        <div class="menu-itemmm"><h2 style="margin-left: 4rem; margin-top: 1rem;">Order Details</h2></div><hr>
+                      </div>
+                
+                      <!-- Sidebar Menu -->
+                  
+                      <div class="menu-itemmm" ><i class="fa-regular fa-user" style="margin-left: 10px;"> <a style="text-decoration: none;" href="/profile">Profile</a></i>
+                      </div><hr>
+                      <div class="menu-itemmm" ><i class="fa-solid fa-address-card"style="margin-left: 10px;"> <a style="text-decoration: none;" href="/address  ">Address</a></i></div><hr>
+                      <!-- <div class="menu-itemmm"><a href="/wishlist">Wishlist</a></div><hr> -->
+                      <div class="menu-itemmm"><i class="fa-solid fa-wallet"style="margin-left: 10px; "> <a style="text-decoration: none;" href="cart.html">Wallet</a></i></div><hr>
+                      
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="row" >
+                    <div class=" card col-md-6" style="margin-left: 2rem;margin-top: 1rem;">
+                        <div class=""><span class=""><strong>Delivery Address</strong></span></div>
+                        <div class="">
+                            <div class="">
+                                <div class="">
+                                    Name : <%= orders.deliveryAddress.name %>
+                                </div>
+                            </div>
+                            <div class="">
+                                Email : <%= orders.userId.email %>
+                            </div>
+                            <div class="">
+                                Pincode : <%= orders.deliveryAddress.pin %>
+                            </div>
+                            <div class="">
+                                <div><span class="">phone Number : <%= orders.deliveryAddress.phone %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                            <!-- <a class="btn btn-lg btn-primary mt-5" href="/invoice?orderId">
+                                Download Invoice
+                            </a>
+                        -->
+                        <div>
+
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="row" style="margin-bottom: 5rem;">
+                <div class="col-lg-12">
+                    <div class="table-responsive mt-5">
+
+                    
+                        <table class="address-table" id="Reload" >
+                            <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">SubTotal</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                                <% orders.products.forEach((product,i)=>{ %>
+                                    <% let amout = product.productId.productPrice*product.quantity %>
+                                <tr>
+                                        <td><%= i+1 %></td>
+                                        <td><b> <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>" alt="" style="width: 80px; height: 80px;"> </b></td>
+                                        <td><%= orders.deliveryAddress.name %></td>
+                                        <td> ₹ <%= product.productId.productPrice %></td>
+                                        <td><%= product.quantity %></td>
+                                        <td><%= amout %> </td>
+                                        <td><span class=" " style="font-weight: 900;"><%= product.status %></span></td>
+                                        <td><%= orders.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
+                                        <% if(product.status == "cancelled"){ %>
+                                            <td class="text-right-cell"><button class="btn-danger" > Canceled </button></td> 
+
+                                       <% }else{ %>
+
+                                            <td class="text-right-cell"><button class="btn-danger" onclick="cancel('<%= product._id %>', '<%= orders._id %>')">Cancel</button></td> 
+                                    <%   } %>
+                                        <tr>
+                                           
+                                            <% }) %>
+                                            
+                                        <td colspan="8" class="text-right-cell"><strong>Total Price:</strong></td>
+                                        <td class="text-right-cell"><strong>₹ <%= orders.totalAmount %></strong></td> 
+                                        
+
+                                       </tr>
+                                </tr>
+                                
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+           
+     </div>
+       
+    </div>
+</div>
+
+              <script>
+                function cancel(productId,orderId){
+                    const data =  {productId:productId , orderId:orderId}
+                    Swal.fire({
+                    icon: "warning",
+                    title: "Are You Sure",
+                    showCancelButton: "true",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!",
+                    confirmButtonColor: "#3085d6"
+                }).then((response) => {
+                    if (response.isConfirmed) {
+                        fetch('/cancelOrder', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)                
+                        }).then((reselt) => {
+                            if (reselt.ok) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Canceled'
+                                })
+                                $('#Reload').load('/orderDetails?id=<%= orders._id %>  #Reload')
+                            }
+                        })
+                    }
+
+                })
+                    
+                }
+              </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    
+<%-include('../layout/user/footbar.ejs') %>
+<%-include('../layout/user/footer.ejs') %>
+
+
+

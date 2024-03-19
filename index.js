@@ -1,18 +1,18 @@
 const connectdb = require('./config/connectingDB');
 const userRout = require('./routes/usersRoute');
 const express = require('express');
-connectdb.connectDB();
-
+const nocache = require('nocache');
+const flash = require('express-flash');
 const path = require('path');
 const app = express();
 
-
-const flash = require('express-flash');
-app.use(flash());
+connectdb.connectDB();
 
 app.set('view engine', 'ejs')
 
 app.use(express.json());
+app.use(nocache());
+app.use(flash());
 
 
 

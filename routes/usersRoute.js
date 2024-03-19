@@ -9,6 +9,7 @@ const shopController =  require('../controller/shopController');
 const  profileController =  require('../controller/userProfilecontroller');
 const cartController = require('../controller/cartController');
 const checkoutController =  require('../controller/checkoutController');
+const ordreController = require('../controller/orderController')
 
 
 user_route.use(session({secret: process.env.sessionSecret,resave:false,saveUninitialized:false}));
@@ -62,10 +63,11 @@ user_route.post('/addAddress',auth.isLogOut,profileController.insertAddress);
 user_route.get('/editAddress',auth.isLogOut,profileController.loadEditaddress);
 user_route.post('/editAddress',auth.isLogOut,profileController.updatEditaddress);
 user_route.post('/deletAddress',auth.isLogOut,profileController.deletAddress);
-user_route.get('/orders',auth.isLogOut,profileController.loadOrders);
+user_route.get('/orderHistory',auth.isLogOut,profileController.loadOrHistory);
 
 
-              // CART
+
+                  // CART
 user_route.get('/cart',auth.isLogOut,cartController.loadCart);
 user_route.post('/addtocart',auth.isLogOut,cartController.addtoCart);
 user_route.post('/removeToCart',auth.isLogOut,cartController.removeToCart);
@@ -73,9 +75,14 @@ user_route.post('/updateQuantity',auth.isLogOut,cartController.updateQuantity);
 user_route.get('/checkout',auth.isLogOut,cartController.loadProccedToCheckout);
 
 
-
-user_route.post('/addaddressCheckout',auth.isLogOut,profileController.checkoutAddAddress);
+                  // Checkout
+user_route.post('/addaddressCheckout',auth.isLogOut,checkoutController.checkoutAddAddress);
 user_route.post('/placeOrder',auth.isLogOut,checkoutController.placeOrder);
-user_route.get('/orderSuccess/:id',auth.isLogOut,checkoutController.loadOrderSuccess);
+
+
+                  // Oreder
+user_route.get('/orderSuccess/:id',auth.isLogOut,ordreController.loadOrderSuccess);
+user_route.get('/orderDetails',auth.isLogOut,ordreController.loadOrderDetails);
+user_route.post('/cancelOrder',auth.isLogOut,ordreController.cancelOrder);
 
 module.exports = user_route;

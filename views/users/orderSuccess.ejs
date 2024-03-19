@@ -1,0 +1,60 @@
+<%- include('../layout/user/header.ejs') %>
+<%- include('../layout/user/navbar.ejs') %> 
+
+<style>
+  .background-section {
+    background-image: url('/assets/img/slider/1.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 200px 0; /* Add padding to create space around the content */
+    text-align: center;
+    color: #fff; /* Adjust text color to be visible on the background image */
+  }
+
+  .img-success {
+    max-width: 100%;
+    height: 150px;
+    width: 150px;
+  }
+
+  .success-text {
+    color: green;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+
+  .button-container {
+    margin-top: 20px;
+  }
+
+  .shop-button, .order-detail-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    margin: 0 10px;
+    border: 1px solid #000000;
+    color: #111111;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .shop-button:hover, .order-detail-button:hover {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid  #4CAF50;
+  }
+</style>
+
+<div class="background-section" style="margin-top: 1rem;">
+  <img src="/assets/img/orderSuccess.png" class="img-success" alt="Success Image">
+  <div style="margin-top: 2rem;" class="success-text">Successfully placed your order!</div>
+  <div class="button-container" style="margin-top: 2rem;">
+      <a href="/shop" class="shop-button">Continue Shopping with Us</a>
+      <a href="/orderDetails?id=<%= orderId %>" class="order-detail-button">Order Details</a>
+  </div>
+</div>
+
+<%- include('../layout/user/footbar.ejs') %>
+<%- include('../layout/user/footer.ejs') %>

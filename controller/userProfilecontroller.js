@@ -1,5 +1,6 @@
 const session = require('express-session');
 const User = require('../models/userModel');
+const Orders = require('../models/orderModel')
 const bcrypt = require('bcrypt');
 const { response } = require('express');
 
@@ -176,34 +177,17 @@ const updatEditaddress = async(req,res)=>{
     }
 }
 
-const loadOrders  = async(req,res)=>{
+const loadOrHistory  = async(req,res)=>{
     try {
-        res.render('orders');
+        const id =req.session.user._id
+        const orders = await Orders.find({userId:id});
+        res.render('orderHistory',{orders});
     } catch (error) {
         console.log(error);
     }
 }
 
-const checkoutAddAddress =  async(req,res)=>{
-    try {
-       const id = req.session.user._id;
-       const {name,state,city,pin,phone}=req.body;
-      await User.findOneAndUpdate({_id:id},{
-        $push:{
-        address:{
-        name:name,
-        state:state,
-        city:city,
-        pin:pin,
-        phone:phone
-        }
-      }});
-      res.redirect('/checkout')
-        
-    } catch (error) {
-        console.log(error);
-    }
-}
+
 
 module.exports = {
     loadProfile,
@@ -217,6 +201,6 @@ module.exports = {
     deletAddress,
     loadEditaddress,
     updatEditaddress,
-    loadOrders,
-    checkoutAddAddress
+    loadOrHistory,
+  
 }

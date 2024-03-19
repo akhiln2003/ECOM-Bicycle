@@ -32,7 +32,7 @@ const varifyLogin = async(req,res)=>{
 
 }
         // admin LogOut
- const adminLogOut = async(req,res)=>{
+ const  adminLogOut = async(req,res)=>{
     try {
         req.session.admin = null;
         res.redirect('/admin')
