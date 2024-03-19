@@ -50,13 +50,6 @@
 									<div class="zoomable-image" onmousemove="zoomImage(event)" onmouseleave="resetZoom()">
 										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>" width="555" height="587" alt="" id="zoomedImage" />
 									</div>
-									
-									
-									<% for(i=0;i<product.image.length;i++){ %>
-												<a href="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" title="Product Title"><img src="img/icon/zoom.png" width="21" height="22" alt="" /></a>
-
-										<%} %>
-									
 								</div>
 								
 							</div>	
@@ -66,7 +59,7 @@
 							<div class="thumb-slider slider-nav">
 								<% for(i=0;i<4;i++){ %>
 									<div>
-										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" width="117" height="123" alt="" />
+										<img onclick="showImage('<%= product.image[i] %>')" src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" width="117" height="123" alt="" />
 									</div>
 									<% } %>
 								
@@ -111,15 +104,7 @@
 											</select>
 										</div>
 									</div>
-									<div class="s-select s-plus-minus">
-										<form action="#" >
-											<div class="plus-minus">
-												<a class="dec qtybutton" style="text-decoration: none;">-</a>
-												<input id="quantity" type="text" value="1" name="qtybutton" class="plus-minus-box">
-												<a class="inc qtybutton " style="text-decoration: none;">+</a>
-											</div>
-										</form>
-									</div>
+												<input id="quantity" type="number" value="1" name="qtybutton"  min="1" max="5">
 								</div>
 								<div class="actions-btn">
 									<ul class="clearfix text-center">
@@ -438,6 +423,9 @@
 					zoomedImage.style.transformOrigin = 'center center';
 					zoomedImage.style.transform = 'scale(1)';
 				}
+				function showImage(imageSrc) {
+                       document.getElementById('zoomedImage').src = "/admin/assets/images/product/sharpedproduct/" + imageSrc;
+  				  }
 			</script>
 			
 			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
