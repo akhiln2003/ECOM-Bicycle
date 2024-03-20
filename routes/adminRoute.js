@@ -7,13 +7,14 @@ const brandController = require("../controller/brandController");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const customerController = require("../controller/customerController");
-
+const orderController = require('../controller/adminOrderController');
+require('dotenv').config();
 
 
 
 const nocache = require('nocache');
 const session = require('express-session');
-require('dotenv').config();
+
 admin_route.use(session({secret: process.env.sessionSecret,resave:false,saveUninitialized:false}));
 
 
@@ -54,8 +55,8 @@ admin_route.get('/editCategory',auth.isLogOut,categoryController.loadEditcategor
 admin_route.post('/editCategory',auth.isLogOut,categoryController.updateCategory);
 admin_route.post('/deleteCategory',auth.isLogOut,categoryController.isDeleted);
 
-
-
+                            // ORDERS
+admin_route.get('/orders',auth.isLogOut,orderController.loadOrders);
 
 
                             // BRAND

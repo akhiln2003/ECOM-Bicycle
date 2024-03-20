@@ -227,6 +227,36 @@ const insertuser = async(req,res)=>{
         console.log(error);
     }
  }
+
+
+const googleLogin = async(req,res)=>{
+    try {
+        const name = req.user.displayName;
+        const email = req.user.email;
+        const userAlready = await User.findOne({ email: email });
+        if(userAlready){
+            req.session.user = userAlready;
+            return res.redirect('/');
+       
+        }else{
+            req.flash('exists',"email is not Registered");
+            res.redirect('/register');
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+
+
+
+
+
+
+
 module.exports = {
     loadHome,
     loadLogin,
@@ -235,6 +265,7 @@ module.exports = {
     loadOtp,
     verifyOtp,
     verifyLogin,
-    logOut
+    logOut,
+    googleLogin
 
 }

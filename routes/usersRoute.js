@@ -1,15 +1,21 @@
-const express = require('express');
-const user_route = express();
-const session = require('express-session');
-require('dotenv').config();
 
+const express = require('express');
+const session = require('express-session');
 const auth = require('../middleware/userAuth');
 const userController = require("../controller/userController");
 const shopController =  require('../controller/shopController');
 const  profileController =  require('../controller/userProfilecontroller');
 const cartController = require('../controller/cartController');
 const checkoutController =  require('../controller/checkoutController');
-const ordreController = require('../controller/orderController')
+const ordreController = require('../controller/orderController');
+const passport = require('passport');
+const cookieSession = require('cookie-session')
+
+const user_route = express();
+require('dotenv').config();
+require('../helpers/passportSetup');
+
+
 
 
 user_route.use(session({secret: process.env.sessionSecret,resave:false,saveUninitialized:false}));
@@ -19,10 +25,11 @@ user_route.use((req, res, next) => {
     next()
   })
 
-
-
 user_route.use(express.json());
 user_route.use(express.urlencoded({extended:true}));
+
+user_route.use(passport.initialize());
+user_route.use(passport.session());
 
 
        //  seting ejs view engin
@@ -36,6 +43,11 @@ user_route.get('/',userController.loadHome);
 user_route.get('/login',userController.loadLogin);
 user_route.post('/login',userController.verifyLogin);
 user_route.get('/logout',userController.logOut);
+
+
+user_route.get('/loginWithGoogle',passport.authenticate('google',{scope:['profile','email']}));
+user_route.get('/google/callback',passport.authenticate('google',{failureRedirect:'/failed'}),(req,res)=>res.redirect('/success'));
+user_route.get('/success',userController.googleLogin)
 
              //Otp Page
 user_route.get('/otp',userController.loadOtp);
