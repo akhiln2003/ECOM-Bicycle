@@ -35,9 +35,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% orders.forEach((order)=>{ %>
+                                    <% orders.forEach((order,i)=>{ %>
                                     <tr>
-                                        <td>1</td>
+                                        <td><%= i+1 %></td>
                                         <td><%= order.deliveryAddress.name %></td>
                                         <td><%= order.userId.email %></td>
                                         <td><%= order.totalAmount %></td>  
@@ -47,7 +47,7 @@
                                                 <td><span class="badge rounded-pill alert-danger">Canceled</span></td>
                                                 <% }%>
                                         <td><%= order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                        <td class="text-end"><a href="/orderDerails?id=<%= order._id %>"><strong>More Details</strong></a></td>              
+                                        <td class="text-end"><a href="/admin/orderDerails?id= <%= order._id %>"><strong>More Details</strong></a></td>              
                                     </tr>
                                     <% }) %>
                                 </tbody>

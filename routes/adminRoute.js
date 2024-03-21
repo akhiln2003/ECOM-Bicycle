@@ -7,7 +7,7 @@ const brandController = require("../controller/brandController");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const customerController = require("../controller/customerController");
-const orderController = require('../controller/adminOrderController');
+const adminOrderController = require('../controller/adminOrderController');
 require('dotenv').config();
 
 
@@ -56,7 +56,10 @@ admin_route.post('/editCategory',auth.isLogOut,categoryController.updateCategory
 admin_route.post('/deleteCategory',auth.isLogOut,categoryController.isDeleted);
 
                             // ORDERS
-admin_route.get('/orders',auth.isLogOut,orderController.loadOrders);
+admin_route.get('/orders',auth.isLogOut,adminOrderController.loadOrders);
+admin_route.get('/orderDerails',auth.isLogOut,adminOrderController.loadOrderdetails);
+admin_route.post('/cancelOrder',auth.isLogOut,adminOrderController.cancelOrder);
+admin_route.post('/changeOrderStatus',auth.isLogOut,adminOrderController.changeOrderStatus);
 
 
                             // BRAND

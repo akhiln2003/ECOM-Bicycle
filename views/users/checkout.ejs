@@ -229,9 +229,9 @@
 
         <script>
 
-            function placeOrder(total){
+            function placeOrder(){
                 try {
-                    const radioButtonAddress = document.querySelector('input[name="addressRadio"]:checked')
+                    const radioButtonAddress = document.querySelector('input[name="addressRadio"]:checked');
                     const index = radioButtonAddress ? radioButtonAddress.value :  null;
                     if(index){
                         const radioButtonPayment = document.querySelector('input[name="paymentMethod"]:checked');

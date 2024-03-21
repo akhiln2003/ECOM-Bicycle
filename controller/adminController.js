@@ -62,5 +62,6 @@ module.exports = {
     varifyLogin,
     loadDashboard,
     adminLogOut,
+    
 
 }
