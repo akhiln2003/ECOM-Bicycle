@@ -44,6 +44,11 @@ user_route.get('/login',userController.loadLogin);
 user_route.post('/login',userController.verifyLogin);
 user_route.get('/logout',userController.logOut);
 
+user_route.get('/forgetPassword',userController.loadForgotPassword);
+user_route.post('/forgetPassword',userController.forgotPassword);
+
+user_route.get('/resetPassword/:id/:token', userController.loadResetPass);
+user_route.post('/resetPassword',userController.resetPassword);
 
 user_route.get('/loginWithGoogle',passport.authenticate('google',{scope:['profile','email']}));
 user_route.get('/google/callback',passport.authenticate('google',{failureRedirect:'/failed'}),(req,res)=>res.redirect('/success'));

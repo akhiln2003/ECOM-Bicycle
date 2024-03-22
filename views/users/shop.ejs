@@ -31,25 +31,14 @@
 							<div class="right floatright">
 								<ul>
 									<li>
-										<div class="custom-select">
-											<select class="form-control">
-												<option>12</option>
-												<option>13 </option>
-												<option>14 </option>
-												<option>15</option>
-												<option>16</option>
-												<option>17</option>
-											</select>
-										</div>
-										<p>Showing</p>
-									</li>
-									<li>
-										<div class="custom-select">
-											<select class="form-control">
-												<option>Bike</option>
-												<option>Aikes </option>
-												<option>Biike </option>
-												<option>Uike</option>
+										<div class="custom-select"style="margin-top: 5px;">
+											<select class="form-control" id="sortby" onchange="window.location.href=this.value"  >
+												<option value="">Select</option>
+												<option value="/shop">All</option>
+												<option value="/shop?sort=Aa-Zz" >Aa - Zz</option>
+												<option value="/shop?sort=Low-High" >Price Low to High </option>
+												<option value="/shop?sort=High-Low" >Price High to Low</option>
+												<option value="/shop?sort=NewArivals" >New Arivals</option>
 											</select>
 										</div>
 										<p>Short By</p>
@@ -139,7 +128,33 @@
 			</div>
 		</section>
 		<!-- product content section end -->
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				
+				function getCategoryIdFromUrl() {
+					const urlParams = new URLSearchParams(window.location.search);
+					return urlParams.get('sort');
+				}
 		
+				// Function to set the selected option based on the category ID
+				function setSelectedCategory(categoryId) {
+					const selectElement = document.getElementById('sortby');
+					const options = selectElement.options;
+					for (let i = 0; i < options.length; i++) {
+						if (options[i].value.includes(categoryId)) {
+							selectElement.value = options[i].value;
+							break;
+						}
+					}
+				}
+		
+				// Get the category ID from the URL and set the selected option
+				const categoryId = getCategoryIdFromUrl();
+				if (categoryId) {
+					setSelectedCategory(categoryId);
+				}
+			});
+		</script>
 		
             <%- include('../layout/user/footbar.ejs') %>
             <%- include('../layout/user/footer.ejs') %>

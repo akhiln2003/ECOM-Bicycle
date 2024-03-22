@@ -108,7 +108,9 @@ const updateQuantity = async(req,res)=>{
         if(count == 1){
             const currentQuantity =  userCart.products.find((product)=>product.productId == productId).quantity;
 
-            if(currentQuantity>= 5){
+            if(currentQuantity>= product.stock){
+                return res.json({max:true});
+            }else if(currentQuantity>= 5){
                 return res.json({max:true});
             }
         }

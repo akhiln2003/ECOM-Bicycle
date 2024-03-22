@@ -5,7 +5,22 @@ const Cart = require('../models/cartModel');
 
 const loadShop = async(req,res)=>{
     try {
-        const products = await Product.find({isDeleted:false});
+        let products;
+        if(req.query.sort){
+
+            if(req.query.sort == "Aa-Zz"){
+                products = await Product.find({isDeleted:false}).sort({productName:1});
+            }else if(req.query.sort == "Low-High"){
+                products = await Product.find({isDeleted:false}).sort({productPrice:1});
+            }else if(req.query.sort == "High-Low"){
+                products = await Product.find({isDeleted:false}).sort({productPrice: -1});
+            }else if(req.query.sort == "NewArivals"){
+                products = await Product.find({isDeleted:false}).sort({dateJoined: 1});
+            }
+        }else{
+
+             products = await Product.find({isDeleted:false});
+        }
         res.render('shop',{products});
     } catch (error) {
         console.log(error);

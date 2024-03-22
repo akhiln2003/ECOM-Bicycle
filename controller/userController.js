@@ -2,6 +2,8 @@ const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const nodemailer =require('nodemailer');
 const userOtpVerification =require('../models/userOTPVerification');
+const Token = require('../models/tokenModel');
+const crypto = require('crypto');
 
     // loading Home
 const loadHome = async(req,res)=>{
@@ -210,6 +212,7 @@ const insertuser = async(req,res)=>{
         res.redirect('/login');
        }
     }else{
+        
         req.flash('exists',"user not registered");
         res.redirect('/login');
     }
@@ -218,6 +221,96 @@ const insertuser = async(req,res)=>{
     }
     
  }
+
+
+ const loadForgotPassword = async(req,res)=>{
+    try {
+        res.render('forgotPassword');
+    } catch (error) {
+        console.log(error);
+    }
+ }
+
+ const resetPass = async(email,res)=>{
+    try {
+        const user = await User.findOne({email:email});
+        if(!user){
+            return res.status(400).send('user with this email is not existing')
+        }
+        let token = await Token.findOne({userId: user._id });
+        if(!token){
+            token =  await new Token({userId:user._id,token:crypto.randomBytes(32).toString("hex") });
+             await token.save();
+        }
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host:"smtp.gmail.com",
+            port:465,
+            secure:true,
+            auth:{
+                user:"4khiln@gmail.com",
+                pass:"dvrv qguv lbeg ijpu"
+            }
+        })
+        const resetPage = `http://localhost:3000/resetPassword/${user._id}/${token.token}`
+
+        const mailOption = {
+            from:"4khiln@gmail.com",
+            to:email,
+            subject:"Verify your email ",
+            html: `your reset password link is ${resetPage}`
+        }
+
+        await transporter.sendMail(mailOption);
+    } catch (error) {
+        console.log(error);
+    }
+ }
+
+const forgotPassword = async(req,res)=>{
+    try {
+        const email = req.body.email;
+        await resetPass(email, res);
+        req.flash('newsuccess', 'Sent a reset password link to your email')
+        res.redirect('/login')
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const loadResetPass = async(req,res)=>{
+    try {
+        const userid = req.params.id;
+        const token = req.params.token;
+        res.render('newPassword', { userId: userid, token: token })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const resetPassword = async(req,res)=>{
+    try {
+        const userid = req.body.userId;
+        const token = req.body.token;
+        const  confirmPassword = req.body.confirmpassword;
+        const user = await User.findOne({ _id: userid });
+        if(!user){
+            return res.status(400).send('Invalid Link or expired')
+        }
+        const { email } = user;
+        const tok = await Token.findOne({ token: token, userId: userid })
+        if (!tok) {
+            return res.status(400).send('Invalid Link or expired')
+          }
+          const securePass = await securePassword(confirmPassword);
+          await User.updateOne({_id:userid},{$set:{password:securePass}});
+          req.flash('newsuccess', 'New Password added')
+          res.redirect('/login')
+      
+    } catch (error) {
+        console.log(error);
+    }
+}
 
  const logOut = async(req,res)=>{
     try {
@@ -265,7 +358,12 @@ module.exports = {
     loadOtp,
     verifyOtp,
     verifyLogin,
+    loadForgotPassword,
+    forgotPassword,
+    loadResetPass,
+    resetPassword,
     logOut,
-    googleLogin
+    googleLogin,
+    
 
 }
