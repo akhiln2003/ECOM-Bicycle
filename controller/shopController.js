@@ -7,7 +7,6 @@ const loadShop = async(req,res)=>{
     try {
         let products;
         if(req.query.sort){
-
             if(req.query.sort == "Aa-Zz"){
                 products = await Product.find({isDeleted:false}).sort({productName:1});
             }else if(req.query.sort == "Low-High"){

@@ -102,4 +102,7 @@ user_route.get('/orderSuccess/:id',auth.isLogOut,ordreController.loadOrderSucces
 user_route.get('/orderDetails',auth.isLogOut,ordreController.loadOrderDetails);
 user_route.post('/cancelOrder',auth.isLogOut,ordreController.cancelOrder);
 
+user_route.get('/about',userController.loadAboutas);
+user_route.get('/contact',userController.loadContact);
+
 module.exports = user_route;

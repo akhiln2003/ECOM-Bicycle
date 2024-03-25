@@ -5,6 +5,27 @@ const userOtpVerification =require('../models/userOTPVerification');
 const Token = require('../models/tokenModel');
 const crypto = require('crypto');
 
+
+
+
+        // ABOUT AS 
+const loadAboutas = async(req,res)=>{
+    try {
+        res.render('about');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+        // CONTACT
+const loadContact = async(req,res)=>{
+    try {
+        res.render('contact');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
     // loading Home
 const loadHome = async(req,res)=>{
     try {
@@ -351,6 +372,8 @@ const googleLogin = async(req,res)=>{
 
 
 module.exports = {
+    loadAboutas,
+    loadContact,
     loadHome,
     loadLogin,
     loadRegister,

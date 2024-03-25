@@ -68,21 +68,30 @@
                                              
                                                 
                                                 <td><%= order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                        <td> <select data-orderId="<%= order._id %>"
-                                            data-productId="<%= value._id %>"
-                                            data-userId="<%= order.userId %>"
-                                            class="form-select orderStatus" id="orderStatus"
-                                            name="orderStatus" onchange="changeStatus(this)">
-                                            <option>change status</option>
-                                            <option value="shipped">Shipped</option>
-                                            <option value="outfordelivery">OutForDelivery</option>
-                                            <option value="delivered">Delivered</option>
-                                        </select></td>   
+                                                <% if(value.status =="delivered"){ %>
+                                                    <td> <select >
+                                                        <option>Delivered</option>
+                                                        
+                                                    </select></td>   
+                                               <%  }else{ %>
+                                                <td> <select data-orderId="<%= order._id %>"
+                                                    data-productId="<%= value._id %>"
+                                                    data-userId="<%= order.userId %>"
+                                                    class="form-select orderStatus" id="orderStatus"
+                                                    name="orderStatus" onchange="changeStatus(this)">
+                                                    <option>change status</option>
+                                                    <option value="shipped">Shipped</option>
+                                                    <option value="outfordelivery">OutForDelivery</option>
+                                                    <option value="delivered">Delivered</option>
+                                                </select></td>   
+                                                <% } %>
                                         <% if(value.status == 'cancelld'){ %>
                                         <td class="text-end"><strong style="color: maroon;" >canceled</strong> </td> 
-                                            <% }else{  %>  
-                                        <td class="text-end"> <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="cancel('<%= value._id %>', '<%= order._id %>')"> Cansel </button> </td> 
-                                        <% }%> 
+                                            <% }else if( value.status == 'delivered'){  %>  
+                                                <td class="text-end"><strong style="color: rgba(34, 156, 65, 0.767);" >outfordelivery</strong> </td>
+                                                <% }else{%> 
+                                                    <td class="text-end"> <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="cancel('<%= value._id %>', '<%= order._id %>')"> Cansel </button> </td> 
+                                            <% } %> 
                                     </tr>
                                     <% }) %>
 
