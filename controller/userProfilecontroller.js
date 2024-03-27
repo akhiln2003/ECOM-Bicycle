@@ -177,11 +177,24 @@ const updatEditaddress = async(req,res)=>{
     }
 }
 
-const loadOrHistory  = async(req,res)=>{
+const loadOrHistory = async (req, res) => {
     try {
-        const id =req.session.user._id
-        const orders = await Orders.find({userId:id});
-        res.render('orderHistory',{orders});
+        const id = req.session.user._id;
+        let page = 1;
+
+        if (req.query.page) {
+            page = parseInt(req.query.page);
+        }
+
+        let limit = 8;
+        let count = await Orders.countDocuments({ userId: id });
+        let totalPages = Math.ceil(count / limit);
+        let next = page < totalPages ? page + 1 : totalPages; 
+        let previous = page > 1 ? page - 1 : 1;
+        
+        const orders = await Orders.find({ userId: id }).limit(limit).skip((page - 1) * limit);
+        
+        res.render('orderHistory', { orders, next, previous, totalPages });
     } catch (error) {
         console.log(error);
     }

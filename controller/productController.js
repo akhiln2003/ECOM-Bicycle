@@ -8,9 +8,19 @@ const sharp = require('sharp') ;
             // Load Products           
 const loadProducts =  async(req,res)=>{
         try {
+            let page = 1;
+            if(req.query.page){
+                page= parseInt(req.query.page);
+            }
+            
+            let limit = 5;
+            const count = await Product.countDocuments();
+            const totalPages = Math.ceil(count / limit);
+            let previous = page > 1 ? page-1:1;
+            let next = page < totalPages ? page + 1 : totalPages;
             const category = await Category.find({});
-            const product = await Product.find({}).populate('category');
-            res.render('products',{category,product});
+            const product = await Product.find({}).populate('category').limit(limit).skip((page - 1) * limit);
+            res.render('products',{category,product,totalPages,next,previous});
         } catch (error) {
             console.log(error);
         }

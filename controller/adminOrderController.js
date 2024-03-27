@@ -4,8 +4,22 @@
         // LOAD ORDERS
 const loadOrders = async(req,res)=>{
     try {
-        const orders = await Orders.find().populate('userId')
-        res.render('orders',{orders});
+        let page = 1; 
+        if(req.query.page){
+            page = parseInt(req.query.page);
+        }
+        let next = page + 1;
+        let previous = page > 1 ? page - 1 : 1 ;
+        let limit = 10;
+        const count = await Orders.find().count();
+        const totalPages = Math.ceil(count/limit);
+
+        if(next > totalPages){
+            next = totalPages
+        }
+
+        const orders = await Orders.find().populate('userId').limit(limit).skip((page - 1)* limit);
+        res.render('orders',{orders,totalPages,next,previous});
     } catch (error) {
         console.log(error);
     }

@@ -139,9 +139,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                     <% orders.forEach((order,i)=>{ %>
+                        <% let count =0 %>
+                     <% orders.forEach((order)=>{ %>
+                        <%  count ++ %>
                         <tr>
-                            <td><%= i+1 %></td>
+                            <td><%= count %></td>
                             <td><%=  order.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-')%></td>
                             <td><%= order.paymentMethod %></td>
                             <td><%= order.totalAmount %></td>
@@ -155,6 +157,34 @@
                        
                     </tbody>
                 </table>
+
+
+                <hr>
+<div class="row" >
+    <div class="col-12">
+        <div class="shop-menu clearfix margin-close">
+            <div class="right floatright text-center">
+                <div class="pagnation-ul">
+                    <ul class="clearfix">
+                        
+                        <li>
+                            <a onclick="updatePage('<%= previous %>')"><i class="fa fa-angle-left"></i></a>
+                        </li>
+                      <% for(i=1;i<=totalPages;i++){ %> 
+                        <li>
+                            <a href="#" onclick="updatePage('<%= i %>')" ><%= i %></a>
+                        </li>
+                        <% } %>
+                            
+                        <li>
+                            <a href="#" onclick="updatePage('<%= next %>')"><i class="fa fa-angle-right"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 
             
         </div>
@@ -163,6 +193,24 @@
 
 
 
+<script>
+    function updatePage(page) {
+        var currentURL = new URL(window.location.href);
+
+        // Set or append the 'page' parameter in the URL
+        if (currentURL.searchParams.has('page')) {
+            currentURL.searchParams.set('page', page);
+        } else {
+            currentURL.searchParams.append('page', page);
+        }
+
+        // Remove the fragment identifier (hash)
+        currentURL.hash = '';
+
+        // Update the window location
+        window.location.href = currentURL.toString();
+    }
+</script>
 
 
 
