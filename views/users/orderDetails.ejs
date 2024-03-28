@@ -21,7 +21,50 @@
        
 
        
+    .modal-content {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
 
+.modal-header {
+    background-color: #6c757d;
+    color: white;
+    border-bottom: none;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-body {
+    color: #333;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: none;
+}
+
+/* Customize close button */
+.btn-close {
+    color: white;
+}
+
+/* Customize confirm cancel button */
+#confirmCancelBtn {
+    background-color: #dc3545;
+    color: white;
+}
+
+#confirmCancelBtn:hover {
+    background-color: #c82333;
+}
+
+/* Optional: Adjust input field styling */
+#cancelReason {
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
         
     </style>
     
@@ -130,16 +173,44 @@
                                         <td><%= amout %> </td>
                                         <td><span class=" " style="font-weight: 900;"><%= product.status %></span></td>
                                         <td><%= orders.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                        <% if(product.status == "cancelled"){ %>
-                                            <td class="text-right-cell"><button class="btn-danger" > Canceled </button></td> 
+                                        <% if (product.status != "cancelled" && product.status != "delivered") { %>
+                                            <td class="text-right-cell">
+                                                <button class="btn btn-danger cancelOrderBtn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<%= i %>">Cancel</button>
+                                            </td>
+                                        <% } else if (product.status == "delivered") { %>
+                                            <td class="text-right-cell">
+                                                <button class="btn btn-danger cancelOrderBtn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<%= i %>">Return</button>
+                                            </td>
+                                        <% } else { %>
+                                            <td><h5 style="color: #c82333;">Canceled</h5></td>
+                                        <% } %>
+                                    
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="cancelOrderModal_<%= i %>" tabindex="-1" aria-labelledby="cancelOrderModalLabel_<%= i %>" aria-hidden="true">                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Cancel Order</h5>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form>
+                                                                <div class="mb-3">
+                                                                    <label for="cancelReason" class="form-label">Reason for Canceling:</label>
+                                                                    <input type="text" class="form-control" id="cancelReason" placeholder="Enter reason" >
+                                                                      <div id="feeldError" class="forml" style="color: red;"></div>
+                                                                </div>
+                                                                <div class="d-flex justify-content-end">
+                                                                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Go Back</button>
+                                                                    <button type="button" class="btn btn-danger" id="confirmCancelBtn" onclick="cancel('<%= product._id %>', '<%= orders._id %>')">Confirm Cancel</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                       <% }else{ %>
-
-                                            <td class="text-right-cell"><button class="btn-danger" onclick="cancel('<%= product._id %>', '<%= orders._id %>')">Cancel</button></td> 
-                                    <%   } %>
+                                    <% }) %>
                                         <tr>
                                            
-                                            <% }) %>
                                             
                                         <td colspan="8" class="text-right-cell"><strong>Total Price:</strong></td>
                                         <td class="text-right-cell"><strong>₹ <%= orders.totalAmount %></strong></td> 
@@ -160,18 +231,31 @@
     </div>
 </div>
 
+
+
+
+
+  <script>
+    // Wait for the DOM to be ready
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the cancel order button
+        var cancelOrderBtn = document.getElementById("cancelOrderBtn");
+
+        // Add event listener for the click event
+        cancelOrderBtn.addEventListener("click", function() {
+            // Show the Bootstrap modal
+            var cancelOrderModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+            cancelOrderModal.show();
+        });
+    });
+</script>
+
               <script>
                 function cancel(productId,orderId){
-                    const data =  {productId:productId , orderId:orderId}
-                    Swal.fire({
-                    icon: "warning",
-                    title: "Are You Sure",
-                    showCancelButton: "true",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes!",
-                    confirmButtonColor: "#3085d6"
-                }).then((response) => {
-                    if (response.isConfirmed) {
+                    const resion = document.getElementById('cancelReason').value;
+                    const data =  {productId:productId , orderId:orderId ,resion:resion}
+                    if(resion != ""){
+
                         fetch('/cancelOrder', {
                             method: 'POST',
                             headers: {
@@ -183,15 +267,42 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Canceled'
+                                }).then((res)=>{
+                                    if(res.isConfirmed)  { 
+                                location.reload()
+                            }
                                 })
-                                $('#Reload').load('/orderDetails?id=<%= orders._id %>  #Reload')
+                              
+                              
+                              
                             }
                         })
-                    }
-
-                })
-                    
+                    } else{
+                        showError('feeldError', 'Enter resion for cancelation');
+                        removeErrorsAfterDelay('feeldError');
+                    }                 
                 }
+
+
+
+
+                    
+
+function showError(id, message) {
+    const errorElement = document.getElementById(id);
+    errorElement.innerText = message;
+    errorElement.classList.add('error-border');
+    return false;
+}
+
+  function removeErrorsAfterDelay(errorId) {
+    setTimeout(() => {
+        const errorElement = document.getElementById(errorId);
+        errorElement.innerText = '';
+        errorElement.classList.remove('error-border');
+    }, 3000);
+}
+
               </script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

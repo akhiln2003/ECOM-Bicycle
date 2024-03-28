@@ -60,7 +60,7 @@
                                         <td><%= order.paymentMethod %></td>
                                         <td><%= value.quantity %></td>
                                         <td><%= value.productId.productPrice %></td>  
-                                        <% if(value.status == "cancelld"){ %>
+                                        <% if(value.status == "cancelled"){ %>
                                             <td><span class="badge rounded-pill alert-danger"><%= value.status %></span></td>
                                             <% }else{ %>
                                                 <td><span class="badge rounded-pill alert-success"><%= value.status %></span></td>
@@ -69,11 +69,14 @@
                                                 
                                                 <td><%= order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
                                                 <% if(value.status =="delivered"){ %>
-                                                    <td> <select >
+                                                    <td> <select  class="form-select orderStatus" id="orderStatus" name="orderStatus" >
                                                         <option>Delivered</option>
-                                                        
-                                                    </select></td>   
-                                               <%  }else{ %>
+                                                    </select></td>  
+                                               <% } else if(value.status =="cancelled"){ %> 
+                                                <td> <select  class="form-select orderStatus" id="orderStatus" name="orderStatus" >
+                                                    <option>Cancelled</option>
+                                                </select></td>  
+                                                <% }else{ %>
                                                 <td> <select data-orderId="<%= order._id %>"
                                                     data-productId="<%= value._id %>"
                                                     data-userId="<%= order.userId %>"
@@ -85,10 +88,10 @@
                                                     <option value="delivered">Delivered</option>
                                                 </select></td>   
                                                 <% } %>
-                                        <% if(value.status == 'cancelld'){ %>
+                                        <% if(value.status == 'cancelled'){ %>
                                         <td class="text-end"><strong style="color: maroon;" >canceled</strong> </td> 
                                             <% }else if( value.status == 'delivered'){  %>  
-                                                <td class="text-end"><strong style="color: rgba(34, 156, 65, 0.767);" >outfordelivery</strong> </td>
+                                                <td class="text-end"><h5 onclick="returnOrder()" style="color: rgba(34, 156, 65, 0.767);" >Delivered</h5></td>
                                                 <% }else{%> 
                                                     <td class="text-end"> <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="cancel('<%= value._id %>', '<%= order._id %>')"> Cansel </button> </td> 
                                             <% } %> 

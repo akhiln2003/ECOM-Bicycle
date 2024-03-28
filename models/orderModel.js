@@ -32,14 +32,15 @@ const orderSchima = mongoose.Schema({
             quantity:{
                 type:Number
             },
-            returnResion:{
+            returnReason:{
                 type:String
-            }
+            },
+            cancelReason:{
+                type:String
+            },
         }
     ],
-    cancelReasion:{
-        type:String
-    },
+    
     returnReason:{
         type:String
     },

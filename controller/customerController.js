@@ -10,7 +10,7 @@ const User = require('../models/userModel');
                 }
                 let next = page + 1;
                 let previous = page > 1 ? page - 1 : 1 ;
-                let limit = 1;
+                let limit = 10;
                 const count = await User.find().count();
                 const totalPages = Math.ceil(count/limit);
 

@@ -30,10 +30,9 @@ const loadOrderDetails = async(req,res)=>{
 
 const cancelOrder = async(req,res)=>{
     try {
-        const {productId,orderId} = req.body;
-        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{$set:{'products.$.status':'cancelled'}});
+        const {productId,orderId,resion} = req.body;
+        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{$set:{'products.$.status':'cancelled','products.$.cancelReason':resion}});
         res.json({ok:true});
-
     } catch (error) {
         console.log(error);
     }

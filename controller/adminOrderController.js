@@ -44,7 +44,7 @@ const cancelOrder = async(req,res)=>{
         const {productId,orderId}=req.body;
         await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
             $set:{
-                'products.$.status': 'cancelld' 
+                'products.$.status': 'cancelled' 
             }
         });
         res.json({ok:true})
@@ -56,7 +56,6 @@ const cancelOrder = async(req,res)=>{
 
 const changeOrderStatus = async(req,res)=>{
     try {
-        console.log(req.body);
         const{orderId,productId,status} = req.body;
         await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
             $set:{
