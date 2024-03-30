@@ -38,12 +38,21 @@ const cancelOrder = async(req,res)=>{
     }
 }
 
-
+const returnOrder = async(req,res)=>{
+    try {
+        const {productId,orderId,resion} = req.body;
+        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{$set:{'products.$.status':'returnRequested','products.$.returnReason':resion}});
+        res.json({ok:true})
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 module.exports = {
     loadOrderSuccess,
     loadOrderDetails,
-    cancelOrder
+    cancelOrder,
+    returnOrder
 
 }

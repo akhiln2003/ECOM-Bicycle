@@ -62,7 +62,9 @@
                                         <td><%= value.productId.productPrice %></td>  
                                         <% if(value.status == "cancelled"){ %>
                                             <td><span class="badge rounded-pill alert-danger"><%= value.status %></span></td>
-                                            <% }else{ %>
+                                            <% }else if(value.status == "returnRequested"){ %>
+                                                <td><span class="badge rounded-pill alert-warning"><%= value.status %></span></td>
+                                                <% }else{ %>
                                                 <td><span class="badge rounded-pill alert-success"><%= value.status %></span></td>
                                                 <% } %>
                                              
@@ -76,7 +78,11 @@
                                                 <td> <select  class="form-select orderStatus" id="orderStatus" name="orderStatus" >
                                                     <option>Cancelled</option>
                                                 </select></td>  
-                                                <% }else{ %>
+                                                <% }  else if(value.status =="returnRequested"){ %>
+                                                    <td> <select  class="form-select orderStatus" id="orderStatus" name="orderStatus" >
+                                                        <option>ReturnRequested</option>
+                                                    </select></td>  
+                                                    <% } else{ %>
                                                 <td> <select data-orderId="<%= order._id %>"
                                                     data-productId="<%= value._id %>"
                                                     data-userId="<%= order.userId %>"
@@ -90,9 +96,11 @@
                                                 <% } %>
                                         <% if(value.status == 'cancelled'){ %>
                                         <td class="text-end"><strong style="color: maroon;" >canceled</strong> </td> 
-                                            <% }else if( value.status == 'delivered'){  %>  
+                                            <% } else if( value.status == 'delivered') {  %>  
                                                 <td class="text-end"><h5 onclick="returnOrder()" style="color: rgba(34, 156, 65, 0.767);" >Delivered</h5></td>
-                                                <% }else{%> 
+                                                <% } else if(value.status =="returnRequested"){ %>
+                                                    <td class="text-end"><h5 onclick="returnOrder()" style="color: rgba(163, 15, 15, 0.767);" > Requested</h5></td>
+                                                    <% } else {%> 
                                                     <td class="text-end"> <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="cancel('<%= value._id %>', '<%= order._id %>')"> Cansel </button> </td> 
                                             <% } %> 
                                     </tr>
@@ -105,23 +113,7 @@
                     </div>
                     <!-- card-body end// -->
                 </div>
-                <!-- card end// -->
-                <div class="pagination-area mt-15 mb-50">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </section>
-            <!-- content-main end// -->
+               
 
 
             <script>
@@ -149,7 +141,7 @@
                                     icon: 'success',
                                     title: 'Canceled'
                                 })
-                                $('#Reload').load('/admin/orderDerails?id=<%= order._id %>  #Reload')
+                                window.location.reload();
                             }
                         })
         }
@@ -174,7 +166,7 @@
         }).then((data)=>data.json())
         .then((response)=>{
             if (response.ok) {
-                $('#Reload').load('/admin/orderDerails?id=<%= order._id %>  #Reload')
+                window.location.reload();
             }
         })
        }

@@ -40,7 +40,6 @@ const loadOrderdetails = async (req, res) => {
         // CANCEL ORDER
 const cancelOrder = async(req,res)=>{
     try {
-        console.log(req.body);
         const {productId,orderId}=req.body;
         await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
             $set:{
@@ -69,6 +68,52 @@ const changeOrderStatus = async(req,res)=>{
 }
 
 
+const loadReturn = async(req,res)=>{
+    try {
+        let page = 1
+        if(req.query.page){
+            page = req.query.page;
+        }
+        let limit = 10;
+        let previous = page > 1 ?page - 1 : 1;
+        const count = await Orders.find({'products.status':"returnRequested"}).count();
+        const totalPages = Math.ceil(count / limit);
+        let next = page > totalPages ? page + 1 : totalPages ;
+
+        const orders = await Orders.find({
+            'products.status': {
+                $in: ["returnRequested", "returned", "returnDenied"]
+            }
+        }).populate('products.productId').populate('userId');
+        res.render('returnOrder',{orders,next,previous,totalPages});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const loadReturnDetails = async(req,res)=>{
+    try {
+        const orderId = req.query.id.trim(); 
+        const order = await Orders.findById(orderId).populate('userId').populate('products.productId'); 
+        res.render('returnDetails',{order})
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const changeReturnStatus = async(req,res)=>{
+    try {
+        const {orderId,productId,status} = req.body;
+        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
+            $set:{
+                'products.$.status':status
+            }
+        })
+        res.json({ok:true})
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 
@@ -76,5 +121,8 @@ module.exports={
     loadOrders,
     loadOrderdetails,
     cancelOrder,
-    changeOrderStatus
+    changeOrderStatus,
+    loadReturn,
+    loadReturnDetails,
+    changeReturnStatus
 }

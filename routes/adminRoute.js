@@ -57,9 +57,12 @@ admin_route.post('/deleteCategory',auth.isLogOut,categoryController.isDeleted);
 
                             // ORDERS
 admin_route.get('/orders',auth.isLogOut,adminOrderController.loadOrders);
-admin_route.get('/orderDerails',auth.isLogOut,adminOrderController.loadOrderdetails);
+admin_route.get('/orderDetails',auth.isLogOut,adminOrderController.loadOrderdetails);
 admin_route.post('/cancelOrder',auth.isLogOut,adminOrderController.cancelOrder);
 admin_route.post('/changeOrderStatus',auth.isLogOut,adminOrderController.changeOrderStatus);
+admin_route.get('/returns',auth.isLogOut,adminOrderController.loadReturn);
+admin_route.get('/returnDetails',auth.isLogOut,adminOrderController.loadReturnDetails);
+admin_route.post('/changeReturnStaturs',auth.isLogOut,adminOrderController.changeReturnStatus);
 
 
                             // BRAND

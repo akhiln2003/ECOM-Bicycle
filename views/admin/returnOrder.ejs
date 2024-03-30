@@ -47,7 +47,7 @@
                                                 <td><span class="badge rounded-pill alert-danger">Canceled</span></td>
                                                 <% }%>
                                         <td><%= order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                        <td class="text-end"><a href="/admin/orderDetails?id= <%= order._id %>"><strong>More Details</strong></a></td>              
+                                        <td class="text-end"><a href="/admin/returnDetails?id= <%= order._id %>"><strong>More Details</strong></a></td>              
                                     </tr>
                                     <% }) %>
                                 </tbody>
@@ -62,13 +62,13 @@
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
                             <li class="page-item">
-                                <a class="page-link" href="/admin/orders?page=<%= previous %>"><i class="material-icons md-chevron_left"></i></a>
+                                <a class="page-link" href="/admin/returns?page=<%= previous %>"><i class="material-icons md-chevron_left"></i></a>
                             </li>
                             <% for(i=1;i<= totalPages;i++){ %>
-                                <li class="page-item active"><a class="page-link" href="/admin/orders?page=<%= i %>"><%= i %></a></li>
+                                <li class="page-item active"><a class="page-link" href="/admin/returns?page=<%= i %>"><%= i %></a></li>
                                  <% } %>
                             <li class="page-item">
-                                <a class="page-link" href="/admin/orders?page=<%= next %>"><i class="material-icons md-chevron_right"></i></a>
+                                <a class="page-link" href="/admin/returns?page=<%= next %>"><i class="material-icons md-chevron_right"></i></a>
                             </li>
                         </ul>
                     </nav>
