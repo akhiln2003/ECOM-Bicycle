@@ -8,6 +8,7 @@ const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const customerController = require("../controller/customerController");
 const adminOrderController = require('../controller/adminOrderController');
+const adminCouponController = require('../controller/adminCouponController');
 require('dotenv').config();
 
 
@@ -63,6 +64,15 @@ admin_route.post('/changeOrderStatus',auth.isLogOut,adminOrderController.changeO
 admin_route.get('/returns',auth.isLogOut,adminOrderController.loadReturn);
 admin_route.get('/returnDetails',auth.isLogOut,adminOrderController.loadReturnDetails);
 admin_route.post('/changeReturnStaturs',auth.isLogOut,adminOrderController.changeReturnStatus);
+
+
+
+                        // COUPON
+admin_route.get('/coupon',auth.isLogOut,adminCouponController.loadCoupon);
+admin_route.get('/addcoupon',auth.isLogOut,adminCouponController.loadAddcoupon);
+admin_route.post('/addcoupon',auth.isLogOut,adminCouponController.addCoupon);
+admin_route.post('/deleteCoupon',auth.isLogOut,adminCouponController.deleteCoupon);
+admin_route.get('/editCoupon',auth.isLogOut,adminCouponController.loadEditcoupon);
 
 
                             // BRAND
