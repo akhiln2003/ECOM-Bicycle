@@ -173,7 +173,7 @@
                                         <td><%= amout %> </td>
                                         <td><span class=" " style="font-weight: 900;"><%= product.status %></span></td>
                                         <td><%= orders.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                        <% if (product.status != "cancelled" && product.status != "delivered" && product.status != "returnRequested" ) { %>
+                                        <% if (product.status != "cancelled" && product.status !== "returned" && product.status !== "returnDenied" && product.status != "delivered" && product.status != "returnRequested" ) { %>
                                             <td class="text-right-cell">
                                                 <button class="btn btn-danger cancelOrderBtn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<%= i %>">Cancel</button>
                                             </td>

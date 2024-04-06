@@ -8,6 +8,10 @@ const orderSchima = mongoose.Schema({
         ref:'User',
         required:true
     },
+    orderId:{
+        type:String,
+        required:true
+      },
     products:[
         {
             productId:{
@@ -26,8 +30,8 @@ const orderSchima = mongoose.Schema({
             },
             status:{
                 type:String,
-                enum:['placed','outForDelivery','returnRequested','returned','returnDenied','shipped','delivered','cancelled'],
-                default:'placed'
+                enum:['placed','pending','outForDelivery','returnRequested','returned','returnDenied','shipped','delivered','cancelled',],
+                default:'pending'
             },
             quantity:{
                 type:Number

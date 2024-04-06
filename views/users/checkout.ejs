@@ -204,11 +204,11 @@
                                         <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery" value="COD">
                                         <label class="form-check-label" for="cashOnDelivery" style="margin-left: 5px;">cash On Delivery</label><hr>
                                     </div>
-                                    <!-- <div class="form-check mt-2">
-                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="razorpay">
+                                    <div class="form-check mt-2">
+                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="RAZORPAY">
                                         <label class="form-check-label" for="razorpay" style="margin-left: 5px;">Razorpay</label><hr>
                                     </div>
-                                    <div class="form-check mt-2">
+                                   <!--  <div class="form-check mt-2">
                                         <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet">
                                         <label class="form-check-label" for="wallet" style="margin-left: 5px;">Wallet</label> 
                                     </div> -->
@@ -226,7 +226,7 @@
 
 
 
-
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <script>
 
             function placeOrder(){
@@ -257,6 +257,12 @@
                                     showConfirmButton: false
                                 });
                                 }
+                                else if(data.okk)
+                                {
+                                    if(data.order){
+                                        razopay(data.order);
+                                    }
+                                }
                             })
                            }
                         }else{
@@ -284,11 +290,74 @@
                 }
             }
 
+            function razopay(order){
+                try {
+                    let options = {
+                        "key":'<%=  process.env.RAZORPAY_KEY_ID %>',  // the key id coming from env file 
+                        "amount":order.amount,                       // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Cycle Craft",                       // company name 
+                        "description": "Test Transaction",           //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "image": "",
+                        "order_id": order.id,
+                        handler: (response) => {
+                        verifyPayment(response, order);
+                    },
+                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                    "name": "Cycle Craft", //your customer's name
+                    "email": "4khiln@gmail.com",
+                    "contact": "8100901095" //Provide the customer's phone number for better conversion rates 
+                    },
+                    "notes": {
+                        "address": "Cycle Craft"
+                    },
+                    "theme": {
+                        "color": "#3b5d50"
+                    }
+                  };
+                  var rzp1 = new Razorpay(options);
+                  rzp1.on('payment.failed', (err) => {
+                  const total = parseFloat(document.getElementById('placeOrder').getAttribute('data-subTotal'));
+                  location.href = `/orderDetails?id=${order.receipt}` // Redirect to the user page
+                   })
+                rzp1.open();
 
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+
+
+
+            function verifyPayment(paymetn,order){
+                const data = {paymetn,order};
+                fetch('/verifyPayment',{
+                    method:"POST",
+                    headers:{
+                      'Content-Type': 'application/json'
+                            },
+                    body:JSON.stringify(data)
+                }).then((result)=>result.json())
+                .then((data)=>{
+                    if(data.paymentSuccess){
+                        location.href = `/orderSuccess/${data.orderId}`      
+                    }else{
+                        Swal.fire({
+                            positon: "center",
+                            icon: "error",
+                            title: "Payment 0-0- failed",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                    }
+                })
+            }
 
         </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
 

@@ -125,10 +125,17 @@
 												</li>
 												<% } %>
 												
+												<% if(inWhishlist){ %>
+													<li>
+														<a onclick="removeProduct('<%= product._id %>')"><i style="background-color: #ff6600; color: white;" class="fa fa-heart-o"></i></a>
+													</li>
+													<% }else{ %>
+														<li>
+															<a onclick="addToWishlist('<%= product._id %>')"><i class="fa fa-heart-o"></i></a>
+														</li>
+														<% } %>
+											
 										
-										<li>
-											<a href="cart.html"><i class="fa fa-heart-o"></i></a>
-										</li>
 										
 										
 									</ul>
@@ -400,6 +407,74 @@
 
 						}
 
+
+						function addToWishlist(productId){
+							const data ={productId};
+							fetch('/addToWishlist',{
+								method:'POST',
+								headers:{
+									'Content-Type': 'application/json'
+								},
+								body:JSON.stringify(data)
+							})
+							.then(data=>{
+								if(data.existedProduct){
+									Swal.fire({
+										icon: "info",
+										title: 'Already In Wishlist',
+										confirmButtonText: 'OK',
+										confirmButtonColor: '#3085d6'
+									})
+								}
+								if(data.ok){
+									Swal.fire({
+									icon: "success",
+									title: 'Item Added to Wishlist',
+									confirmButtonText: 'OK',
+									confirmButtonColor: '#3085d6'
+								}).then((response)=>{
+									if(response.isConfirmed){
+
+										location.reload()
+									}
+								})
+								}
+							})
+						}
+
+  function removeProduct(productId){
+        const data = {productId:productId};
+        Swal.fire({
+                    icon: "warning",
+                    title: "Are You Sure",
+                    showCancelButton: "true",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!",
+                    confirmButtonColor: "#3085d6"
+                }).then((response)=>{
+                    if(response.isConfirmed){
+                        fetch('/removeToWishlist', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)                
+                        }).then((reselt) => {
+                            if (reselt.ok) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Removed',
+									showConfirmButton: false  
+                                })
+								setTimeout(() => {
+									location.reload()
+									
+								},600);
+                            }
+                        })
+                    }
+                })
+    }
 
 
 				function zoomImage(event) {

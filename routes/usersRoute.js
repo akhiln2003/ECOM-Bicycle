@@ -8,6 +8,7 @@ const  profileController =  require('../controller/userProfilecontroller');
 const cartController = require('../controller/cartController');
 const checkoutController =  require('../controller/checkoutController');
 const ordreController = require('../controller/orderController');
+const wishlistController = require('../controller/wishlistController');
 const passport = require('passport');
 const cookieSession = require('cookie-session')
 
@@ -92,16 +93,24 @@ user_route.post('/updateQuantity',auth.isLogOut,cartController.updateQuantity);
 user_route.get('/checkout',auth.isLogOut,cartController.loadProccedToCheckout);
 
 
+                  // WISHLIST
+user_route.get('/wishlist',auth.isLogOut,wishlistController.loadWishlist);
+user_route.post('/addToWishlist',auth.isLogOut,wishlistController.addtoWishlist);
+user_route.post('/removeToWishlist',auth.isLogOut,wishlistController.removeToWishlist);
+
+
+
                   // Checkout
 user_route.post('/addaddressCheckout',auth.isLogOut,checkoutController.checkoutAddAddress);
 user_route.post('/placeOrder',auth.isLogOut,checkoutController.placeOrder);
-
+user_route.post('/verifyPayment',auth.isLogOut,checkoutController.verifyPayment)
 
                   // Oreder
 user_route.get('/orderSuccess/:id',auth.isLogOut,ordreController.loadOrderSuccess);
 user_route.get('/orderDetails',auth.isLogOut,ordreController.loadOrderDetails);
 user_route.post('/cancelOrder',auth.isLogOut,ordreController.cancelOrder);
-user_route.post('/returnOrderRequest',auth.isLogOut,ordreController.returnOrder)
+user_route.post('/returnOrderRequest',auth.isLogOut,ordreController.returnOrder);
+
 
 user_route.get('/about',userController.loadAboutas);
 user_route.get('/contact',userController.loadContact);

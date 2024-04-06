@@ -1,6 +1,8 @@
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const Cart = require('../models/cartModel');
+const Whishlist = require('../models/whishListModel');
+
 
         // SHOP
 const loadShop = async(req,res)=>{
@@ -12,7 +14,7 @@ const loadShop = async(req,res)=>{
         
         let next = page +1;
         let previous = page > 1 ? page - 1 : 1 ;
-        let limit = 3;
+        let limit = 10;
 
         let coutn = await Product.find().count();
         let totalPages = Math.ceil(coutn / limit);
@@ -52,16 +54,26 @@ const loadProductDetails = async(req,res)=>{
         const user =  await User.findOne({_id:userId});
         const category = product.category;
         const relatedProduct =  await Product.find({category:category});
+        let inCart,inWhishlist;
+
         if(user){
             const existscart  = await Cart.findOne({userId:userId});
+            const existswhishlist  = await Whishlist.findOne({userId:userId});
             if(existscart){
                 const existsProduct  = await existscart.products.find((product)=> product.productId.toString() == productId);
                 if(existsProduct){
-                  return  res.render('productDetails',{product,relatedProduct,inCart:true});
+                    inCart=true
                 }
             }
+            if(existswhishlist){
+                const existsProduct  = await existswhishlist.products.find((product)=> product.productId.toString() == productId);
+                if(existsProduct){
+                    inWhishlist=true
+                } 
+
+            }
         }
-        res.render('productDetails',{product,relatedProduct,inCart:false});
+        res.render('productDetails',{product,relatedProduct,inCart,inWhishlist});
     } catch (error) {
         res.render('error404')
         console.log(error);

@@ -148,7 +148,7 @@
                             <td><%= order.paymentMethod %></td>
                             <td><%= order.totalAmount %></td>
                             <td><%= order.deliveryAddress.name  %>,<%=  order.deliveryAddress.state %>,<%= order.deliveryAddress.city %>,<%= order.deliveryAddress.phNo %></td>
-                            <td><a style="text-decoration: none; color: #1a202c;" href="/orderDetails?id=<%= order._id %>"><strong>More Details</strong></a></td>
+                            <td><a style="text-decoration: none; color: #1a202c;" href="/orderDetails?id=<%= order.orderId %>"><strong>More Details</strong></a></td>
                            
                         </tr>
 
