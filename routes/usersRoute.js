@@ -103,7 +103,7 @@ user_route.post('/removeToWishlist',auth.isLogOut,wishlistController.removeToWis
                   // Checkout
 user_route.post('/addaddressCheckout',auth.isLogOut,checkoutController.checkoutAddAddress);
 user_route.post('/placeOrder',auth.isLogOut,checkoutController.placeOrder);
-user_route.post('/verifyPayment',auth.isLogOut,checkoutController.verifyPayment)
+user_route.post('/verifyPayment',auth.isLogOut,checkoutController.verifyPayment);
 
                   // Oreder
 user_route.get('/orderSuccess/:id',auth.isLogOut,ordreController.loadOrderSuccess);

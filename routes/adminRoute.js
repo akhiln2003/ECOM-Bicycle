@@ -9,6 +9,7 @@ const productController = require("../controller/productController");
 const customerController = require("../controller/customerController");
 const adminOrderController = require('../controller/adminOrderController');
 const adminCouponController = require('../controller/adminCouponController');
+const adminSalesreport = require('../controller/salesreportControllet');
 require('dotenv').config();
 
 
@@ -33,6 +34,9 @@ admin_route.get('/',auth.isLogin,adminController.adminLogin);
 admin_route.post('/loginSubmit',auth.isLogin,adminController.varifyLogin);
 admin_route.get('/logOut',adminController.adminLogOut);
 admin_route.get('/dashboard',auth.isLogOut,adminController.loadDashboard);
+
+admin_route.get('/salesreport',auth.isLogOut,adminSalesreport.loadSalesreport);
+admin_route.post('/listsails',auth.isLogOut,adminSalesreport.listOrders);
 
                              //CUSTEMERS
 admin_route.get('/customers',auth.isLogOut,customerController.loadCustomers);

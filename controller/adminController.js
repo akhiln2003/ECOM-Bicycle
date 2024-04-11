@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const Order = require('../models/orderModel');
 
                 // LOGIN AND LOGOUT SECTON START //
 
@@ -49,8 +50,15 @@ const varifyLogin = async(req,res)=>{
         // lodDashboard
  const loadDashboard = async(req,res)=>{
     try {
-        res.render('dashboard');
+        const result = await Order.aggregate([
+            { $unwind: '$products' },
+            { $match: { 'products.status': 'delivered' } },
+            { $group: { _id: null, count: { $sum: 1 } } } 
+        ]);
+        const orderscount = result.length > 0 ? result[0].count : 0;      
+               res.render('dashboard',{orderscount});
     } catch (error) {
+        
         console.log(error);
     }
  }

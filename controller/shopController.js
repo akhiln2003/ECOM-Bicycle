@@ -2,6 +2,8 @@ const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const Cart = require('../models/cartModel');
 const Whishlist = require('../models/whishListModel');
+const Category = require('../models/category');
+const { isDeleted } = require('./categoryController');
 
 
         // SHOP
@@ -9,36 +11,53 @@ const loadShop = async(req,res)=>{
     try {
         let page = 1;
         if(req.query.page >0){
-            page=req.query.page
+            page = parseInt(req.query.page) 
         }
         
-        let next = page +1;
+       
         let previous = page > 1 ? page - 1 : 1 ;
         let limit = 10;
-
-        let coutn = await Product.find().count();
+        let coutn = await Product.find({isDeleted:false}).count();
         let totalPages = Math.ceil(coutn / limit);
+        let next = page < totalPages ? page +1 : totalPages
 
-        if(next > totalPages){
-            next = totalPages
-        }
-
+        const category = await Category.find({isDeleted:false});
         let products;
-        if(req.query.sort){
+        if(req.query.sort && !req.query.category ){
             if(req.query.sort == "Aa-Zz"){
-                products = await Product.find({isDeleted:false}).sort({productName:1}).limit(limit).skip((page-1)*limit).exec();
+                products = await Product.find({isDeleted:false}).populate('category').sort({productName:1}).limit(limit).skip((page-1)*limit).exec();
             }else if(req.query.sort == "Low-High"){
-                products = await Product.find({isDeleted:false}).sort({productPrice:1}).limit(limit).skip((page-1)*limit).exec();
+                products = await Product.find({isDeleted:false}).populate('category').sort({productPrice:1}).limit(limit).skip((page-1)*limit).exec();
             }else if(req.query.sort == "High-Low"){
-                products = await Product.find({isDeleted:false}).sort({productPrice: -1}).limit(limit).skip((page-1)*limit).exec();
+                products = await Product.find({isDeleted:false}).populate('category').sort({productPrice: -1}).limit(limit).skip((page-1)*limit).exec();
             }else if(req.query.sort == "NewArivals"){
-                products = await Product.find({isDeleted:false}).sort({dateJoined: 1}).limit(limit).skip((page-1)*limit).exec();
+                products = await Product.find({isDeleted:false}).populate('category').sort({dateJoined: 1}).limit(limit).skip((page-1)*limit).exec();
             }
-        }else{
+        } else if(!req.query.sort && req.query.category ) {
+            const category = await Category.find({isDeleted:false,categoryName:req.query.category});
+            products = await Product.find({isDeleted:false,category:category[0]._id}).populate('category')
 
-             products = await Product.find({isDeleted:false}).limit(limit).skip((page-1)*limit).exec();
+
+           
+        }else if(req.query.sort && req.query.category ){
+            if(req.query.sort == "Aa-Zz"){
+                const category = await Category.find({isDeleted:false,categoryName:req.query.category});
+                products = await Product.find({isDeleted:false,category:category[0]._id}).populate('category').sort({productName:1}).limit(limit).skip((page-1)*limit).exec();
+            }else if(req.query.sort == "Low-High"){
+                const category = await Category.find({isDeleted:false,categoryName:req.query.category});
+                products = await Product.find({isDeleted:false,category:category[0]._id}).populate('category').sort({productPrice:1}).limit(limit).skip((page-1)*limit).exec();
+            }else if(req.query.sort == "High-Low"){
+                const category = await Category.find({isDeleted:false,categoryName:req.query.category});
+                products = await Product.find({isDeleted:false,category:category[0]._id}).populate('category').sort({productPrice: -1}).limit(limit).skip((page-1)*limit).exec();
+            }else if(req.query.sort == "NewArivals"){
+                const category = await Category.find({isDeleted:false,categoryName:req.query.category});
+                products = await Product.find({isDeleted:false,category:category[0]._id}).populate('category').sort({dateJoined: 1}).limit(limit).skip((page-1)*limit).exec();
+            }
+
+        } else{
+             products = await Product.find({isDeleted:false}).populate('category').limit(limit).skip((page-1)*limit).exec();
         }
-        res.render('shop',{products,next,previous,totalPages});
+        res.render('shop', { products, category, next, previous, totalPages });
     } catch (error) {
         console.log(error);
     }

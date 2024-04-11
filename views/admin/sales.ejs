@@ -1,0 +1,106 @@
+<%- include("../layout/admin/header.ejs") -%>  
+
+        <div class="screen-overlay"></div>
+
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <%- include("../layout/admin/sidbar.ejs") -%>
+      </aside>
+        <main class="main-wrap">
+    
+            <%- include("../layout/admin/navbar.ejs") -%>  
+                
+            <section class="content-main ">
+                <div class="row">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title"> Sales Report</h2>
+                            <p>downlod sales report</p>
+                        </div>
+                        <a href="/admin" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go Back</a>
+                    </div>
+                    <form action="/admin/listsails " method="post" onsubmit="return validation()">
+
+                    <div class="col-lg-6 " style="margin-left: 15rem; margin-top: 2rem;">
+                        <% if (messages.exist) { %>
+                            <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
+                                <div >
+                                    <strong>Hey !</strong>
+                                  <%= messages.exist %>
+                                </div>
+                              </div>             
+                        <% } %> 
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">Start Date</label>
+                                    <input name="start" type="date" class="form-control" id="start" />
+                                    <div id="startError" class="forml" style="color: red;"></div>
+
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_title" class="form-label">End Date</label>
+                                    <input name="end" type="date" class="form-control" id="end" />
+                                    <div id="endError" class="forml" style="color: red;"></div>
+
+                                </div>
+                                
+                                    <button style="margin-left : 2rem;" type="submit" class="btn btn-primary material-icons md-check_box">Submit</button>                      
+                              
+                                
+                        </div>
+                        </div>
+                    </div>
+                   </form>
+                    
+                </div>
+            </section>
+    </main>
+
+    <script>
+     function validation() {
+    const start = new Date(document.getElementById('start').value);
+    const end = new Date(document.getElementById('end').value);
+
+    var currentDate = new Date();
+    var formattedCurrentDate = currentDate.toISOString().split('T')[0];
+    if (start > currentDate) {
+        console.log(start , currentDate);
+        showError('startError', 'Start date must be less than or equal to the current date');
+        removeErrorsAfterDelay('startError');
+        return false;
+    } else if (start > end) {
+        showError('endError', 'End date must be greater than the start date');
+        removeErrorsAfterDelay('endError');
+        return false;
+    }else if(end>currentDate){
+        showError('endError', 'End date must be greater than the start date');
+        removeErrorsAfterDelay('endError');
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+
+// Function to remove errors after a delay
+function removeErrorsAfterDelay(errorId) {
+    setTimeout(() => {
+        document.getElementById(errorId).innerText = '';
+    }, 3000);
+}
+
+// Function to show error
+function showError(id, message) {
+    document.getElementById(id).innerText = message;
+    document.getElementById(id.replace('Error', '')).classList.add('error-border');
+}
+
+    </script>
+
+    <%- include("../layout/admin/footer.ejs") -%>
+
+    

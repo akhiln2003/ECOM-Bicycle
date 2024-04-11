@@ -68,7 +68,6 @@ const loadEditcoupon = async(req,res)=>{
     try {
         const id = req.query.id;
         const coupon = await Coupon.findOne({_id:id});
-        console.log(date);
         res.render('editCoupon',{coupon});
     } catch (error) {
         console.log(error);

@@ -1,0 +1,62 @@
+<%- include("../layout/admin/header.ejs") -%>  
+
+        <div class="screen-overlay"></div>
+
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <%- include("../layout/admin/sidbar.ejs") -%>
+      </aside>
+        <main class="main-wrap">
+    
+            <%- include("../layout/admin/navbar.ejs") -%>  
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Sails List</h2>
+                        <p>Lorem ipsum dolor sit amet.</p>
+                    </div>
+                </div>
+                    
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="table-responsive"id="Reload">
+                        <table class="table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Status</th>
+                                    <th>Joind At</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <% let count=0 %>
+                            <% orders.forEach((order,index)=>{ %>
+                                <% count++ %>
+                            <tbody>
+                               <td><%= count %></td>
+                               <td><%= order.products.productId %></td>
+                               <td>afdda</td>
+                               <td>afdda</td>
+                               <td>afdda</td>
+                               <td>afdda</td>
+                               <td>afdda</td>
+
+                               <% }) %>
+                            </tbody>
+                        </table>
+                        <!-- table-responsive.// -->
+                    </div>
+                </div>
+           
+            <!-- card end// -->
+            
+        </section>
+    </main>
+
+
+    <%- include("../layout/admin/footer.ejs") -%>
+
+    
