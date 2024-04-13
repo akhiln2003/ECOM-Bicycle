@@ -77,6 +77,7 @@ admin_route.get('/addcoupon',auth.isLogOut,adminCouponController.loadAddcoupon);
 admin_route.post('/addcoupon',auth.isLogOut,adminCouponController.addCoupon);
 admin_route.post('/deleteCoupon',auth.isLogOut,adminCouponController.deleteCoupon);
 admin_route.get('/editCoupon',auth.isLogOut,adminCouponController.loadEditcoupon);
+admin_route.put('/updatecoupon',auth.isLogOut, adminCouponController.updateCoupon);
 
 
                             // BRAND

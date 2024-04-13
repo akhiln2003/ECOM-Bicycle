@@ -23,7 +23,8 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Coupon Code</th>
                                     <th scope="col">Expiry Date</th>
-                                    <th scope="col">Limit Of Use</th>
+                                    <th>Type</th>
+                                    <th scope="col">Minimum Spend</th>
                                     <th scope="col">Discount</th>
                                     <th scope="col">Edit</th>
                                     <th scope="col" class="text-end">Action</th>
@@ -36,16 +37,18 @@
                                 <% count++ %>
                                 <tr>
                                         <td><%= count %></td>
-                                        
-                                            <td><%= coupon.name %></td>
-                                            <td><%= coupon.couponCod %></td>
-                                           
-                                                <td><%= coupon.expiryDate.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                               
-                                            <td><%= coupon.minSpend %></td>
-                                            <td><%= coupon.discount %></td>
-                                            <td><a href="/admin/editCoupon?id=<%= coupon._id %>" ><i class="material-icons md-edit"></i></a></td>
-                                            <td class="text-end"> <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="deleteProduct('<%= coupon._id %>')"> Delete </button> </td>
+                                        <td><%= coupon.name %></td>
+                                        <td><%= coupon.couponCod %></td>
+                                        <td><%= coupon.expiryDate.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
+                                        <td><%= coupon.type %></td>
+                                        <td><%= coupon.minSpend %></td>
+                                        <% if(coupon.type =='percentage'){ %>
+                                            <td><%= coupon.discount %> %</td>
+                                            <% }else{ %>
+                                                <td><%= coupon.discount %></td>
+                                                <% } %>
+                                        <td><a href="/admin/editCoupon?id=<%= coupon._id %>" ><i class="material-icons md-edit"></i></a></td>
+                                        <td class="text-end"> <button type="button" class="btn btn-sm btn-danger rounded font-sm mt-15" onclick="deleteProduct('<%= coupon._id %>')"> Delete </button> </td>
                                          
                                 </tr>
                                 <% } %>

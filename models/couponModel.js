@@ -1,4 +1,6 @@
  const mongoose = require('mongoose');
+ const ObjectId = mongoose.Schema.Types.ObjectId;
+
 
  const couponSchema = mongoose.Schema({
     name:{
@@ -12,6 +14,9 @@
     expiryDate:{
         type:Date,
         required:true
+    },type:{
+        type:String,
+        require:true
     },minSpend:{
         type:Number,
         required:true
@@ -20,6 +25,13 @@
         type:Number,
         required:true
     },
+    user:[{
+        userId:{
+            type:ObjectId,
+            ref:'User',
+        }
+    
+    }],
     isDeleted:{
         type :Boolean,
         default:false,

@@ -157,14 +157,17 @@
                                     <th scope="col">SubTotal</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Date</th>
+                                    
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               
+                               <% let subtotal =0 %>
                                 <% orders.products.forEach((product,i)=>{ %>
                                     <% let amout = product.productId.productPrice*product.quantity %>
+                                    <% subtotal +=(product.quantity* product.productId.productPrice)  %>
                                 <tr>
+                                    
                                         <td><%= i+1 %></td>
                                         <td><b> <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>" alt="" style="width: 80px; height: 80px;"> </b></td>
                                         <td><%= orders.deliveryAddress.name %></td>
@@ -173,6 +176,7 @@
                                         <td><%= amout %> </td>
                                         <td><span class=" " style="font-weight: 900;"><%= product.status %></span></td>
                                         <td><%= orders.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
+                                        
                                         <% if (product.status != "cancelled" && product.status !== "returned" && product.status !== "returnDenied" && product.status != "delivered" && product.status != "returnRequested" ) { %>
                                             <td class="text-right-cell">
                                                 <button class="btn btn-danger cancelOrderBtn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal_<%= i %>">Cancel</button>
@@ -237,10 +241,22 @@
                                         <tr>
                                            
                                             
-                                        <td colspan="8" class="text-right-cell"><strong>Total Price:</strong></td>
+                                       <% if(orders.couponUsed){ %>
+                                        <td colspan="3" class="text-right-cell"><strong>Sub Total:</strong></td>
+                                        <td class="text-right-cell"><strong>₹ <%= subtotal %></strong></td> 
+                                        <td colspan="3" class="text-right-cell"><strong>Total Price:</strong></td>
                                         <td class="text-right-cell"><strong>₹ <%= orders.totalAmount %></strong></td> 
+                                        <% if(orders.couponUsed.type =="amount"){ %>
+                                        <td class="text-right-cell"><strong>₹ <%= orders.couponUsed.discount %> Off</strong></td> 
+                                        <% }else{ %>
+                                            <td class="text-right-cell"><strong> <%= orders.couponUsed.discount %> % Off</strong></td> 
+                                            <% } %>
+                                       <% } else{ %>
                                         
-
+                                        <td colspan="8" class="text-right-cell"><strong>Total Price:</strong></td>
+                                        <td class="text-right-cell"><strong>₹ <%= orders.couponUsed.type %></strong></td> 
+                                      <% } %>
+                                       
                                        </tr>
                                 </tr>
                                 

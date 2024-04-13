@@ -67,7 +67,11 @@ const orderSchima = mongoose.Schema({
     deliveryAddress:{
         type:Object,
         required:true
-    }   
+    } ,
+    couponUsed:{
+        type:ObjectId,
+        ref:'Coupon'
+    }  
 });
 
 

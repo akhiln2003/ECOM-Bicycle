@@ -1,6 +1,7 @@
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const Orders = require('../models/orderModel');
+const Coupon = require('../models/couponModel');
 const { findOneAndUpdate } = require('../models/cartModel');
 
 
@@ -19,7 +20,14 @@ const loadOrderDetails = async(req,res)=>{
     try {
         const orderId = req.query.id;
         const userId = req.session.user._id;
-        const orders = await Orders.findOne({userId:userId,orderId:orderId }).populate('products.productId');
+        const order = await Orders.findOne({userId:userId,orderId:orderId })
+        let orders;
+        if(order.couponUsed){
+
+             orders = await Orders.findOne({userId:userId,orderId:orderId }).populate('products.productId').populate('couponUsed');
+        }else{
+            orders = await Orders.findOne({userId:userId,orderId:orderId }).populate('products.productId')
+        }
         res.render('orderDetails',{orders});
     } catch (error) {
         console.log(error);
