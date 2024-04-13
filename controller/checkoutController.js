@@ -2,6 +2,8 @@ const Cart = require('../models/cartModel');
 const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
+const Coupon = require('../models/couponModel');
+const ObjectId = require('mongoose').Types.ObjectId;
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
 const dotenv = require("dotenv")
@@ -22,6 +24,23 @@ function generateRandomId(){
     const orderId = `ORD${formattedDate}${randomNumber}`;
 
     return orderId
+}
+
+
+            //  Load Procced To Checkout page
+const loadCheckout = async(req,res)=>{
+    try {
+        const id = req.session.user._id;
+        const user = await User.findOne({_id:id});
+         
+        const currentDate = new Date().toISOString();
+
+         const coupons = await Coupon.find({ 'user.userId': { $ne: id }, expiryDate: { $gte: currentDate } });     
+        const cart  =  await Cart.findOne({userId:id}).populate('products.productId');
+        res.render('checkout',{user,cart,coupons});
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
@@ -48,7 +67,7 @@ const checkoutAddAddress =  async(req,res)=>{
 
 const placeOrder = async(req,res)=>{
     try {
-        const {index,payment,subTotal} = req.body;
+        const {index,payment,subTotal,name} = req.body;
         const userId  = req.session.user._id;
         const userCart = await Cart.findOne({userId:userId}).populate('products.productId');
         const products =  userCart.products
@@ -62,11 +81,14 @@ const placeOrder = async(req,res)=>{
             res.json({quan:true,quantityLess})
         }else{
             const user = await User.findOne({_id:userId});
+            const coupon = await Coupon.findOne({name:name});
             const status = payment == 'COD' ? 'placed' : 'pending';
             const address = user.address[index];
             const date = Date.now();
             const orderid=generateRandomId();
-            const orders = new Order({
+            let orders;
+            if(coupon == null){
+             orders = new Order({
                 userId:userId,
                 orderId:orderid,
                 products:products,
@@ -74,10 +96,25 @@ const placeOrder = async(req,res)=>{
                 date:date,
                 status:status,
                 paymentMethod:payment,
-                deliveryAddress:address
+                deliveryAddress:address,
             });
+        }else{
+             orders = new Order({
+                userId:userId,
+                orderId:orderid,
+                products:products,
+                totalAmount:subTotal,
+                date:date,
+                status:status,
+                paymentMethod:payment,
+                deliveryAddress:address,
+                couponUsed:coupon._id  
+            });
+
+        }
             const orderDetails = await orders.save();
             const orderId = orderDetails.orderId;
+            await Coupon.updateOne({name:name},{$push:{user:{userId:userId}}})
 
                     //  COD PAYMENT 
             if(orderDetails.paymentMethod == 'COD'){
@@ -154,9 +191,73 @@ const verifyPayment = async(req,res)=>{
     }
 }
 
+const applyCoupon = async(req,res)=>{
+    try {
+        let discount;
+        const name = req.body.couponcod;
+        const id = req.session.user._id;
+        const userId = new ObjectId(id);
+        if(name!="select"){
+
+            const coupon = await Coupon.findOne({name:name});
+            const totalPriceResult = await Cart.aggregate([
+                {
+                    $match: { userId: userId }
+                },
+                { $unwind: '$products' },
+                {
+                    $group: {
+                        _id: null,
+                        totalPrice: { $sum: '$products.totalPrice' } 
+                    }
+                }
+            ]);
+            // Extract the total price from the aggregation result
+            const totalPrice = totalPriceResult.length > 0 ? totalPriceResult[0].totalPrice : 0;
+            if(coupon.type=="percentage"){
+                 discount = totalPrice*(coupon.discount/100);
+            }else{
+                 discount = coupon.discount
+            }    
+            await Cart.findOneAndUpdate({userId:id},{
+                $set:{
+                    couponDiscount:discount
+                }
+            })
+           
+            res.json({ok:true, name})
+        } else{
+            res.redirect('/checkout')
+        }
+        
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const removeCoupon = async(req,res)=>{
+    try {
+       const id = req.session.user._id
+       await Cart.findOneAndUpdate({userId:id},{
+        $set:{
+            couponDiscount:0
+        }
+    })
+
+    res.json({ok:true});
+    
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
+    loadCheckout,
     placeOrder,
     checkoutAddAddress,
-    verifyPayment
+    verifyPayment,
+    applyCoupon,
+    removeCoupon
     
 }

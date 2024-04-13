@@ -47,6 +47,12 @@
 
                                 </div>
                                 <div class="mb-4">
+                                    <select name="type" id="type" class="form-control">
+                                        <option value="amount">Amount</option>
+                                        <option value="percentage">Percentage</option>
+                                      </select>
+                                </div>
+                                <div class="mb-4">
                                     <label for="product_title" class="form-label">Min spend</label>
                                     <input name="limitOfUse" type="text"  class="form-control" id="limit" />
                                     <div id="limitError" class="forml" style="color: red;"></div>
@@ -77,10 +83,16 @@
     const expiryDate = document.getElementById('expiryDate').value;
     const limit = document.getElementById('limit').value;
     const discount = document.getElementById('discount').value;
+    const type = document.getElementById('type').value;
+    let discountAmount
+      
+    
     const nameRegex = /^[a-zA-Z\s]{5,}$/;
     var currentDate = new Date();
     var formattedCurrentDate = currentDate.toISOString().split('T')[0];
     const limitRegex = /^[0-9]+$/;
+    const discountRejex =  /^[0-9]+$/;
+
 
     if (!nameRegex.test(name)) {
         showError('nameError', 'Only use Alphabets Minimum 5 characters');
@@ -94,11 +106,25 @@
         showError('limitError', 'Only Asepted Number');
         removeErrorsAfterDelay('limitError');
         return false;
-    } else if(parseFloat(discount) > parseFloat(limit)){
+    }else if (limit<10){
+        showError('limitError', "Minimum spend must be greater than 10.");
+        removeErrorsAfterDelay('limitError');
+    }else if(type == 'amount'&&!discountRejex.test(discount)){
+    showError('discountError', 'Only asepted Numbers');
+    removeErrorsAfterDelay('discountError');
+    } else if( type=="amount"&& parseFloat(discount) > parseFloat(limit)){
     showError('discountError', 'Discount must be less than min amount spend');
     removeErrorsAfterDelay('discountError');
     return false;
-    }else{
+    }else if(type == 'percentage'&&!discountRejex.test(discount)){
+    showError('discountError', 'Only asepted Numbers');
+    removeErrorsAfterDelay('discountError');
+    return false
+    }else if( type=="percentage" && parseFloat(discount) > 100){
+    showError('discountError', 'Discount must be less than 100%');
+    removeErrorsAfterDelay('discountError');
+    return false
+    } else{
         return true;
     }
 }

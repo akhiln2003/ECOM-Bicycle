@@ -24,7 +24,7 @@ const loadAddcoupon = async(req,res)=>{
 
 const addCoupon = async(req,res)=>{
     try {
-        const {couponName,expiryDate,limitOfUse,Discount} = req.body;
+        const {couponName,expiryDate,limitOfUse,Discount,type} = req.body;
         const firstName = couponName.split('').splice(1,3).join('')
         const randomString = Math.random().toString(36).substring(2, 7);
         const randomNumber = `${Math.floor(1000 + Math.random() * 9000)}`;
@@ -38,7 +38,8 @@ const addCoupon = async(req,res)=>{
                 couponCod:`${firstName}${randomString}${randomNumber}`,
                 expiryDate:expiryDate,
                 minSpend:limitOfUse,
-                discount:Discount
+                discount:Discount,
+                type:type
             });
             await newCoupon.save()
             res.redirect('/admin/coupon')
@@ -68,30 +69,41 @@ const loadEditcoupon = async(req,res)=>{
     try {
         const id = req.query.id;
         const coupon = await Coupon.findOne({_id:id});
-        console.log(date);
         res.render('editCoupon',{coupon});
     } catch (error) {
         console.log(error);
     }
 }
 
-const format = async(dateString)=>{
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    
-    // Pad single digit month and day with leading zero
-    const formattedMonth = month < 10 ? '0' + month : month;
-    const formattedDay = day < 10 ? '0' + day : day;
-    
-    return formattedMonth + '/' + formattedDay + '/' + year;
+const updateCoupon = async(req,res)=>{
+    try {
+        const {id,couponName,expiryDate,limitOfUse,Discount} = req.body;
+        const exist = await Coupon.findOne({_id:{$ne:id},name:couponName});
+        if(exist){
+            req.flash('exists',"coupon alredy exists with this name ");
+            res.redirect(`/admin/editCoupon?id=${id}`);
+        }else{
+            await Coupon.updateOne({_id:id},{
+                $set:{
+                    name:couponName,
+                    expiryDate:expiryDate,
+                    minSpend:limitOfUse,
+                    discount:Discount
+                }
+            })
+            res.redirect('/admin/coupon')
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
+
 
 module.exports = {
     loadCoupon,
     loadAddcoupon,
     addCoupon,
     deleteCoupon,
-    loadEditcoupon
+    loadEditcoupon,
+    updateCoupon
 }

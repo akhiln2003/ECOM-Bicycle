@@ -131,17 +131,7 @@ const updateQuantity = async(req,res)=>{
 }
 
 
-            //  Load Procced To Checkout page
-const loadProccedToCheckout = async(req,res)=>{
-    try {
-        const id = req.session.user._id;
-        const user = await User.findOne({_id:id});
-        const cart  =  await Cart.findOne({userId:id}).populate('products.productId');
-       res.render('checkout',{user,cart});
-    } catch (error) {
-        console.log(error);
-    }
-}
+
 
 
 module.exports ={
@@ -149,5 +139,5 @@ module.exports ={
     addtoCart,
     removeToCart,
     updateQuantity,
-    loadProccedToCheckout
+    
 }

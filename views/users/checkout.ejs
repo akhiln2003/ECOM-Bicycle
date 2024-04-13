@@ -164,33 +164,54 @@
 						</div>
 					</div>
 					<div class="col-md-6">
+
+
+                        <% let subtotal = cart.products.reduce((acc,value)=>{
+                            return  acc+= value.totalPrice
+                          },0)  %>
 						
 						<div class="single-check p-bottom50">
 							<div class="check-title">
 								<h3 style="margin: 0;">Coupon Code</h3>
 							</div>
 							<div class="single-input check-coupon">
-								<form action="#">
-									<div class="input-text">
-										<input type="text" name="coupon" />
-									</div>
-									<div class="submit-text">
-										<input type="submit" name="submit" value="Submit">
-									</div>
-								</form>
+								<form>
+									
+										<select class="input-text" id="coupon"  style="height: 45px;" >
+                                            <option value="select"  >select </option>
+                                            <% coupons.forEach((coupon)=>{ %>
+                                                <% if(coupon.minSpend>= subtotal){ %>
+                                                    <% if(coupon.type =="amount"){ %>
+                                                        <option value="<%=coupon.name %>" ><%=coupon.name %>  ₹ <%=coupon.discount %> Off </option>
+                                                        <% }else{ %>
+                                                            <option value="<%=coupon.name %>"><%=coupon.name %>  <%=coupon.discount %> % Off</option>
+    
+                                                            <% } %>
+                                                    <% } %>
+                                                <% }) %>
+                                        </select>
+                                        <div id="btn">
+                                        <% if(cart.couponDiscount>0){ %>
+                                            <button type="button" class="place-order-btn" id="remove" onclick="removeCoupon()">Remove</button>
+                                            <% }else{ %>
+                                                <button type="button" class="place-order-btn" id="apply"  onclick="applyCoupon()">Apply</button>
+                                            <% } %>
+                                        </div>
+                                    </form>
 							</div>
 						</div>
-                        <% let subtotal = cart.products.reduce((acc,value)=>{
-                          return  acc+= value.totalPrice
-                        },0)  %>
+                        
                         <div class="single-check p-bottom50"  style="margin-top: 2rem;">
                             <div class="check-title">
                                 <h3 style="margin: 0;">Totals</h3>
                             </div>
-                            <div class="subtotal clearfix">
+                            <div class="subtotal clearfix" id="total">
                                 <p>Subtotal <strong class="floatright"> ₹ <%= subtotal %></strong></p>
-                                <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                <p>Total <strong class="floatright"><span> ₹ <%= subtotal %></span></strong></p>
+                                <% if(cart.couponDiscount>0){ %>
+                                    <p>Coupon Discount<strong class="floatright"> ₹ <%= subtotal-(subtotal-cart.couponDiscount)  %></strong></p>
+                                    <% }%>
+                                    <p>Shipping <strong class="floatright">free delivery</strong></p>
+                                <p>Total <strong class="floatright"><span> ₹ <%= subtotal-cart.couponDiscount %></span></strong></p>
                             </div>
                         </div>
 						
@@ -216,7 +237,7 @@
                             </div>
                            
                         </div>
-                        <button style="margin-left: 25rem; margin-top: 2rem;" id="placeOrder" class="place-order-btn" data-subTotal="<%= subtotal %>" onclick="placeOrder()">Place Order</button>
+                        <button style="margin-left: 25rem; margin-top: 2rem;" id="placeOrder" class="place-order-btn" data-subTotal="<%= subtotal-cart.couponDiscount %>" onclick="placeOrder()">Place Order</button>
 					</div>
 				</div>
 			</div>
@@ -239,7 +260,8 @@
                         if(payment){
                             const subTotal = document.getElementById('placeOrder').getAttribute('data-subTotal');
                            if(subTotal){
-                            const data = {index:index,payment:payment,subTotal:subTotal};
+                            const name = document.getElementById('coupon').value
+                            const data = {index:index,payment:payment,subTotal:subTotal,name};
                             fetch('/placeOrder',{
                                 method:'POST',
                                 headers:{
@@ -354,6 +376,39 @@
                 })
             }
 
+
+            function applyCoupon(){
+                const couponcod = document.getElementById('coupon').value;
+                fetch('/applycoupon',{
+                    method:'PUT',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({couponcod})
+                }).then((val)=>val.json())
+                .then((res) => {
+                    if(res.ok) {
+                      $('#total').load('/checkout #total')
+                      $('#btn').load('/checkout #btn')
+                        document.getElementById('coupon').value = res.name;
+                    }
+                })
+            }
+
+            function removeCoupon(){
+                fetch('/removecoupon',{
+                    method:'PUT',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                }).then((result)=>{
+                   location.reload()
+                })
+            }
+
+
+
+            
         </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

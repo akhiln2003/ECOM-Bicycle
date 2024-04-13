@@ -5,11 +5,12 @@ const nocache = require('nocache');
 const flash = require('express-flash');
 const path = require('path');
 const app = express();
+const methodOverride = require('method-override')
 
 connectdb.connectDB();
 
 app.set('view engine', 'ejs')
-
+app.use(methodOverride('_method'));
 app.use(express.json());
 app.use(nocache());
 app.use(flash());

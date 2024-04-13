@@ -90,7 +90,7 @@ user_route.get('/cart',auth.isLogOut,cartController.loadCart);
 user_route.post('/addtocart',auth.isLogOut,cartController.addtoCart);
 user_route.post('/removeToCart',auth.isLogOut,cartController.removeToCart);
 user_route.post('/updateQuantity',auth.isLogOut,cartController.updateQuantity);
-user_route.get('/checkout',auth.isLogOut,cartController.loadProccedToCheckout);
+
 
 
                   // WISHLIST
@@ -101,9 +101,13 @@ user_route.post('/removeToWishlist',auth.isLogOut,wishlistController.removeToWis
 
 
                   // Checkout
+user_route.get('/checkout',auth.isLogOut,checkoutController.loadCheckout);                  
 user_route.post('/addaddressCheckout',auth.isLogOut,checkoutController.checkoutAddAddress);
 user_route.post('/placeOrder',auth.isLogOut,checkoutController.placeOrder);
-user_route.post('/verifyPayment',auth.isLogOut,checkoutController.verifyPayment)
+user_route.post('/verifyPayment',auth.isLogOut,checkoutController.verifyPayment);
+user_route.put('/applycoupon',auth.isLogOut,checkoutController.applyCoupon);
+user_route.put('/removecoupon',auth.isLogOut,checkoutController.removeCoupon);
+
 
                   // Oreder
 user_route.get('/orderSuccess/:id',auth.isLogOut,ordreController.loadOrderSuccess);
