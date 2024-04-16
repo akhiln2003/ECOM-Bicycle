@@ -1,0 +1,150 @@
+<%- include('../layout/user/header.ejs') %>
+<%- include('../layout/user/navbar.ejs') %>
+
+<style>
+    /* Background image */
+    .background-image {
+        background-image: url('/assets/img/slider/1.jpg'); /* Change the URL to your background image */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 50px 0; /* Add padding to create space around the content */
+    }
+
+    /* Wallet container */
+    .wallet-container {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    }
+
+    /* Wallet balance */
+    .wallet-bal {
+        max-width: 500px;
+        margin-top: 2rem;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    }
+    /* Wallet balance */
+    .wallet-prof {
+        max-width: 400px;
+        margin-top: 2rem;
+        margin-left: 2rem;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    }
+
+
+    /* Balance section */
+    .balance-section {
+        margin-bottom: 30px;
+    }
+
+    /* Balance box */
+    .balance-box {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f0f0f0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .balance-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .balance-amount {
+        font-size: 36px;
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+    }
+
+
+</style>
+
+<div class="background-image">
+     <!-- Breadcrumb Section -->
+     <section class="breadcrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12" style="margin-top: 60px; margin-bottom: 30px;">
+                    <h2 style="color: white;">WALLET</h2>
+                    <div class="breadcrumb-text">
+                        <a style="color: white; text-decoration: none; " href="/">Home > </a> 
+                        <a style="color: white; text-decoration: none;  " href="/profile">Profile > </a> 
+                        <span style="color: white;">Wallet</span>
+                        <hr style="color: rgb(10, 9, 9);">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container wallet-container">
+
+  
+        <div class="row">
+               <!-- Profile options -->
+               <div class="col-md-6">
+                <div class="wallet-prof">
+                    <!-- Profile options list -->
+                    <div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <i class="fa-regular fa-user"><a style="text-decoration: none;" href="/profile">Profile</a></i>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <i class="fa-solid fa-address-card"><a style="text-decoration: none;" href="/address">Address</a></i>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <i class="fa-solid fa-wallet"><a style="text-decoration: none;" href="/wallet">Wallet</a></i>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <i class="fa-solid fa-basket-shopping"><a style="text-decoration: none;" href="/orderHistory">order History</a></i>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Wallet balance -->
+            <div class="col-md-6">
+                <div class="wallet-bal">
+                    <!-- Balance box -->
+                    <div class="balance-box">
+                        <h3 class="balance-title">Balance</h3>
+                        <div class="balance-amount">$500.00</div>
+                        <!-- Debit and credit buttons -->
+                        <div class="debit-credit-buttons">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+         
+        </div>
+
+    
+   
+        <!-- Order list -->
+        <div class="order-list" style="margin-top: 2rem;">
+            <h3  style="margin-left: 100px;" class="order-list-title "><b>Order History</b></h3>
+            <ul class="list-group">
+                <li class="list-group-item order-list-item">Order #1 - $50.00</li>
+                <li class="list-group-item order-list-item">Order #2 - $30.00</li>
+                <li class="list-group-item order-list-item">Order #3 - $25.00</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<%- include('../layout/user/footbar.ejs') %>
+<%- include('../layout/user/footer.ejs') %>

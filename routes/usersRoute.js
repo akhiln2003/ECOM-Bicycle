@@ -9,6 +9,7 @@ const cartController = require('../controller/cartController');
 const checkoutController =  require('../controller/checkoutController');
 const ordreController = require('../controller/orderController');
 const wishlistController = require('../controller/wishlistController');
+const walletController = require('../controller/walletController');
 const passport = require('passport');
 const cookieSession = require('cookie-session')
 
@@ -116,6 +117,8 @@ user_route.get('/orderDetails',auth.isLogOut,ordreController.loadOrderDetails);
 user_route.post('/cancelOrder',auth.isLogOut,ordreController.cancelOrder);
 user_route.post('/returnOrderRequest',auth.isLogOut,ordreController.returnOrder);
 
+
+user_route.get('/wallet',auth.isLogOut,walletController.loadWallet)
 
 user_route.get('/about',userController.loadAboutas);
 user_route.get('/contact',userController.loadContact);
