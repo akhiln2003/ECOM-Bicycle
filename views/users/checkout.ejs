@@ -180,7 +180,7 @@
 										<select class="input-text" id="coupon"  style="height: 45px;" >
                                             <option value="select"  >select </option>
                                             <% coupons.forEach((coupon)=>{ %>
-                                                <% if(coupon.minSpend>= subtotal){ %>
+                                                <% if(coupon.minSpend <= subtotal){ %>
                                                     <% if(coupon.type =="amount"){ %>
                                                         <option value="<%=coupon.name %>" ><%=coupon.name %>  ₹ <%=coupon.discount %> Off </option>
                                                         <% }else{ %>
@@ -229,15 +229,15 @@
                                         <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="RAZORPAY">
                                         <label class="form-check-label" for="razorpay" style="margin-left: 5px;">Razorpay</label><hr>
                                     </div>
-                                   <!--  <div class="form-check mt-2">
-                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet">
+                                    <div class="form-check mt-2">
+                                        <input style="display: inline-block;" class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="WALLET">
                                         <label class="form-check-label" for="wallet" style="margin-left: 5px;">Wallet</label> 
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
                            
                         </div>
-                        <button style="margin-left: 25rem; margin-top: 2rem;" id="placeOrder" class="place-order-btn" data-subTotal="<%= subtotal-cart.couponDiscount %>" onclick="placeOrder()">Place Order</button>
+                        <button style="margin-left: 25rem; margin-top: 2rem;" id="placeOrder" class="place-order-btn" data-subTotal="<%= subtotal %>" onclick="placeOrder()">Place Order</button>
 					</div>
 				</div>
 			</div>
@@ -284,6 +284,16 @@
                                     if(data.order){
                                         razopay(data.order);
                                     }
+                                }else if(data.wallet){
+                                    location.href = `/orderSuccess/${data.orderId}`
+                                }else if(data.balance){
+                                    Swal.fire({
+                                        title: "Wallet don't have enough money",
+                                        text: "Please choose another payment option",
+                                        icon: "error",
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
                                 }
                             })
                            }

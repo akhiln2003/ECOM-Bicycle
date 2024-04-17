@@ -28,6 +28,7 @@ const loadOrderDetails = async(req,res)=>{
         }else{
             orders = await Orders.findOne({userId:userId,orderId:orderId }).populate('products.productId')
         }
+        
         res.render('orderDetails',{orders});
     } catch (error) {
         console.log(error);

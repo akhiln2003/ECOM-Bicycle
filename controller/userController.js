@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const nodemailer =require('nodemailer');
 const userOtpVerification =require('../models/userOTPVerification');
 const Token = require('../models/tokenModel');
+const Wallet = require('../models/walletModel');
 const crypto = require('crypto');
 
 
@@ -91,6 +92,10 @@ const insertuser = async(req,res)=>{
             });
             
             await user.save();
+
+            const newWallet = new Wallet({ userId: user._id , balance:0 });
+            await newWallet.save();
+
             sendOtpVerificationMail(user,res);
          
         } else{
@@ -351,6 +356,10 @@ const googleLogin = async(req,res)=>{
         }else{
             const user = new User({ name: name, email });
             await user.save();
+            console.log();
+            const newWallet = new Wallet({ userId: user._id , balance:0 });
+            await newWallet.save();
+
             req.session.user = user;
             res.redirect('/');
         }

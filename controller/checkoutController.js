@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 const Coupon = require('../models/couponModel');
+const Wallet = require('../models/walletModel');
 const ObjectId = require('mongoose').Types.ObjectId;
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
@@ -92,7 +93,7 @@ const placeOrder = async(req,res)=>{
                 userId:userId,
                 orderId:orderid,
                 products:products,
-                totalAmount:subTotal,
+                totalAmount:subTotal-userCart.couponDiscount,
                 date:date,
                 status:status,
                 paymentMethod:payment,
@@ -103,7 +104,7 @@ const placeOrder = async(req,res)=>{
                 userId:userId,
                 orderId:orderid,
                 products:products,
-                totalAmount:subTotal,
+                totalAmount:subTotal-userCart.couponDiscount,
                 date:date,
                 status:status,
                 paymentMethod:payment,
@@ -134,13 +135,11 @@ const placeOrder = async(req,res)=>{
             }
                         // RAZORPAY PAYMENT 
             else if(orderDetails.paymentMethod=="RAZORPAY"){
-                
                 const options = {
                     amount:subTotal*100,
                     currency: "INR",
                     receipt: "" + orderId,
                 };
-
                 instance.orders.create(options,(error,order)=>{
                     if(error){
                         console.error(error);
@@ -149,11 +148,44 @@ const placeOrder = async(req,res)=>{
                    return res.json({okk : true,order});
                 })
 
-            }else if(orderDetails.paymentMethod == "WALLET"){
+            }                // WALLET
+            else if(orderDetails.paymentMethod == "WALLET"){
+                let wallet = await Wallet.findOne({userId:userId});
+                if(wallet.balance >= subTotal-userCart.couponDiscount){
+                   wallet.balance -= subTotal-userCart.couponDiscount;
+                   wallet.walletHistory.push({
+                    amount: subTotal,
+                    type: "Debit",
+                    reason: "Order Payment",
+                    orderId2: orderid,
+                    date: new Date()
+                   });
+                   await wallet.save();
+                   paymentStatus = 'success'
 
+                   await  Order.findOneAndUpdate({orderId: orderDetails.orderId,},{
+                    $set:{"products.$[].status": "placed" }
+                 })
+
+                   await Cart.deleteOne({userId:userId});
+
+                   for(i=0;i<products.length;i++){
+                    const productId =  products[i].productId;
+                    const productQuantity =  products[i].quantity;
+                    await Product.updateOne({_id:productId},{$inc:{stock:-productQuantity}});
+                    res.json({wallet:true,orderId});
+                }
+                }else{
+                    res.json({balance:true});
+                }
+                
             }else{
 
             }
+
+                    
+            
+
 
         }
         
@@ -219,12 +251,11 @@ const applyCoupon = async(req,res)=>{
             }else{
                  discount = coupon.discount
             }    
-            await Cart.findOneAndUpdate({userId:id},{
-                $set:{
+            let cart = await Cart.findOneAndUpdate({userId:id},{
+                $inc:{
                     couponDiscount:discount
                 }
-            })
-           
+            })   
             res.json({ok:true, name})
         } else{
             res.redirect('/checkout')
