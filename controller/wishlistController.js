@@ -1,5 +1,7 @@
 const { findOne } = require('../models/cartModel');
 const Wishlist = require('../models/whishListModel');
+const Product = require('../models/productModel');
+const Cart = require('../models/cartModel');
 
 const loadWishlist = async(req,res)=>{
     try {
@@ -65,8 +67,55 @@ const removeToWishlist = async(req,res)=>{
     }
 }
 
+
+const addingCart = async(req,res)=>{
+    try {
+        const {productId} = req.body;
+        const userId = req.session.user._id;
+        const product  =  await Product.findOne({_id:productId}).populate('category');
+        const cart = await Cart.findOne({userId:userId});
+        if(cart){
+            const existProduct = await cart.products.find((product)=>product.productId == productId);
+            if(existProduct){
+                return res.json({existProduct:true})
+            }else{
+               await Cart.findOneAndUpdate({userId:userId},{
+                $push:{
+                    products:{
+                        productId:productId,
+                        quantity:1,
+                        price:product.productPrice,
+                        totalPrice: product.productPrice                    }
+                }
+               })
+               res.json({ok:true});
+            }
+           }else{
+            const newCart = new Cart({
+                userId:userId,
+                products:[
+                    {
+                        productId:productId,
+                        quantity:1,
+                        price:product.productPrice,
+                        totalPrice: product.productPrice
+                    }
+                ]
+            })
+            await newCart.save();
+            res.json({ok:true});
+           }
+          
+        
+       
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     loadWishlist,
     addtoWishlist,
-    removeToWishlist
+    removeToWishlist,
+    addingCart
 }

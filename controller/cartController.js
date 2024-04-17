@@ -41,7 +41,7 @@ const addtoCart = async(req,res)=>{
                     products:{
                     productId:productId,
                     quantity:quantity,
-                    pice:product.productPrice,
+                    price:product.productPrice,
                     totalPrice:quantity * product.productPrice
                 }
             }
@@ -54,7 +54,7 @@ const addtoCart = async(req,res)=>{
                 {
                     productId:productId,
                     quantity:quantity,
-                    pice:product.productPrice,
+                    price:product.productPrice,
                     totalPrice:quantity * product.productPrice
                 }
             ]
@@ -114,7 +114,7 @@ const updateQuantity = async(req,res)=>{
                 return res.json({max:true});
             }
         }
-        const productPrice = userCart.products.find((product)=>product.productId == productId).pice
+        const productPrice = userCart.products.find((product)=>product.productId == productId).price
         
 
 

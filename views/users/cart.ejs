@@ -86,7 +86,9 @@
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
+                                    <% let total = 0 %>
                                     <% cart.products.forEach((product)=>{ %>
+                                        <% total+= product.totalPrice %>
                                         <tbody>
                                             <tr>
                                                 <td>
@@ -135,11 +137,11 @@
 						<div class="estimate-text responsive">
 							<div class="subtotal clearfix">
                                 <h3 style="margin: 0; margin-left: 2rem;"><strong>CART TOTAL</strong></h3>
-								<p>Subtotal: <span class="floatright">₹ 156.87</span></p>
-								<p>Total: <span class="floatright">₹ 156.87</span></p>
+								<p>Subtotal: <span class="floatright">₹ <%= total  %></span></p>
+								<p>Total: <span class="floatright">₹ <%= total  %></span></p>
 							</div>
 							<div class="default-btn text-right" style="margin-bottom: 2rem;">
-								<a class="btn-style" href="/checkout">PROCCED TO CHECKOUT</a>
+								<a style="text-decoration: none;" class="btn-style" href="/checkout">PROCCED TO CHECKOUT</a>
 							</div>
 							<!-- <p><strong>Checkout with multiples address</strong></p> -->
 						</div>

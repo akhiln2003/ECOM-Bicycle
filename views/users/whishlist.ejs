@@ -6,7 +6,7 @@
                 margin: 0;
                 padding: 0;
                 font-family: Arial, sans-serif;
-                background: url('/assets/img/emtycart.png') center/cover no-repeat;
+                background: url('/assets/img/emtywishlist.png') center/cover no-repeat;
                 background-size: 700px 600px;
                 height: 100vh;
                 display: flex;
@@ -58,10 +58,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2>CART</h2>
+                        <h2>WISHLIST</h2>
                         <div class="breadcrumb-text">
                             <a style="color: black; text-decoration: none; " href="/">Home</a> >
-                            <span>Cart</span>
+                            <span>Wishlist</span>
                             <hr>
                         </div>
                     </div>
@@ -71,20 +71,23 @@
         <!-- cart page content section start -->
         <section class="cart-page " id="Reload">
           
-         
+            <% if ( wishlist.length >=1 && wishlist[0].products.length >=1  ){ %>
                 <div class="container">
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive table-one margin-minus section-padding-bottom">
+                                
+                                    
+                                    
                                 <table class="spacing-table">
                                     <thead>
                                         <tr>
                                             <th>Image</th>
                                             <th>Name</th>
                                             <th> Price</th>
-                                            <th>QTY</th>
+                                            <th>Status</th>
                                             
-                                            <th>Subtotal</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <% wishlist[0].products.forEach((product)=>{ %>
@@ -104,8 +107,12 @@
                                                     <%  }else{ %>
                                                         <td>Out Of Stock</td>
                                                 <% } %>
-                                                <td><i class="fa fa-trash"
-                                                        onclick=" removeProduct('<%= product.productId._id %>')"></i></td>
+                                                <td>
+                                                    <i class="fa fa-trash" onclick=" removeProduct('<%= product.productId._id %>')"></i>
+                                                    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> &nbsp;  &nbsp;
+                                                    <i  class="material-icons" onclick="addToCart('<%= product.productId._id %>')">add_shopping_cart</i>
+
+                                                </td>
                                             </tr>
                                             <% }) %>
                                         </tbody>
@@ -116,18 +123,19 @@
                    
                    
                 </div>
-                <div class="default-btn text-right" style="margin-bottom: 2rem;">
-                    <a style="margin-left: 5rem;" class="btn-style" onclick="addToCart()">ADD TO CART</a>
-                </div>
+            </div>
+            <% }else{ %>
 
                     <!-- wishlist is mt  -->
-                    <!-- <div class="goto">
+                    <div class="goto">
                         <div class="shop-container">
-                            <h1>Your Cart is Empty</h1>
+                            <h1>Your Wishlist is Empty</h1>
                             <a style="text-decoration: none; margin-top: 2rem;" class="shop-btn" href="/shop">Shop
                                 Now</a>
                         </div>
-                    </div> -->
+                    </div>
+
+                    <% } %>
                    
         </section>
         <!-- cart page content section end -->
@@ -162,6 +170,43 @@
                     }
                 })
     }
+
+
+
+				function addToCart(productId,){
+					const data ={productId}	
+							fetch('/addingcart',{ 
+								method: 'POST',
+								headers:{
+									'Content-Type': 'application/json'
+								},
+								body:JSON.stringify(data)
+							}).then((data)=>data.json())
+                            .then((result)=>{
+								if(result.ok){
+									Swal.fire({
+									icon: "success",
+									title: 'Item Added to Cart',
+									showConfirmButton: false, 
+                                    timer: 1500 
+								})
+								}
+                                if(result.existProduct){
+                                    console.log("ins");
+                                    Swal.fire({
+									icon: "warning",
+									title: 'Item alredy in Cart',
+                                    showConfirmButton: false, 
+                                    timer: 1500 
+								})
+                                }
+							})
+						
+					
+
+						}
+
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

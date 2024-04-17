@@ -69,10 +69,9 @@ const loadRegister = async(req, res) => {
 const insertuser = async(req,res)=>{
 
     try {
-         const {email,name,mobile}=req.body;
+         const {email,name}=req.body;
         const findUserByEmale = await User.findOne({email:email});
         const findUserByName = await User.findOne({name:name});
-        const findUserByMobile = await User.findOne({mobile:mobile});
         if (findUserByEmale) {
             req.flash('exists',"user alredy exists with this email ");
              res.redirect('/register');
@@ -81,15 +80,11 @@ const insertuser = async(req,res)=>{
             req.flash('exists',"this user name is not available");
              res.redirect('/register');
             
-        } else if(findUserByMobile){
-            req.flash('exists',"Alredy Use This Number");
-             res.redirect('/register');
-        } else if(req.body.password ===  req.body.ConformPassword){
+        }else if(req.body.password ===  req.body.ConformPassword){
             const securePass = await securePassword(req.body.password)
             const user  = new User({
                 name:req.body.name,
                 email:req.body.email,
-                mobile:req.body.mobile,
                 dateofbirth:req.body.dateofbirth,
                 gender:req.body.gender,
                 password:securePass,
@@ -112,12 +107,13 @@ const insertuser = async(req,res)=>{
  const sendOtpVerificationMail = async({email},res)=>{
     try {
         const transporter = nodemailer.createTransport({
-            host:"smtp.gmail.com",
+           host:"smtp.gmail.com",
             port:465,
             secure:true,
+            service:"Gmail",
             auth:{
                 user:"4khiln@gmail.com",
-                pass:"dvrv qguv lbeg ijpu"
+                pass:"plla ijfe bibq evzc"
             }
 
         });
@@ -353,8 +349,10 @@ const googleLogin = async(req,res)=>{
             return res.redirect('/');
        
         }else{
-            req.flash('exists',"email is not Registered");
-            res.redirect('/register');
+            const user = new User({ name: name, email });
+            await user.save();
+            req.session.user = user;
+            res.redirect('/');
         }
 
     } catch (error) {

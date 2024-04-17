@@ -11,13 +11,9 @@ const userScchema = mongoose.Schema({
       type : String,
       required:true
     },
-    mobile :{
-      type: String,
-      required:true
-    },
     password :{
       type: String,
-      required:true
+      required:false
     },
     dateJoined: {
       type: Date,

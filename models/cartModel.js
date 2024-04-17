@@ -17,7 +17,7 @@ const cartSchema = new  mongoose.Schema({
                 type:Number,
                 default:1
             },
-            pice:{
+            price:{
                 type:Number,
                 required:true
             },

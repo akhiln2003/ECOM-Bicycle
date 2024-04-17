@@ -6,14 +6,12 @@ function validateForm() {
   // Get form fields
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
-  const mobile = document.getElementById('mobile').value;
   const password = document.getElementById('password').value;
   const confirmPassword = document.getElementById('ConformPassword').value;
 
   // Validation regex patterns
   const nameRegex = /^[a-zA-Z\s]+$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const mobileRegex = /^(?:(\d)\1{9}|[^0\D])\d{9}$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.)[a-zA-Z\d]{6,}$/;
 
   // Validate name
@@ -26,12 +24,6 @@ function validateForm() {
   else if (!emailRegex.test(email)) {
       showError('emailError', 'Invalid email address');
       removeErrorsAfterDelay('emailError');
-      return false;
-  }
-  // Validate mobile
-  else if (!mobileRegex.test(mobile)) {
-      showError('mobileError', 'Invalid mobile number');
-      removeErrorsAfterDelay('mobileError');
       return false;
   }
   // Validate Password

@@ -98,6 +98,7 @@ user_route.post('/updateQuantity',auth.isLogOut,cartController.updateQuantity);
 user_route.get('/wishlist',auth.isLogOut,wishlistController.loadWishlist);
 user_route.post('/addToWishlist',auth.isLogOut,wishlistController.addtoWishlist);
 user_route.post('/removeToWishlist',auth.isLogOut,wishlistController.removeToWishlist);
+user_route.post('/addingcart',auth.isLogOut,wishlistController.addingCart);
 
 
 

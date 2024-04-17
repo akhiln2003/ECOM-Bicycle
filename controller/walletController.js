@@ -1,8 +1,10 @@
-
+const Wallet = require('../models/walletModel');
 
 const loadWallet = async(req,res)=>{
     try {
-        res.render('wallet');
+        const id = req.session.user._id;
+        const wallet = await Wallet.findOne({userId:id})
+        res.render('wallet',{wallet});
     } catch (error) {
         console.log(error);
     }
