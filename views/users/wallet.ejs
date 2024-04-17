@@ -137,13 +137,34 @@
    
         <!-- Order list -->
         <div style="margin-top: 5rem; margin-left: 9rem; max-width: 800px;">
-            <h3  style="margin-left: 270px;" class="order-list-title "><b>Wallet History</b></h3>
-            <ul class="list-group">
-                <li class="list-group-item order-list-item">Order #1 - $50.00</li>
-                <li class="list-group-item order-list-item">Order #2 - $30.00</li>
-                <li class="list-group-item order-list-item">Order #3 - $25.00</li>
-            </ul>
+            <h3 style="margin-left: 270px;" class="order-list-title"><b>Wallet History</b></h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>wallet ID</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <% wallet.walletHistory.forEach((entry,i) => { %>
+                    <tr>
+                        <td><%= i+1 %></td>
+                        <td><%= entry.type %></td>
+                        <td><%= entry.amount %></td>
+                        <td><%= entry.reason %></td>
+                        <td><%= entry.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
+                        <td><%= entry.orderId %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         </div>
+        
     </div>
 </div>
 

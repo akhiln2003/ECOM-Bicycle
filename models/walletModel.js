@@ -17,7 +17,7 @@ const transactionSchema = mongoose.Schema({
         required: true
     },
     orderId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type:ObjectId,
         ref: 'Order'
     },
     orderId2: {

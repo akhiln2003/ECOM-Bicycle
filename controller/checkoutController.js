@@ -157,6 +157,7 @@ const placeOrder = async(req,res)=>{
                     amount: subTotal,
                     type: "Debit",
                     reason: "Order Payment",
+                    orderId:orders._id,
                     orderId2: orderid,
                     date: new Date()
                    });
