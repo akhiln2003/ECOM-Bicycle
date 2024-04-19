@@ -1,6 +1,6 @@
-<%-include('.. /layout/user/header.ejs') %>
+<%- include('../layout/user/header.ejs') %>
 
-	<%-include('.. /layout/user/navbar.ejs') %>
+	<%- include('../layout/user/navbar.ejs') %>
 
 		<style>
 			.zoomable-image {
@@ -468,14 +468,6 @@
 						body: JSON.stringify(data)
 					})
 						.then(data => {
-							if (data.existedProduct) {
-								Swal.fire({
-									icon: "info",
-									title: 'Already In Wishlist',
-									confirmButtonText: 'OK',
-									confirmButtonColor: '#3085d6'
-								})
-							}
 							if (data.ok) {
 								Swal.fire({
 									icon: "success",
@@ -494,15 +486,6 @@
 
 				function removeProduct(productId) {
 					const data = { productId: productId };
-					Swal.fire({
-						icon: "warning",
-						title: "Are You Sure",
-						showCancelButton: "true",
-						cancelButtonColor: "#d33",
-						confirmButtonText: "Yes!",
-						confirmButtonColor: "#3085d6"
-					}).then((response) => {
-						if (response.isConfirmed) {
 							fetch('/removeToWishlist', {
 								method: 'POST',
 								headers: {
@@ -522,8 +505,6 @@
 									}, 600);
 								}
 							})
-						}
-					})
 				}
 
 
