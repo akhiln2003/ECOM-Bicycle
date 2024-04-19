@@ -17,7 +17,7 @@ const transactionSchema = mongoose.Schema({
         required: true
     },
     orderId: {
-        type:ObjectId,
+        type: ObjectId,
         ref: 'Order'
     },
     orderId2: {
@@ -36,17 +36,17 @@ const transactionSchema = mongoose.Schema({
 
 const walletSchema = mongoose.Schema({
 
-    userId:{
-        type:ObjectId,
-        ref:'User',
-        required:true
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
     },
-    balance:{
-        type:Number,
-        required:true
+    balance: {
+        type: Number,
+        required: true
     },
     walletHistory: [transactionSchema]
 });
 
-module.exports = mongoose.model('Wallet',walletSchema);
+module.exports = mongoose.model('Wallet', walletSchema);
 

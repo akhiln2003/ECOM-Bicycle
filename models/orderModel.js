@@ -1,78 +1,78 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.Types.ObjectId;  
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const orderSchima = mongoose.Schema({
-    
-    userId:{
-        type:ObjectId,
-        ref:'User',
-        required:true
+
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
     },
-    orderId:{
-        type:String,
-        required:true
-      },
-    products:[
+    orderId: {
+        type: String,
+        required: true
+    },
+    products: [
         {
-            productId:{
-                type:ObjectId,
-                ref:'Product',
-                required:true
+            productId: {
+                type: ObjectId,
+                ref: 'Product',
+                required: true
             },
-            name:{
-                type:String
+            name: {
+                type: String
             },
-            price:{
-                type:Number
+            price: {
+                type: Number
             },
-            description:{
-                type:String
+            description: {
+                type: String
             },
-            status:{
-                type:String,
-                enum:['placed','pending','outForDelivery','returnRequested','returned','returnDenied','shipped','delivered','cancelled',],
-                default:'pending'
+            status: {
+                type: String,
+                enum: ['placed', 'pending', 'outForDelivery', 'returnRequested', 'returned', 'returnDenied', 'shipped', 'delivered', 'cancelled',],
+                default: 'pending'
             },
-            quantity:{
-                type:Number
+            quantity: {
+                type: Number
             },
-            returnReason:{
-                type:String
+            returnReason: {
+                type: String
             },
-            cancelReason:{
-                type:String
+            cancelReason: {
+                type: String
             },
         }
     ],
-    
-    returnReason:{
-        type:String
+
+    returnReason: {
+        type: String
     },
-    totalAmount:{
-        type:Number,
-        required:true
+    totalAmount: {
+        type: Number,
+        required: true
     },
-    date:{
-        type:Date,
-        required:true
+    date: {
+        type: Date,
+        required: true
     },
-    status:{
-        type:String,
-        required:true
+    status: {
+        type: String,
+        required: true
     },
-    paymentMethod:{
-        type:String,
-        required:true
+    paymentMethod: {
+        type: String,
+        required: true
     },
-    deliveryAddress:{
-        type:Object,
-        required:true
-    } ,
-    couponUsed:{
-        type:ObjectId,
-        ref:'Coupon'
-    }  
+    deliveryAddress: {
+        type: Object,
+        required: true
+    },
+    couponUsed: {
+        type: ObjectId,
+        ref: 'Coupon'
+    }
 });
 
 
-module.exports =  mongoose.model('Order',orderSchima);
+module.exports = mongoose.model('Order', orderSchima);

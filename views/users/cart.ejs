@@ -1,5 +1,5 @@
 <%- include('../layout/user/header.ejs') %>
-<%- include('../layout/user/navbar.ejs') %>
+    <%- include('../layout/user/navbar.ejs') %>
 
         <style>
             .goto {
@@ -86,46 +86,47 @@
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
-                                    <% let total = 0 %>
-                                    <% cart.products.forEach((product)=>{ %>
-                                        <% total+= product.totalPrice %>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <a href="#"><img
-                                                            src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
-                                                            width="240" height="190" alt="Add Product" /></a>
+                                    <% let total=0 %>
+                                        <% cart.products.forEach((product)=>{ %>
+                                            <% total+=product.totalPrice %>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <a href="#"><img
+                                                                    src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
+                                                                    width="240" height="190" alt="Add Product" /></a>
 
-                                                </td>
-                                                <td>
-                                                    <%= product.productId.productName %>
-                                                </td>
-                                                <td> ₹ <%= product.productId.productPrice %>
-                                                </td>
-                                                <td>
-                                                    <form action="#">
-                                                        <div class="plus-minus text-center">
-                                                            <a onclick="updateProductQuantity('<%= product.productId._id %>', -1)"
-                                                                class="quantity-button minus"
-                                                                style="text-decoration: none;">-</a>
-                                                            <input type="text" readonly value="<%= product.quantity %>"
-                                                                name="qtybutton" class="quantity-input">
-                                                            <a onclick="updateProductQuantity('<%= product.productId._id %>', 1)"
-                                                                class="quantity-button plus"
-                                                                style="text-decoration: none;">+</a>
-                                                        </div>
-                                                    </form>
-                                                </td>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.productId.productName %>
+                                                        </td>
+                                                        <td> ₹ <%= product.productId.productPrice %>
+                                                        </td>
+                                                        <td>
+                                                            <form action="#">
+                                                                <div class="plus-minus text-center">
+                                                                    <a onclick="updateProductQuantity('<%= product.productId._id %>', -1)"
+                                                                        class="quantity-button minus"
+                                                                        style="text-decoration: none;">-</a>
+                                                                    <input type="text" readonly
+                                                                        value="<%= product.quantity %>" name="qtybutton"
+                                                                        class="quantity-input">
+                                                                    <a onclick="updateProductQuantity('<%= product.productId._id %>', 1)"
+                                                                        class="quantity-button plus"
+                                                                        style="text-decoration: none;">+</a>
+                                                                </div>
+                                                            </form>
+                                                        </td>
 
-                                                <td> ₹ <%= product.totalPrice %>
-                                                </td>
-                                                <td><i class="fa fa-trash"
-                                                        onclick=" removeProduct('<%= product.productId._id  %>')"></i>
-                                                </td>
-                                            </tr>
+                                                        <td> ₹ <%= product.totalPrice %>
+                                                        </td>
+                                                        <td><i class="fa fa-trash"
+                                                                onclick=" removeProduct('<%= product.productId._id  %>')"></i>
+                                                        </td>
+                                                    </tr>
 
-                                        </tbody>
-                                        <% }) %>
+                                                </tbody>
+                                                <% }) %>
                                 </table>
                             </div>
                         </div>
@@ -134,18 +135,19 @@
 
 
                     <div class="col-md-4">
-						<div class="estimate-text responsive">
-							<div class="subtotal clearfix">
+                        <div class="estimate-text responsive">
+                            <div class="subtotal clearfix">
                                 <h3 style="margin: 0; margin-left: 2rem;"><strong>CART TOTAL</strong></h3>
-								<p>Subtotal: <span class="floatright">₹ <%= total  %></span></p>
-								<p>Total: <span class="floatright">₹ <%= total  %></span></p>
-							</div>
-							<div class="default-btn text-right" style="margin-bottom: 2rem;">
-								<a style="text-decoration: none;" class="btn-style" href="/checkout">PROCCED TO CHECKOUT</a>
-							</div>
-							<!-- <p><strong>Checkout with multiples address</strong></p> -->
-						</div>
-					</div>
+                                <p>Subtotal: <span class="floatright">₹ <%= total %></span></p>
+                                <p>Total: <span class="floatright">₹ <%= total %></span></p>
+                            </div>
+                            <div class="default-btn text-right" style="margin-bottom: 2rem;">
+                                <a style="text-decoration: none;" class="btn-style" href="/checkout">PROCCED TO
+                                    CHECKOUT</a>
+                            </div>
+                            <!-- <p><strong>Checkout with multiples address</strong></p> -->
+                        </div>
+                    </div>
 
                 </div>
                 <% } else{%>
@@ -179,7 +181,7 @@
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify(data)                
+                            body: JSON.stringify(data)
                         }).then((reselt) => {
                             if (reselt.ok) {
                                 Swal.fire({
@@ -205,14 +207,14 @@
                     body: JSON.stringify(data)
                 }).then((data) => data.json())
                     .then((response) => {
-                        if(response.ok){
+                        if (response.ok) {
                             location.reload()
-                        }else if (response.min) {
+                        } else if (response.min) {
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Minimum QTY Reached'
                             })
-                            
+
                         } else if (response.max) {
                             Swal.fire({
                                 icon: 'warning',
@@ -227,5 +229,5 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-		<%-include('../layout/user/footbar.ejs') %>
-        <%-include('../layout/user/footer.ejs') %>
+        <%-include('.. /layout/user/footbar.ejs') %>
+            <%-include('.. /layout/user/footer.ejs') %>

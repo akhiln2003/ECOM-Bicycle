@@ -7,50 +7,50 @@ const { findOneAndUpdate } = require('../models/cartModel');
 
 
 
-const loadOrderSuccess = async(req,res)=>{
+const loadOrderSuccess = async (req, res) => {
     try {
         const orderId = req.params.id;
-        res.render('orderSuccess',{orderId});
+        res.render('orderSuccess', { orderId });
     } catch (error) {
         console.log(error);
     }
 }
 
-const loadOrderDetails = async(req,res)=>{
+const loadOrderDetails = async (req, res) => {
     try {
         const orderId = req.query.id;
         const userId = req.session.user._id;
-        const order = await Orders.findOne({userId:userId,orderId:orderId })
+        const order = await Orders.findOne({ userId: userId, orderId: orderId })
         let orders;
-        if(order.couponUsed){
+        if (order.couponUsed) {
 
-             orders = await Orders.findOne({userId:userId,orderId:orderId }).populate('products.productId').populate('couponUsed');
-        }else{
-            orders = await Orders.findOne({userId:userId,orderId:orderId }).populate('products.productId')
+            orders = await Orders.findOne({ userId: userId, orderId: orderId }).populate('products.productId').populate('couponUsed');
+        } else {
+            orders = await Orders.findOne({ userId: userId, orderId: orderId }).populate('products.productId')
         }
-        
-        res.render('orderDetails',{orders});
+
+        res.render('orderDetails', { orders });
     } catch (error) {
         console.log(error);
     }
 }
 
 
-const cancelOrder = async(req,res)=>{
+const cancelOrder = async (req, res) => {
     try {
-        const {productId,orderId,resion} = req.body;
-        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{$set:{'products.$.status':'cancelled','products.$.cancelReason':resion}});
-        res.json({ok:true});
+        const { productId, orderId, resion } = req.body;
+        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, { $set: { 'products.$.status': 'cancelled', 'products.$.cancelReason': resion } });
+        res.json({ ok: true });
     } catch (error) {
         console.log(error);
     }
 }
 
-const returnOrder = async(req,res)=>{
+const returnOrder = async (req, res) => {
     try {
-        const {productId,orderId,resion} = req.body;
-        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{$set:{'products.$.status':'returnRequested','products.$.returnReason':resion}});
-        res.json({ok:true})
+        const { productId, orderId, resion } = req.body;
+        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, { $set: { 'products.$.status': 'returnRequested', 'products.$.returnReason': resion } });
+        res.json({ ok: true })
     } catch (error) {
         console.log(error);
     }

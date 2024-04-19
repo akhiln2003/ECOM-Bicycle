@@ -1,13 +1,13 @@
-<%- include("../layout/admin/header.ejs") -%>  
+<%- include("../layout/admin/header.ejs") -%>
 
-        <div class="screen-overlay"></div>
+    <div class="screen-overlay"></div>
 
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <%- include("../layout/admin/sidbar.ejs") -%>
-      </aside>
-        <main class="main-wrap">
-    
-            <%- include("../layout/admin/navbar.ejs") -%>  
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <%- include("../layout/admin/sidbar.ejs") -%>
+    </aside>
+    <main class="main-wrap">
+
+        <%- include("../layout/admin/navbar.ejs") -%>
 
             <section class="content-main ">
                 <div class="row">
@@ -16,14 +16,16 @@
                             <h2 class="content-title card-title">Add Brand</h2>
                             <p>Add, edit or delete a Brand</p>
                         </div>
-                        <a href="/admin/brand" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go Back</a>
+                        <a href="/admin/brand" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go
+                            Back</a>
                     </div>
                     <div class="col-lg-6 " style="margin-left: 15rem; margin-top: 2rem;">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="product_brand" class="form-label">Brand</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_brand" />
+                                    <input type="text" placeholder="Type here" class="form-control"
+                                        id="product_brand" />
                                 </div>
                                 <div class="card-body">
                                     <div>
@@ -31,34 +33,34 @@
                                         <textarea placeholder="Type here" class="form-control" rows="4"></textarea>
                                     </div>
                                 </div>
-                                
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4>Logo</h4>
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Logo</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload">
+                                            <img src="assets/imgs/theme/upload.svg" alt="" />
+                                            <input name="image" class="form-control" type="file" />
+
                                         </div>
-                                        <div class="card-body">
-                                            <div class="input-upload">
-                                                <img src="assets/imgs/theme/upload.svg" alt="" />
-                                                <input name="image" class="form-control" type="file" />
-                                            
-                                              </div>
-                                          </div>
-                                     </div>
+                                    </div>
+                                </div>
                                 <div style="margin-top: 1rem;">
-                                    <a href="/admin/addcategory" class="btn btn-primary"><i class="material-icons md-check_box"></i>Submit</a>
-                                    <a href="/admin/addcategory" style="margin-left: 1rem;" class="btn btn-primary"><i class="material-icons md-arrow_back_ios_new"></i>Cansel</a>
+                                    <a href="/admin/addcategory" class="btn btn-primary"><i
+                                            class="material-icons md-check_box"></i>Submit</a>
+                                    <a href="/admin/addcategory" style="margin-left: 1rem;" class="btn btn-primary"><i
+                                            class="material-icons md-arrow_back_ios_new"></i>Cansel</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </section>
     </main>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <%- include("../layout/admin/footer.ejs") -%>
-
-    

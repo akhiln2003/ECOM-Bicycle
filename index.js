@@ -18,22 +18,22 @@ app.use(flash());
 
 
 
-app.use(express.static(path.join(__dirname,'public')));
-app.use(express.static(path.join(__dirname,'public/assets')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/assets')));
 
 
 
 // app.use(express.static(path.join(__dirname,'public/uploads')));
 
- //For user rout
-app.use('/',userRout);
+//For user rout
+app.use('/', userRout);
 
 
 const adminRoute = require('./routes/adminRoute');
-app.use('/admin',adminRoute)
+app.use('/admin', adminRoute)
 
 
 
-app.listen(3000,()=>{
+app.listen(3000, () => {
     console.log("http://localhost:3000");
 });

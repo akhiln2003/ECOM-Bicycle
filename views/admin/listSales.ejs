@@ -1,61 +1,81 @@
-<%- include("../layout/admin/header.ejs") -%>  
+<%- include("../layout/admin/header.ejs") -%> 
+<style>
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+</style> 
 
-        <div class="screen-overlay"></div>
+        
+<div class="screen-overlay"></div>
 
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <%- include("../layout/admin/sidbar.ejs") -%>
-      </aside>
-        <main class="main-wrap">
-    
-            <%- include("../layout/admin/navbar.ejs") -%>  
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Sales List</h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div class="no-print">
+            <a href="/admin/salesreport" class="btn btn-secondary">BACK</a><br>
+            <a style="margin-top: 1rem;"  fcx class="btn btn-primary" onclick="downloadPdf()">Download PDF</a>
+            <a style="margin-top: 1rem;" href="path/to/excel" class="btn btn-success" download>Download Excel</a>
+        </div>
+    </div>
 
-            <section class="content-main">
-                <div class="content-header">
-                    <div>
-                        <h2 class="content-title card-title">Sails List</h2>
-                        <p>Lorem ipsum dolor sit amet.</p>
-                    </div>
-                </div>
-                    
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="table-responsive"id="Reload">
-                        <table class="table table-hover" >
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Mobile</th>
-                                    <th>Status</th>
-                                    <th>Joind At</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <% let count=0 %>
-                            <% orders.forEach((order,index)=>{ %>
-                                <% count++ %>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="table-responsive" id="Reload">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Order ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price & Quantity</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                            <th>Payment Method</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <% let count=0 %>
+                    <% orders.forEach((order)=>{ %>
+                        <% order.products.forEach((product)=>{ %>
+                            <% count++ %>
                             <tbody>
-                               <td><%= count %></td>
-                               <td><%= order.products.productId %></td>
-                               <td>afdda</td>
-                               <td>afdda</td>
-                               <td>afdda</td>
-                               <td>afdda</td>
-                               <td>afdda</td>
-
-                               <% }) %>
+                                <td><%= count %></td>
+                                <td><%= order.orderId %></td>
+                                <td>
+                                    <div class="itemside">
+                                        <div class="left">
+                                            <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>" class="img-sm img-thumbnail" alt="Item" />
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><%= order.userId.name %></td>
+                                <td><%= product.price %> & <%= product.quantity %></td>
+                                <td><%= product.price * product.quantity %></td>
+                                <td><%= order.date.toLocaleString('en-US', {  day: 'numeric',  month: 'short',year: 'numeric' }) %></td>
+                                <td><%= order.paymentMethod %></td>
+                                <td><%= product.status %></td>
                             </tbody>
-                        </table>
-                        <!-- table-responsive.// -->
-                    </div>
-                </div>
-           
-            <!-- card end// -->
-            
-        </section>
-    </main>
+                        <% }) %>
+                    <% }) %>
+                </table>
+                <!-- table-responsive.// -->
+            </div>
+        </div>
+    </div>
+    <!-- card end// -->
+</section>
 
+<script>
+    function downloadPdf(){
+        window.print()
+    }
+</script>
 
     <%- include("../layout/admin/footer.ejs") -%>
 

@@ -6,71 +6,71 @@ const { response } = require('express');
 
 
 
-            // Load profile
+// Load profile
 
-const loadProfile  =  async(req,res)=>{
-    try {
-        const id  = req.session.user._id;
-        const user = await User.findOne({_id:id});
-        res.render('profile',{user});
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-            // Load Address
-
-const loadAddress = async(req,res)=>{
+const loadProfile = async (req, res) => {
     try {
         const id = req.session.user._id;
-        const user  = await User.findOne({_id:id});
-        res.render('address',{user});
+        const user = await User.findOne({ _id: id });
+        res.render('profile', { user });
     } catch (error) {
         console.log(error);
     }
 }
 
-            //  Load Edit Profile
+// Load Address
+
+const loadAddress = async (req, res) => {
+    try {
+        const id = req.session.user._id;
+        const user = await User.findOne({ _id: id });
+        res.render('address', { user });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//  Load Edit Profile
 
 const loadEditprofile = async (req, res) => {
     try {
-       const id = req.query.id;
-       const user = await User.findOne({_id:id})
-       res.render('editProfile',{user});
+        const id = req.query.id;
+        const user = await User.findOne({ _id: id })
+        res.render('editProfile', { user });
     } catch (error) {
         console.log(error);
-       
+
     }
 }
 
-            // Update profiel
+// Update profiel
 
-const updateProfile = async(req,res)=>{
+const updateProfile = async (req, res) => {
     try {
-      const{id,editName,editPhone} = req.body;
-      const existname = await User.findOne({_id:{$ne:id},name:editName});
-      const existnumber = await User.findOne({_id:{$ne:id},mobile:editPhone});
+        const { id, editName, editPhone } = req.body;
+        const existname = await User.findOne({ _id: { $ne: id }, name: editName });
+        const existnumber = await User.findOne({ _id: { $ne: id }, mobile: editPhone });
 
-      if(existname){
-          req.flash('error',"Name is alredy existed");
-          res.redirect(`/editProfile?id=${id}`);
-        }if (existnumber) {
-            req.flash('error',"nu   mber is alredy existed");
-          res.redirect(`/editProfile?id=${id}`);
-        }else{
-         await User.findOneAndUpdate({_id:id},{name:editName,mobile:editPhone});
-          res.redirect('/profile');
-      }
+        if (existname) {
+            req.flash('error', "Name is alredy existed");
+            res.redirect(`/editProfile?id=${id}`);
+        } if (existnumber) {
+            req.flash('error', "nu   mber is alredy existed");
+            res.redirect(`/editProfile?id=${id}`);
+        } else {
+            await User.findOneAndUpdate({ _id: id }, { name: editName, mobile: editPhone });
+            res.redirect('/profile');
+        }
 
-      
+
     } catch (error) {
-       
+
         console.log(error);
     }
 }
-        // Lod Change Password 
+// Lod Change Password 
 
-const loadChangepassword = async(req,res)=>{
+const loadChangepassword = async (req, res) => {
     try {
         res.render('changePassword');
     } catch (error) {
@@ -78,31 +78,31 @@ const loadChangepassword = async(req,res)=>{
     }
 }
 
-        //Chandge Password
+//Chandge Password
 
-const changePassword = async(req,res)=>{
+const changePassword = async (req, res) => {
     try {
-        const {id,current,newPassword} = req.body;
-        const user = await User.findOne({_id:id});
-        const password  = user.password;
-        const compare = await bcrypt.compare(current,password);
-        if(compare){
-            const securePasswor = await  bcrypt.hash(newPassword,10);
-            await User.findOneAndUpdate({_id:id},{$set:{password:securePasswor}});
+        const { id, current, newPassword } = req.body;
+        const user = await User.findOne({ _id: id });
+        const password = user.password;
+        const compare = await bcrypt.compare(current, password);
+        if (compare) {
+            const securePasswor = await bcrypt.hash(newPassword, 10);
+            await User.findOneAndUpdate({ _id: id }, { $set: { password: securePasswor } });
             res.redirect('/profile');
-            }else{
-                req.flash('error',"Current Password is not currect");
-                res.redirect('/changePassword');
-            }
-         
+        } else {
+            req.flash('error', "Current Password is not currect");
+            res.redirect('/changePassword');
+        }
+
     } catch (error) {
         console.log(error);
     }
 }
 
-        // Add Prodict 
+// Add Prodict 
 
-const loadAddaddress = async(req,res)=>{
+const loadAddaddress = async (req, res) => {
     try {
         res.render('addAddress');
     } catch (error) {
@@ -110,68 +110,69 @@ const loadAddaddress = async(req,res)=>{
     }
 }
 
-            // insert Address
+// insert Address
 
-const insertAddress = async(req,res)=>{
+const insertAddress = async (req, res) => {
     try {
-       const id = req.session.user._id;
-       const {name,state,city,pin,phone}=req.body;
-      await User.findOneAndUpdate({_id:id},{
-        $push:{
-        address:{
-        name:name,
-        state:state,
-        city:city,
-        pin:pin,
-        phone:phone
-        }
-      }});
-      res.redirect('/address')
-        
+        const id = req.session.user._id;
+        const { name, state, city, pin, phone } = req.body;
+        await User.findOneAndUpdate({ _id: id }, {
+            $push: {
+                address: {
+                    name: name,
+                    state: state,
+                    city: city,
+                    pin: pin,
+                    phone: phone
+                }
+            }
+        });
+        res.redirect('/address')
+
     } catch (error) {
         console.log(error);
     }
 }
 
 
-const deletAddress =async(req,res)=>{
+const deletAddress = async (req, res) => {
     try {
-     const {userid,addressid} = req.body;
-      await User.findOneAndUpdate({_id:userid},{$pull:{address:{_id:addressid}}});
-      res.redirect('/address');
+        const { userid, addressid } = req.body;
+        await User.findOneAndUpdate({ _id: userid }, { $pull: { address: { _id: addressid } } });
+        res.redirect('/address');
 
     } catch (error) {
         console.log(error);
     }
 }
 
-const loadEditaddress = async(req,res)=>{
+const loadEditaddress = async (req, res) => {
     try {
 
-        const index =  req.query.index
+        const index = req.query.index
         const userid = req.session.user._id;
-        const user = await User.findOne({_id:userid });
+        const user = await User.findOne({ _id: userid });
         const userAddress = user.address[index]
-        res.render('editAddress',{user,index,userAddress});
+        res.render('editAddress', { user, index, userAddress });
     } catch (error) {
         console.log(error);
     }
 }
 
-const updatEditaddress = async(req,res)=>{
+const updatEditaddress = async (req, res) => {
     try {
-       const {id,index,name,state,city,pin,phone} = req.body;
-       await User.findOneAndUpdate({_id:id},{
-        $set:{
-            [`address.${index}.name`]: name,
-            [`address.${index}.state`]: state,
-            [`address.${index}.city`]: city,
-            [`address.${index}.pin`]: pin,
-            [`address.${index}.phone`]: phone
+        const { id, index, name, state, city, pin, phone } = req.body;
+        await User.findOneAndUpdate({ _id: id }, {
+            $set: {
+                [`address.${index}.name`]: name,
+                [`address.${index}.state`]: state,
+                [`address.${index}.city`]: city,
+                [`address.${index}.pin`]: pin,
+                [`address.${index}.phone`]: phone
 
-        }
-       })
-       res.redirect('/address')
+            }
+        })
+        res.redirect('/address')
     } catch (error) {
         console.log(error);
     }
@@ -189,11 +190,11 @@ const loadOrHistory = async (req, res) => {
         let limit = 8;
         let count = await Orders.countDocuments({ userId: id });
         let totalPages = Math.ceil(count / limit);
-        let next = page < totalPages ? page + 1 : totalPages; 
+        let next = page < totalPages ? page + 1 : totalPages;
         let previous = page > 1 ? page - 1 : 1;
-        
+
         const orders = await Orders.find({ userId: id }).limit(limit).skip((page - 1) * limit);
-        
+
         res.render('orderHistory', { orders, next, previous, totalPages });
     } catch (error) {
         console.log(error);
@@ -215,5 +216,5 @@ module.exports = {
     loadEditaddress,
     updatEditaddress,
     loadOrHistory,
-  
+
 }

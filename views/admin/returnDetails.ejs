@@ -1,123 +1,156 @@
 <%- include("../layout/admin/header.ejs") -%>
-        <div class="screen-overlay"></div>
-        <%- include("../layout/admin/sidbar.ejs") -%> 
+    <div class="screen-overlay"></div>
+    <%- include("../layout/admin/sidbar.ejs") -%>
         <main class="main-wrap">
-            <%- include("../layout/admin/navbar.ejs") -%> 
+            <%- include("../layout/admin/navbar.ejs") -%>
 
-            <section class="content-main">
-                <div class="content-header">
-                    <div>
-                        <h2 class="content-title card-title">Order List</h2>
-                        <p>Lorem ipsum dolor sit amet.</p>
-                    </div>
-                    <a href="/admin/returns" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go Back</a>
-                </div>
-                <div class="card mb-4">
-                    <header class="card-header">
-                        <div class="row gx-3">
-                            <div class="col-md-6">
-                                <!-- Add user details here, you can customize this section -->
-                                <h4><strong>User Details</strong></h4>
-                                <p><strong>Name :</strong> <%= order.deliveryAddress.name %></p>
-                                <p><strong>Email : </strong><%= order.userId.email %></p>
-                                <p> Address :  <%= order.deliveryAddress.city %>, <%=order.deliveryAddress.state %>, <%= order.deliveryAddress.pin %></p>
-                            </div>
-                            <div class="col-lg-4 col-md-6 me-auto" style="margin-left: 2rem; margin-top: 2rem;">
-                                <input type="text" placeholder="Search..." class="form-control" />
-                            </div>
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Order List</h2>
+                            <p>Lorem ipsum dolor sit amet.</p>
                         </div>
-                    </header>
-                    <!-- card-header end// -->
-                    <div class="card-body" >
-                        <div class="card-body" >
-                            <table class="table table-hover" id="Reload">
-                                <thead>
-                                    <tr>
-                                        <th>Id</th> 
-                                        <th>Image</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Payment</th>
-                                        <th scope="col">Qun</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col" class="text-end">Action</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% order.products.forEach((value,i)=>{  %>
-                                    <% if(value.status == "returnRequested" || value.status == "returnDenied" || value.status == "returned"){ %>
-                                    <tr>
-                                        <td><%= i+1 %></td>
-                                        
-                                        <td>  <div class="itemside">
-                                            <div class="left">
-                                                <img src="/admin/assets/images/product/sharpedproduct/<%= value.productId.image[0] %>" class="img-sm img-thumbnail" alt="Item" />
-                                            </div>
-                                            
-                                        </div>
-                                     </td>
-                                        <td><%= order.deliveryAddress.name %></td>
-                                        <td><%= order.paymentMethod %></td>
-                                        <td><%= value.quantity %></td>
-                                        <td><%= value.productId.productPrice %></td>  
-                                         <% if(value.status == "returnRequested"){ %>
-                                             <td><span class="badge rounded-pill alert-warning"><%= value.status %></span></td>
-                                       <%  }else if(value.status == "returned"){ %>
-                                             <td><span class="badge rounded-pill alert-success"><%= value.status %></span></td>
-                                        <% }else{ %>
-                                             <td><span class="badge rounded-pill alert-danger"><%= value.status %></span></td>
-                                             <% } %>
-                                                <td><%= order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                                <td class="text-end"> <select
-                                                     data-orderId="<%= order._id %>"
-                                                    data-productId="<%= value._id %>"
-                                                    data-userId="<%= order.userId %>"
-                                                    class="form-select orderStatus" id="orderStatus"
-                                                    name="orderStatus" onchange="changeStatus(this)">
-                                                    <option>change status</option>
-                                                    <option value="returned">Accepted</option>
-                                                    <option value="returnDenied">Denied</option>
-                                                </select></td>                                            
-                                    </tr>
-                                 
-                                    <% } %>
-                                    <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- table-responsive //end -->
+                        <a href="/admin/returns" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go
+                            Back</a>
                     </div>
-                    <!-- card-body end// -->
-                </div>
-               
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-md-6">
+                                    <!-- Add user details here, you can customize this section -->
+                                    <h4><strong>User Details</strong></h4>
+                                    <p><strong>Name :</strong>
+                                        <%= order.deliveryAddress.name %>
+                                    </p>
+                                    <p><strong>Email : </strong>
+                                        <%= order.userId.email %>
+                                    </p>
+                                    <p> Address : <%= order.deliveryAddress.city %>, <%=order.deliveryAddress.state %>,
+                                                <%= order.deliveryAddress.pin %>
+                                    </p>
+                                </div>
+                                <div class="col-lg-4 col-md-6 me-auto" style="margin-left: 2rem; margin-top: 2rem;">
+                                    <input type="text" placeholder="Search..." class="form-control" />
+                                </div>
+                            </div>
+                        </header>
+                        <!-- card-header end// -->
+                        <div class="card-body">
+                            <div class="card-body">
+                                <table class="table table-hover" id="Reload">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Image</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Payment</th>
+                                            <th scope="col">Qun</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col" class="text-end">Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% order.products.forEach((value,i)=>{ %>
+                                            <% if(value.status=="returnRequested" || value.status=="returnDenied" ||
+                                                value.status=="returned" ){ %>
+                                                <tr>
+                                                    <td>
+                                                        <%= i+1 %>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="itemside">
+                                                            <div class="left">
+                                                                <img src="/admin/assets/images/product/sharpedproduct/<%= value.productId.image[0] %>"
+                                                                    class="img-sm img-thumbnail" alt="Item" />
+                                                            </div>
+
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <%= order.deliveryAddress.name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= order.paymentMethod %>
+                                                    </td>
+                                                    <td>
+                                                        <%= value.quantity %>
+                                                    </td>
+                                                    <td>
+                                                        <%= value.productId.productPrice %>
+                                                    </td>
+                                                    <% if(value.status=="returnRequested" ){ %>
+                                                        <td><span class="badge rounded-pill alert-warning">
+                                                                <%= value.status %>
+                                                            </span></td>
+                                                        <% }else if(value.status=="returned" ){ %>
+                                                            <td><span class="badge rounded-pill alert-success">
+                                                                    <%= value.status %>
+                                                                </span></td>
+                                                            <% }else{ %>
+                                                                <td><span class="badge rounded-pill alert-danger">
+                                                                        <%= value.status %>
+                                                                    </span></td>
+                                                                <% } %>
+                                                                    <td>
+                                                                        <%= order.date.toLocaleString('en-US', {
+                                                                            weekday: 'short' , month: 'short' ,
+                                                                            day: 'numeric' , year: 'numeric' ,
+                                                                            hour: 'numeric' , minute: 'numeric' ,
+                                                                            second: 'numeric' , hour12: true }) %>
+                                                                    </td>
+                                                                    <td class="text-end"> <select
+                                                                            data-orderId="<%= order._id %>"
+                                                                            data-productId="<%= value._id %>"
+                                                                            data-userId="<%= order.userId %>"
+                                                                            class="form-select orderStatus"
+                                                                            id="orderStatus" name="orderStatus"
+                                                                            onchange="changeStatus(this)">
+                                                                            <option>change status</option>
+                                                                            <option value="returned">Accepted</option>
+                                                                            <option value="returnDenied">Denied</option>
+                                                                        </select></td>
+                                                </tr>
+
+                                                <% } %>
+                                                    <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive //end -->
+                        </div>
+                        <!-- card-body end// -->
+                    </div>
 
 
-            <script>
-               function changeStatus(select){
-                let orderId = select.dataset.orderid;
-                let productId = select.dataset.productid;
-                let status = select.value;
-                let userId = select.dataset.userid;
-                const data ={orderId,productId,status,userId}
-                fetch('/admin/changeReturnStaturs',{
-                    method:'POST',
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body:JSON.stringify(data)
-                }).then((data)=>data.json())
-                .then((response)=>{
-                    if(response.ok){
-                        $('#Reload').load('/admin/returnDetails?id=<%= order._id %>  #Reload')
-                    }
-                })
 
-               }
-            </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script>
+                        function changeStatus(select) {
+                            let orderId = select.dataset.orderid;
+                            let productId = select.dataset.productid;
+                            let status = select.value;
+                            let userId = select.dataset.userid;
+                            const data = { orderId, productId, status, userId }
+                            fetch('/admin/changeReturnStaturs', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            }).then((data) => data.json())
+                                .then((response) => {
+                                    if (response.ok) {
+                                        $('#Reload').load('/admin/returnDetails?id=<%= order._id %>  #Reload')
+                                    }
+                                })
 
-            
+                        }
+                    </script>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<%- include("../layout/admin/footer.ejs") -%>
+
+
+                    <%- include("../layout/admin/footer.ejs") -%>

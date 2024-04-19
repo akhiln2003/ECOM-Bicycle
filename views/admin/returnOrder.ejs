@@ -1,80 +1,104 @@
 <%- include("../layout/admin/header.ejs") -%>
-        <div class="screen-overlay"></div>
-        <%- include("../layout/admin/sidbar.ejs") -%> 
+    <div class="screen-overlay"></div>
+    <%- include("../layout/admin/sidbar.ejs") -%>
         <main class="main-wrap">
-            <%- include("../layout/admin/navbar.ejs") -%> 
+            <%- include("../layout/admin/navbar.ejs") -%>
 
-            <section class="content-main">
-                <div class="content-header">
-                    <div>
-                        <h2 class="content-title card-title">Order List</h2>
-                        <p>Lorem ipsum dolor sit amet.</p>
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Order List</h2>
+                            <p>Lorem ipsum dolor sit amet.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="card mb-4">
-                    <header class="card-header">
-                        <div class="row gx-3">
-                            <div class="col-lg-4 col-md-6 me-auto">
-                                <input type="text" placeholder="Search..." class="form-control" />
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <input type="text" placeholder="Search..." class="form-control" />
+                                </div>
                             </div>
+                        </header>
+                        <!-- card-header end// -->
+                        <div class="card-body">
+                            <div class="card-body" id="Reload">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col" class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% orders.forEach((order,i)=>{ %>
+                                            <tr>
+                                                <td>
+                                                    <%= i+1 %>
+                                                </td>
+                                                <td>
+                                                    <%= order.deliveryAddress.name %>
+                                                </td>
+                                                <td>
+                                                    <%= order.userId.email %>
+                                                </td>
+                                                <td>
+                                                    <%= order.totalAmount %>
+                                                </td>
+                                                <% if(order.status=="placed" ){ %>
+                                                    <td><span class="badge rounded-pill alert-success">placed</span>
+                                                    </td>
+                                                    <% }else{ %>
+                                                        <td><span
+                                                                class="badge rounded-pill alert-danger">Canceled</span>
+                                                        </td>
+                                                        <% }%>
+                                                            <td>
+                                                                <%= order.date.toLocaleString('en-US', {
+                                                                    weekday: 'short' , month: 'short' , day: 'numeric' ,
+                                                                    year: 'numeric' , hour: 'numeric' ,
+                                                                    minute: 'numeric' , second: 'numeric' , hour12: true
+                                                                    }) %>
+                                                            </td>
+                                                            <td class="text-end"><a
+                                                                    href="/admin/returnDetails?id= <%= order._id %>"><strong>More
+                                                                        Details</strong></a></td>
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive //end -->
                         </div>
-                    </header>
-                    <!-- card-header end// -->
-                    <div class="card-body">
-                        <div class="card-body" id="Reload">
-                            <table class="table table-hover" >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th> 
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col" class="text-end">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% orders.forEach((order,i)=>{ %>
-                                    <tr>
-                                        <td><%= i+1 %></td>
-                                        <td><%= order.deliveryAddress.name %></td>
-                                        <td><%= order.userId.email %></td>
-                                        <td><%= order.totalAmount %></td>  
-                                        <% if(order.status == "placed"){ %>
-                                                <td><span class="badge rounded-pill alert-success">placed</span></td>
-                                             <% }else{ %>
-                                                <td><span class="badge rounded-pill alert-danger">Canceled</span></td>
-                                                <% }%>
-                                        <td><%= order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) %></td>
-                                        <td class="text-end"><a href="/admin/returnDetails?id= <%= order._id %>"><strong>More Details</strong></a></td>              
-                                    </tr>
-                                    <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- table-responsive //end -->
+                        <!-- card-body end// -->
                     </div>
-                    <!-- card-body end// -->
-                </div>
-                <!-- card end// -->
-                <div class="pagination-area mt-15 mb-50">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-start">
-                            <li class="page-item">
-                                <a class="page-link" href="/admin/returns?page=<%= previous %>"><i class="material-icons md-chevron_left"></i></a>
-                            </li>
-                            <% for(i=1;i<= totalPages;i++){ %>
-                                <li class="page-item active"><a class="page-link" href="/admin/returns?page=<%= i %>"><%= i %></a></li>
-                                 <% } %>
-                            <li class="page-item">
-                                <a class="page-link" href="/admin/returns?page=<%= next %>"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </section>
-            <!-- content-main end// -->
-            
+                    <!-- card end// -->
+                    <div class="pagination-area mt-15 mb-50">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-start">
+                                <li class="page-item">
+                                    <a class="page-link" href="/admin/returns?page=<%= previous %>"><i
+                                            class="material-icons md-chevron_left"></i></a>
+                                </li>
+                                <% for(i=1;i<=totalPages;i++){ %>
+                                    <li class="page-item active"><a class="page-link"
+                                            href="/admin/returns?page=<%= i %>">
+                                            <%= i %>
+                                        </a></li>
+                                    <% } %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/admin/returns?page=<%= next %>"><i
+                                                    class="material-icons md-chevron_right"></i></a>
+                                        </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </section>
+                <!-- content-main end// -->
 
-<%- include("../layout/admin/footer.ejs") -%>
+
+                <%- include("../layout/admin/footer.ejs") -%>

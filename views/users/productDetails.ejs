@@ -1,44 +1,41 @@
+<%-include('.. /layout/user/header.ejs') %>
 
-	  
-<%-include('../layout/user/header.ejs') %>
+	<%-include('.. /layout/user/navbar.ejs') %>
 
-<%-include('../layout/user/navbar.ejs') %>
-    
-<style>
-.zoomable-image {
-        overflow: hidden;
-        position: relative;
-        cursor: zoom-in; 
-    }
+		<style>
+			.zoomable-image {
+				overflow: hidden;
+				position: relative;
+				cursor: zoom-in;
+			}
 
-    .zoomable-image:hover {
-        cursor: zoom-out; 
-    }
+			.zoomable-image:hover {
+				cursor: zoom-out;
+			}
 
-    .zoomable-image img {
-        transition: transform 0.3s ease-in-out;
-    }
+			.zoomable-image img {
+				transition: transform 0.3s ease-in-out;
+			}
+		</style>
 
-</style>
-    
 
 		<section class="product-details section-padding-top" style="margin-top: 30px;">
-						<!-- Breadcrumb Section -->
-<section class="breadcrumb-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h2>ProductDetails</h2>
-                <div class="breadcrumb-text">
-                    <a style="color: black; text-decoration: none; " href="/">Home</a> >
-					<a style="color: black; text-decoration: none;" href="/shop">Shop</a> >
-                    <span>productDetails</span>
-					<hr>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+			<!-- Breadcrumb Section -->
+			<section class="breadcrumb-section">
+				<div class="container">
+					<div class="row">
+						<div class="col-12">
+							<h2>ProductDetails</h2>
+							<div class="breadcrumb-text">
+								<a style="color: black; text-decoration: none; " href="/">Home</a> >
+								<a style="color: black; text-decoration: none;" href="/shop">Shop</a> >
+								<span>productDetails</span>
+								<hr>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6">
@@ -46,23 +43,27 @@
 							<!-- Single-pro-slider Big-photo start -->
 							<div class="large-slider zoom-gallery">
 								<div>
-									
-									<div class="zoomable-image" onmousemove="zoomImage(event)" onmouseleave="resetZoom()">
-										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>" width="555" height="587" alt="" id="zoomedImage" />
+
+									<div class="zoomable-image" onmousemove="zoomImage(event)"
+										onmouseleave="resetZoom()">
+										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>"
+											width="555" height="587" alt="" id="zoomedImage" />
 									</div>
 								</div>
-								
-							</div>	
-							<!-- Single-pro-slider Big-photo end -->	
-							
+
+							</div>
+							<!-- Single-pro-slider Big-photo end -->
+
 							<!-- Single-pro-slider Small-photo start -->
 							<div class="thumb-slider slider-nav">
 								<% for(i=0;i<4;i++){ %>
 									<div>
-										<img onclick="showImage('<%= product.image[i] %>')" src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>" width="117" height="123" alt="" />
+										<img onclick="showImage('<%= product.image[i] %>')"
+											src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>"
+											width="117" height="123" alt="" />
 									</div>
 									<% } %>
-								
+
 							</div>
 							<!-- Single-pro-slider Small-photo end -->
 						</div>
@@ -70,8 +71,11 @@
 					<div class="col-md-6">
 						<div class="right">
 							<div class="singl-pro-title">
-								<h3><%= product.productName %></h3>
-								<h1> ₹ <%= product.productPrice %></h1>
+								<h3>
+									<%= product.productName %>
+								</h3>
+								<h1> ₹ <%= product.productPrice %>
+								</h1>
 								<div class="ratting">
 									<i class="fa fa-star"></i>
 									<i class="fa fa-star"></i>
@@ -80,8 +84,10 @@
 									<i class="fa fa-star gray-star"></i>
 								</div>
 								<hr />
-								
-								<p><%= product.description %></p>
+
+								<p>
+									<%= product.description %>
+								</p>
 								<hr />
 								<div class="color-brand clearfix">
 									<div class="s-select">
@@ -104,44 +110,53 @@
 											</select>
 										</div>
 									</div>
-												<input id="quantity" type="number" value="1" name="qtybutton"  min="1" max="5">
+									<input id="quantity" type="number" value="1" name="qtybutton" min="1" max="5">
 								</div>
 								<div class="actions-btn">
 									<ul class="clearfix text-center">
-										<% if(product.stock > 0){ %>
+										<% if(product.stock> 0){ %>
 											<% if(inCart){ %>
 												<li>
-													<a  style="text-decoration: none;" href="/cart"><i ></i>ViewCart</a>
+													<a style="text-decoration: none;" href="/cart"><i></i>ViewCart</a>
 												</li>
 												<% }else{ %>
 													<li>
-														<a  style="text-decoration: none;" onclick=" addToCart('<%= product._id  %>')"><i class="fa fa-shopping-cart" ></i>AddToCart</a>
+														<a style="text-decoration: none;"
+															onclick=" addToCart('<%= product._id  %>')"><i
+																class="fa fa-shopping-cart"></i>AddToCart</a>
 													</li>
-													
-										<%}%>
-											<% }else{ %>
-												<li>
-													<a href="" style="color: red; text-decoration: none; "><i ></i>Out of stock</a>
-												</li>
-												<% } %>
-												
-												<% if(inWhishlist){ %>
-													<li>
-														<a onclick="removeProduct('<%= product._id %>')"><i style="background-color: #ff6600; color: white;" class="fa fa-heart-o"></i></a>
-													</li>
-													<% }else{ %>
-														<li>
-															<a onclick="addToWishlist('<%= product._id %>')"><i class="fa fa-heart-o"></i></a>
-														</li>
-														<% } %>
-											
-										
-										
-										
+
+													<%}%>
+														<% }else{ %>
+															<li>
+																<a href=""
+																	style="color: red; text-decoration: none; "><i></i>Out
+																	of stock</a>
+															</li>
+															<% } %>
+
+																<% if(inWhishlist){ %>
+																	<li>
+																		<a
+																			onclick="removeProduct('<%= product._id %>')"><i
+																				style="background-color: #ff6600; color: white;"
+																				class="fa fa-heart-o"></i></a>
+																	</li>
+																	<% }else{ %>
+																		<li>
+																			<a
+																				onclick="addToWishlist('<%= product._id %>')"><i
+																					class="fa fa-heart-o"></i></a>
+																		</li>
+																		<% } %>
+
+
+
+
 									</ul>
 								</div>
 								<hr />
-								
+
 								<div class="specific-pro">
 									<ul>
 										<li class="specific-pro-title">
@@ -188,7 +203,7 @@
 									<li>
 										<a data-bs-toggle="tab" href="#reviews">REVIEWS</a>
 									</li>
-									
+
 									<li>
 										<a data-bs-toggle="tab" href="#custom">CUSTOM TAB</a>
 									</li>
@@ -197,8 +212,16 @@
 							<div class="tab-content margin50">
 								<div class="tab-pane fade show active" id="des">
 									<div class="des-text">
-										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero.</p><br />
-										<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>
+										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+											nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut
+											wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
+											lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
+											dolor in hendrerit in vulputate velit esse molestie consequat, vel illum
+											dolore eu feugiat nulla facilisis at vero.</p><br />
+										<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum
+											claritatem. Investigationes demonstraverunt lectores legere me lius quod ii
+											legunt saepius. Claritas est etiam processus dynamicus, qui sequitur
+											mutationem consuetudium lectorum.</p>
 									</div>
 								</div>
 								<div class="tab-pane fade single-blog-page" id="reviews">
@@ -218,7 +241,8 @@
 												</div>
 												<div class="col-12">
 													<div class="input-text">
-														<textarea name="comment" id="comment" placeholder="Comment" rows="4"></textarea>
+														<textarea name="comment" id="comment" placeholder="Comment"
+															rows="4"></textarea>
 													</div>
 												</div>
 												<div class="col-12">
@@ -232,8 +256,16 @@
 								</div>
 								<div class="tab-pane fade" id="custom">
 									<div class="des-text">
-										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero.</p><br />
-										<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum.</p>
+										<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+											nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut
+											wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit
+											lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
+											dolor in hendrerit in vulputate velit esse molestie consequat, vel illum
+											dolore eu feugiat nulla facilisis at vero.</p><br />
+										<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum
+											claritatem. Investigationes demonstraverunt lectores legere me lius quod ii
+											legunt saepius. Claritas est etiam processus dynamicus, qui sequitur
+											mutationem consuetudium lectorum.</p>
 									</div>
 								</div>
 							</div>
@@ -243,29 +275,35 @@
 			</div>
 		</section>
 		<!-- product details area end -->
-        <!-- related product section start -->
+		<!-- related product section start -->
 		<section class="related-area riding-one">
 			<div class="container">
 				<div class="related-title">
 					<h5>Related Products</h5>
 				</div>
-				<div class="row text-center my-5" >
-					<div class="col-12" id="Reload"	>
+				<div class="row text-center my-5">
+					<div class="col-12" id="Reload">
 						<div class="related-slider single-products">
-							<% if(Array.isArray(product)){  %>
+							<% if(Array.isArray(product)){ %>
 								<% products.forEach((product,index)=>{ %>
 									<div class="product-item-wrap">
 										<div class="product-item">
 
 											<div class="pro-img">
-												<a href="/productDetails?id=<%= product._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= product.image[index] %>" width="263" height="299" alt="Product" /></a>
+												<a href="/productDetails?id=<%= product._id %>"><img
+														src="/admin/assets/images/product/sharpedproduct/<%= product.image[index] %>"
+														width="263" height="299" alt="Product" /></a>
 												<div class="tag-n-s">
 													<span>New</span>
 												</div>
 											</div>
 											<div class="riding-title clearfix">
 												<div class="product-title text-start floatleft">
-													<a href="#"><h3 class="title"><%= product.productName %></h3></a>
+													<a href="#">
+														<h3 class="title">
+															<%= product.productName %>
+														</h3>
+													</a>
 													<div class="ratting">
 														<i class="fa fa-star"></i>
 														<i class="fa fa-star"></i>
@@ -277,42 +315,49 @@
 												</div>
 											</div>
 
-											
+
 										</div>
 									</div>
-										   <% }) %>
-										  <%}%>
-									
-							<% relatedProduct.forEach((product,index)=>{ %>
-								<div class="product-item-wrap">
-									<div class="product-item">
-										<div class="pro-img">
-											<a href="product-details.html"><img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>" width="263" height="299" alt="Product" /></a>
-										</div>
-										<div class="riding-title clearfix">
-											<div class="product-title text-start floatleft">
-												<a href="#"><h3 class="title"><%= product.productName %></h3></a>
-												<div class="ratting">
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star gray-star"></i>
-													<i class="fa fa-star gray-star"></i>
+									<% }) %>
+										<%}%>
+
+											<% relatedProduct.forEach((product,index)=>{ %>
+												<div class="product-item-wrap">
+													<div class="product-item">
+														<div class="pro-img">
+															<a href="product-details.html"><img
+																	src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>"
+																	width="263" height="299" alt="Product" /></a>
+														</div>
+														<div class="riding-title clearfix">
+															<div class="product-title text-start floatleft">
+																<a href="#">
+																	<h3 class="title">
+																		<%= product.productName %>
+																	</h3>
+																</a>
+																<div class="ratting">
+																	<i class="fa fa-star"></i>
+																	<i class="fa fa-star"></i>
+																	<i class="fa fa-star"></i>
+																	<i class="fa fa-star gray-star"></i>
+																	<i class="fa fa-star gray-star"></i>
+																</div>
+																<p><span>₹ <%= product.productPrice %></span>
+																	<del></del></p>
+															</div>
+														</div>
+													</div>
 												</div>
-												<p><span>₹ <%= product.productPrice %></span> <del></del></p>
-											</div>
-										</div>
-									</div>
-								</div>
-								<% }) %>
-							
-							
+												<% }) %>
+
+
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
-        <!-- related product section end -->
+		<!-- related product section end -->
 		<!-- footer section start -->
 		<footer>
 			<!-- brand logo area start -->
@@ -323,19 +368,24 @@
 							<div class="brand-logo">
 								<ul class="clearfix">
 									<li>
-										<a href="#"><img src="img/brand/1.png" width="170" height="88" alt="Brand Logo" /></a>
+										<a href="#"><img src="img/brand/1.png" width="170" height="88"
+												alt="Brand Logo" /></a>
 									</li>
 									<li>
-										<a href="#"><img src="img/brand/2.png" width="170" height="88" alt="Brand Logo" /></a>
+										<a href="#"><img src="img/brand/2.png" width="170" height="88"
+												alt="Brand Logo" /></a>
 									</li>
 									<li>
-										<a href="#"><img src="img/brand/3.png" width="170" height="88" alt="Brand Logo" /></a>
+										<a href="#"><img src="img/brand/3.png" width="170" height="88"
+												alt="Brand Logo" /></a>
 									</li>
 									<li>
-										<a href="#"><img src="img/brand/4.png" width="170" height="88" alt="Brand Logo" /></a>
+										<a href="#"><img src="img/brand/4.png" width="170" height="88"
+												alt="Brand Logo" /></a>
 									</li>
 									<li>
-										<a href="#"><img src="img/brand/5.png" width="170" height="88" alt="Brand Logo" /></a>
+										<a href="#"><img src="img/brand/5.png" width="170" height="88"
+												alt="Brand Logo" /></a>
 									</li>
 								</ul>
 							</div>
@@ -348,9 +398,9 @@
 			<div class="map-contact clearfix">
 				<div class="googleMap-info half-width">
 					<iframe title="Google map" class="contact-map-size"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1613802584124!5m2!1sen!2sbd"
-                        allowfullscreen="" loading="lazy">
-                    </iframe>
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.119763973046!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sbd!4v1613802584124!5m2!1sen!2sbd"
+						allowfullscreen="" loading="lazy">
+					</iframe>
 				</div>
 				<div class="footer-contact half-width">
 					<form id="contact-form" action="https://whizthemes.com/mail-php/other/mail.php">
@@ -378,132 +428,132 @@
 
 
 			<script>
-				function addToCart(productId,userId){
+				function addToCart(productId, userId) {
 					const quantity = document.getElementById('quantity').value;
-					const data ={productId,userId,quantity}	
-							fetch('/addtocart',{ 
-								method: 'POST',
-								headers:{
-									'Content-Type': 'application/json'
-								},
-								body:JSON.stringify(data)
-							}).then((result)=>{
-								if(result.ok){
-									Swal.fire({
-									icon: "success",
-									title: 'Item Added to Cart',
+					const data = { productId, userId, quantity }
+					fetch('/addtocart', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(data)
+					}).then((result) => {
+						if (result.ok) {
+							Swal.fire({
+								icon: "success",
+								title: 'Item Added to Cart',
+								confirmButtonText: 'OK',
+								confirmButtonColor: '#3085d6'
+							}).then((response) => {
+								if (response.isConfirmed) {
+
+									location.reload()
+								}
+							})
+						}
+					})
+
+
+
+				}
+
+
+				function addToWishlist(productId) {
+					const data = { productId };
+					fetch('/addToWishlist', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(data)
+					})
+						.then(data => {
+							if (data.existedProduct) {
+								Swal.fire({
+									icon: "info",
+									title: 'Already In Wishlist',
 									confirmButtonText: 'OK',
 									confirmButtonColor: '#3085d6'
-								}).then((response)=>{
-									if(response.isConfirmed){
-
-										location.reload()
-									}
 								})
-								}
-							})
-						
-					
-
-						}
-
-
-						function addToWishlist(productId){
-							const data ={productId};
-							fetch('/addToWishlist',{
-								method:'POST',
-								headers:{
-									'Content-Type': 'application/json'
-								},
-								body:JSON.stringify(data)
-							})
-							.then(data=>{
-								if(data.existedProduct){
-									Swal.fire({
-										icon: "info",
-										title: 'Already In Wishlist',
-										confirmButtonText: 'OK',
-										confirmButtonColor: '#3085d6'
-									})
-								}
-								if(data.ok){
-									Swal.fire({
+							}
+							if (data.ok) {
+								Swal.fire({
 									icon: "success",
 									title: 'Item Added to Wishlist',
 									confirmButtonText: 'OK',
 									confirmButtonColor: '#3085d6'
-								}).then((response)=>{
-									if(response.isConfirmed){
+								}).then((response) => {
+									if (response.isConfirmed) {
 
 										location.reload()
 									}
 								})
+							}
+						})
+				}
+
+				function removeProduct(productId) {
+					const data = { productId: productId };
+					Swal.fire({
+						icon: "warning",
+						title: "Are You Sure",
+						showCancelButton: "true",
+						cancelButtonColor: "#d33",
+						confirmButtonText: "Yes!",
+						confirmButtonColor: "#3085d6"
+					}).then((response) => {
+						if (response.isConfirmed) {
+							fetch('/removeToWishlist', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify(data)
+							}).then((reselt) => {
+								if (reselt.ok) {
+									Swal.fire({
+										icon: 'success',
+										title: 'Removed',
+										showConfirmButton: false
+									})
+									setTimeout(() => {
+										location.reload()
+
+									}, 600);
 								}
 							})
 						}
-
-  function removeProduct(productId){
-        const data = {productId:productId};
-        Swal.fire({
-                    icon: "warning",
-                    title: "Are You Sure",
-                    showCancelButton: "true",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes!",
-                    confirmButtonColor: "#3085d6"
-                }).then((response)=>{
-                    if(response.isConfirmed){
-                        fetch('/removeToWishlist', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(data)                
-                        }).then((reselt) => {
-                            if (reselt.ok) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Removed',
-									showConfirmButton: false  
-                                })
-								setTimeout(() => {
-									location.reload()
-									
-								},600);
-                            }
-                        })
-                    }
-                })
-    }
+					})
+				}
 
 
 				function zoomImage(event) {
 					const zoomedImage = document.getElementById('zoomedImage');
 					const boundingRect = zoomedImage.getBoundingClientRect();
-			
+
 					const mouseX = event.clientX - boundingRect.left;
 					const mouseY = event.clientY - boundingRect.top;
-			
+
 					const percentX = mouseX / boundingRect.width;
 					const percentY = mouseY / boundingRect.height;
-			
+
 					const scale = 2; // Adjust the scale factor for your desired zoom level
-			
+
 					zoomedImage.style.transformOrigin = `${percentX * 100}% ${percentY * 100}%`;
 					zoomedImage.style.transform = `scale(${scale})`;
 				}
-			
+
 				function resetZoom() {
 					const zoomedImage = document.getElementById('zoomedImage');
 					zoomedImage.style.transformOrigin = 'center center';
 					zoomedImage.style.transform = 'scale(1)';
 				}
 				function showImage(imageSrc) {
-                       document.getElementById('zoomedImage').src = "/admin/assets/images/product/sharpedproduct/" + imageSrc;
-  				  }
+					document.getElementById('zoomedImage').src = "/admin/assets/images/product/sharpedproduct/" + imageSrc;
+				}
 			</script>
-			
+
 			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            <%- include('../layout/user/footbar.ejs') %>
-            <%- include('../layout/user/footer.ejs') %>
+			<%- include('../layout/user/footbar.ejs') %>
+				<%- include('../layout/user/footer.ejs') %>

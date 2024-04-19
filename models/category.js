@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
-const categorySchima  = mongoose.Schema({
-    categoryName:{
-        type:String,
-        required:true
+const categorySchima = mongoose.Schema({
+    categoryName: {
+        type: String,
+        required: true
     },
-    description:{
-        type:String,
-        required:true
+    description: {
+        type: String,
+        required: true
     },
-    isDeleted:{
-        type:Boolean,
-        default : false
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 });
 

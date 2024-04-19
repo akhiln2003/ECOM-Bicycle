@@ -19,8 +19,7 @@ const listOrders = async(req,res)=>{
         // Adjust endDate to include the entire end day by setting the time to the end of the day
         endDate.setHours(23, 59, 59, 999);
         
-        const orders = await Orders.find({date : {$gte : start, $lte : end}}).populate('userId').populate('products');
-
+        const orders = await Orders.find({date : {$gte : startDate, $lte : endDate}}).populate('userId').populate('products.productId');
         res.render('listSales',{orders});
     } catch (error) {
         console.log(error);

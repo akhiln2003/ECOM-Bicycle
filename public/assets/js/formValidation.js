@@ -16,38 +16,38 @@ function validateForm() {
 
   // Validate name
   if (!nameRegex.test(name)) {
-      showError('nameError', 'Only use Alphabets');
-      removeErrorsAfterDelay('nameError');
-      return false;
+    showError('nameError', 'Only use Alphabets');
+    removeErrorsAfterDelay('nameError');
+    return false;
   }
   // Validate email
   else if (!emailRegex.test(email)) {
-      showError('emailError', 'Invalid email address');
-      removeErrorsAfterDelay('emailError');
-      return false;
+    showError('emailError', 'Invalid email address');
+    removeErrorsAfterDelay('emailError');
+    return false;
   }
   // Validate Password
   else if (!passwordRegex.test(password)) {
-      showError('passwordError', 'Passwords do not meet the criteria');
-      removeErrorsAfterDelay('passwordError');
-      return false;
+    showError('passwordError', 'Passwords do not meet the criteria');
+    removeErrorsAfterDelay('passwordError');
+    return false;
   }
   // Validate confirmPassword
   else if (!passwordRegex.test(confirmPassword) || password != confirmPassword) {
-      showError('ConformPasswordError', 'Passwords do not match');
-      removeErrorsAfterDelay('ConformPasswordError');
-      return false;
+    showError('ConformPasswordError', 'Passwords do not match');
+    removeErrorsAfterDelay('ConformPasswordError');
+    return false;
   } else {
-      return true;
+    return true;
   }
 }
 
 // Function to remove errors after a delay
 function removeErrorsAfterDelay(errorId) {
   setTimeout(() => {
-      document.getElementById(errorId).innerText = '';
-      document.getElementById(errorId.replace('Error', '')).classList.remove('error-border');
-  }, 3000); 
+    document.getElementById(errorId).innerText = '';
+    document.getElementById(errorId.replace('Error', '')).classList.remove('error-border');
+  }, 3000);
 }
 
 // Function to clear errors and borders

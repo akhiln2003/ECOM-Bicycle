@@ -1,115 +1,115 @@
- const Orders = require('../models/orderModel');
+const Orders = require('../models/orderModel');
 
 
-        // LOAD ORDERS
-const loadOrders = async(req,res)=>{
+// LOAD ORDERS
+const loadOrders = async (req, res) => {
     try {
-        let page = 1; 
-        if(req.query.page){
+        let page = 1;
+        if (req.query.page) {
             page = parseInt(req.query.page);
         }
         let next = page + 1;
-        let previous = page > 1 ? page - 1 : 1 ;
+        let previous = page > 1 ? page - 1 : 1;
         let limit = 10;
         const count = await Orders.find().count();
-        const totalPages = Math.ceil(count/limit);
+        const totalPages = Math.ceil(count / limit);
 
-        if(next > totalPages){
+        if (next > totalPages) {
             next = totalPages
         }
 
-        const orders = await Orders.find().populate('userId').limit(limit).skip((page - 1)* limit);
-        res.render('orders',{orders,totalPages,next,previous});
+        const orders = await Orders.find().populate('userId').limit(limit).skip((page - 1) * limit);
+        res.render('orders', { orders, totalPages, next, previous });
     } catch (error) {
         console.log(error);
     }
 }
 
 
-        // LOAD ORDER DETAILS
+// LOAD ORDER DETAILS
 const loadOrderdetails = async (req, res) => {
     try {
-        const orderId = req.query.id.trim(); 
-        const order = await Orders.findById(orderId).populate('products.productId').populate('userId'); 
-        res.render('adminOrderDetails',{order});
+        const orderId = req.query.id.trim();
+        const order = await Orders.findById(orderId).populate('products.productId').populate('userId');
+        res.render('adminOrderDetails', { order });
     } catch (error) {
         console.log(error);
     }
-}      
+}
 
-        // CANCEL ORDER
-const cancelOrder = async(req,res)=>{
+// CANCEL ORDER
+const cancelOrder = async (req, res) => {
     try {
-        const {productId,orderId}=req.body;
-        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
-            $set:{
-                'products.$.status': 'cancelled' 
+        const { productId, orderId } = req.body;
+        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
+            $set: {
+                'products.$.status': 'cancelled'
             }
         });
-        res.json({ok:true})
+        res.json({ ok: true })
     } catch (error) {
         console.log(error);
     }
 }
 
 
-const changeOrderStatus = async(req,res)=>{
+const changeOrderStatus = async (req, res) => {
     try {
-        const{orderId,productId,status} = req.body;
-        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
-            $set:{
-                'products.$.status': status 
+        const { orderId, productId, status } = req.body;
+        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
+            $set: {
+                'products.$.status': status
             }
         })
-        res.json({ok:true})
+        res.json({ ok: true })
     } catch (error) {
         console.log(error);
     }
 }
 
 
-const loadReturn = async(req,res)=>{
+const loadReturn = async (req, res) => {
     try {
         let page = 1
-        if(req.query.page){
+        if (req.query.page) {
             page = req.query.page;
         }
         let limit = 10;
-        let previous = page > 1 ?page - 1 : 1;
-        const count = await Orders.find({'products.status':"returnRequested"}).count();
+        let previous = page > 1 ? page - 1 : 1;
+        const count = await Orders.find({ 'products.status': "returnRequested" }).count();
         const totalPages = Math.ceil(count / limit);
-        let next = page > totalPages ? page + 1 : totalPages ;
+        let next = page > totalPages ? page + 1 : totalPages;
 
         const orders = await Orders.find({
             'products.status': {
                 $in: ["returnRequested", "returned", "returnDenied"]
             }
         }).populate('products.productId').populate('userId');
-        res.render('returnOrder',{orders,next,previous,totalPages});
+        res.render('returnOrder', { orders, next, previous, totalPages });
     } catch (error) {
         console.log(error);
     }
 }
 
-const loadReturnDetails = async(req,res)=>{
+const loadReturnDetails = async (req, res) => {
     try {
-        const orderId = req.query.id.trim(); 
-        const order = await Orders.findById(orderId).populate('userId').populate('products.productId'); 
-        res.render('returnDetails',{order})
+        const orderId = req.query.id.trim();
+        const order = await Orders.findById(orderId).populate('userId').populate('products.productId');
+        res.render('returnDetails', { order })
     } catch (error) {
         console.log(error);
     }
 }
 
-const changeReturnStatus = async(req,res)=>{
+const changeReturnStatus = async (req, res) => {
     try {
-        const {orderId,productId,status} = req.body;
-        await Orders.findOneAndUpdate({_id:orderId,'products._id':productId},{
-            $set:{
-                'products.$.status':status
+        const { orderId, productId, status } = req.body;
+        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
+            $set: {
+                'products.$.status': status
             }
         })
-        res.json({ok:true})
+        res.json({ ok: true })
     } catch (error) {
         console.log(error);
     }
@@ -117,7 +117,7 @@ const changeReturnStatus = async(req,res)=>{
 
 
 
-module.exports={
+module.exports = {
     loadOrders,
     loadOrderdetails,
     cancelOrder,

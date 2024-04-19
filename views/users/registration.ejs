@@ -1,104 +1,111 @@
-  
-  <%-include('../layout/user/header.ejs') %>
+<%-include('.. /layout/user/header.ejs') %>
 
-      <%-include('../layout/user/navbar.ejs') %>
-            
+  <%-include('.. /layout/user/navbar.ejs') %>
+
     <style>
-          /* Add this CSS to your existing styles or create a new file and link it */
+      /* Add this CSS to your existing styles or create a new file and link it */
 
-  /* Styles for error messages */
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 5px;
-  }
+      /* Styles for error messages */
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+      }
 
-  /* Styles for input fields with errors */
-  .error-border {
-    border: 1px solid red !important;
-  }
+      /* Styles for input fields with errors */
+      .error-border {
+        border: 1px solid red !important;
+      }
 
 
-          /* background-image  */
-    
-        .background-image {
-            background-image: url('/assets/img/slider/1.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            
-            margin: 0; /* Remove default body margin */
-            padding: 0; /* Remove default body padding */
-    
-        }
-        /* buton hover */
-    
-        .form-group a {
-            margin-left: 1rem;
-            color: rgb(40, 29, 189);
-            font-size: 12px;
-            transition: color 0.3s; /* Add a smooth transition effect */
-        }
-    
-        .form-group a:hover {
-            color: rgb(0, 0, 0); /* Change to your desired hover color */
-        }
-    
-    
-        
-    
+      /* background-image  */
+
+      .background-image {
+        background-image: url('/assets/img/slider/1.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        margin: 0;
+        /* Remove default body margin */
+        padding: 0;
+        /* Remove default body padding */
+
+      }
+
+      /* buton hover */
+
+      .form-group a {
+        margin-left: 1rem;
+        color: rgb(40, 29, 189);
+        font-size: 12px;
+        transition: color 0.3s;
+        /* Add a smooth transition effect */
+      }
+
+      .form-group a:hover {
+        color: rgb(0, 0, 0);
+        /* Change to your desired hover color */
+      }
     </style>
 
-      
 
 
-  <div class="background-image" style="margin-top: -60px;">
-    <!-- Registration form -->
-    <div class="container" style="padding-top: 10rem;">
-      <div class="row justify-content-center align-items-center">
-        
-        <div class="col-md-6">
-          <% if (messages.exists) { %>
-            <div class="alert alert-danger d-flex align-items-center" role="alert" id="existAlert" style="margin-top: 2rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+
+    <div class="background-image" style="margin-top: -60px;">
+      <!-- Registration form -->
+      <div class="container" style="padding-top: 10rem;">
+        <div class="row justify-content-center align-items-center">
+
+          <div class="col-md-6">
+            <% if (messages.exists) { %>
+              <div class="alert alert-danger d-flex align-items-center" role="alert" id="existAlert"
+                style="margin-top: 2rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                  class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img"
+                  aria-label="Warning:">
+                  <path
+                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                 </svg>
-                <div >
-                    <strong>Hey !</strong>
+                <div>
+                  <strong>Hey !</strong>
                   <%= messages.exists %>
-                  
+
                 </div>
-              </div> 
-        <% } %>
-     
-          <h2 class="text-center" style="margin-top: 2rem;">Create an account</h2>
-          <form action="" method="post" onsubmit=" return validateForm()" style="display: flex; flex-direction: column; gap: 2;">
+              </div>
+              <% } %>
+
+                <h2 class="text-center" style="margin-top: 2rem;">Create an account</h2>
+                <form action="" method="post" onsubmit=" return validateForm()"
+                  style="display: flex; flex-direction: column; gap: 2;">
 
                   <!-- Name -->
                   <div class="form-group col-md-8 mx-auto text-left">
                     <label for="name" style="color: white; font-size: 16px;">Name</label>
-                    <input type="text" placeholder="Name" class="form-control" id="name" name="name" >
+                    <input type="text" placeholder="Name" class="form-control" id="name" name="name">
                     <div id="nameError" class="forml" style="color: red;"></div>
                   </div>
 
                   <!-- Email -->
                   <div class="form-group col-md-8 mx-auto text-left">
-                      <label for="email" style="color: white; font-size: 16px;">Email Address</label>
-                      <input type="email" placeholder="Email" class="form-control" id="email" name="email" >
-                      <div id="emailError" class="forml" style="color: red;"></div>
-                  </div>       
+                    <label for="email" style="color: white; font-size: 16px;">Email Address</label>
+                    <input type="email" placeholder="Email" class="form-control" id="email" name="email">
+                    <div id="emailError" class="forml" style="color: red;"></div>
+                  </div>
                   <!-- Password -->
                   <div class="form-group col-md-8 mx-auto text-left">
-                      <label for="password" style="color: white; font-size: 16px;">Password</label>
-                      <input type="password"  placeholder="Password" class="form-control" id="password" name="password" autocomplete="new-password" >
-                      <div id="passwordError" class="forml" style="color: red;"></div>
+                    <label for="password" style="color: white; font-size: 16px;">Password</label>
+                    <input type="password" placeholder="Password" class="form-control" id="password" name="password"
+                      autocomplete="new-password">
+                    <div id="passwordError" class="forml" style="color: red;"></div>
                   </div>
 
                   <!-- Confirm Password -->
                   <div class="form-group col-md-8 mx-auto text-left">
-                      <label for="ConformPassword" style="color: white; font-size: 16px;">Confirm Password</label>
-                      <input type="password" placeholder="ConformPassword" class="form-control" id="ConformPassword" name="ConformPassword" >
-                      <div id="ConformPasswordError" class="forml" style="color: red;"></div>
+                    <label for="ConformPassword" style="color: white; font-size: 16px;">Confirm Password</label>
+                    <input type="password" placeholder="ConformPassword" class="form-control" id="ConformPassword"
+                      name="ConformPassword">
+                    <div id="ConformPasswordError" class="forml" style="color: red;"></div>
                   </div>
 
                   <!-- Submit Button -->
@@ -107,14 +114,14 @@
                   <!-- Login page -->
                   <div class="form-group col-md-8 mx-auto text-left text-center mt-2 mb-5 ">
                     <p style="margin: 0;"> <a style="text-decoration: none;" href="/login"><b>Login</b></a></p>
-                </div>
+                  </div>
                 </form>
-                </div>
-                </div>
-                </div>
-                </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                <script src="/assets/js/formValidation.js"></script>
+    <script src="/assets/js/formValidation.js"></script>
 
-                <%- include('../layout/user/footbar.ejs') %>
-                <%- include('../layout/user/footer.ejs') %>
+    <%- include('../layout/user/footbar.ejs') %>
+      <%- include('../layout/user/footer.ejs') %>
