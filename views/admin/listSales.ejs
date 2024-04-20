@@ -1,82 +1,146 @@
-<%- include("../layout/admin/header.ejs") -%> 
-<style>
-    @media print {
-        .no-print {
-            display: none !important;
+<%- include("../layout/admin/header.ejs") -%>
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
         }
-    }
-</style> 
+    </style>
 
-        
-<div class="screen-overlay"></div>
 
-<section class="content-main">
-    <div class="content-header">
-        <div>
-            <h2 class="content-title card-title">Sales List</h2>
-            <p>Lorem ipsum dolor sit amet.</p>
-        </div>
-        <div class="no-print">
-            <a href="/admin/salesreport" class="btn btn-secondary">BACK</a><br>
-            <a style="margin-top: 1rem;"  fcx class="btn btn-primary" onclick="downloadPdf()">Download PDF</a>
-            <a style="margin-top: 1rem;" href="path/to/excel" class="btn btn-success" download>Download Excel</a>
-        </div>
-    </div>
+    <div class="screen-overlay"></div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="table-responsive" id="Reload">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Order ID</th>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Price & Quantity</th>
-                            <th>Total</th>
-                            <th>Date</th>
-                            <th>Payment Method</th>
-                            <th class="text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <% let count=0 %>
-                    <% orders.forEach((order)=>{ %>
-                        <% order.products.forEach((product)=>{ %>
-                            <% count++ %>
-                            <tbody>
-                                <td><%= count %></td>
-                                <td><%= order.orderId %></td>
-                                <td>
-                                    <div class="itemside">
-                                        <div class="left">
-                                            <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><%= order.userId.name %></td>
-                                <td><%= product.price %> & <%= product.quantity %></td>
-                                <td><%= product.price * product.quantity %></td>
-                                <td><%= order.date.toLocaleString('en-US', {  day: 'numeric',  month: 'short',year: 'numeric' }) %></td>
-                                <td><%= order.paymentMethod %></td>
-                                <td><%= product.status %></td>
-                            </tbody>
-                        <% }) %>
-                    <% }) %>
-                </table>
-                <!-- table-responsive.// -->
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Sales List</h2>
+                <p>Lorem ipsum dolor sit amet.</p>
+            </div>
+            <div class="no-print">
+                <a href="/admin/salesreport" class="btn btn-secondary">BACK</a><br>
+                <a style="margin-top: 1rem;" fcx class="btn btn-primary" onclick="downloadPdf()">Download PDF</a>
+                <a style="margin-top: 1rem;" class="btn btn-success" onclick="downloadExcel()">Download Excel</a>
             </div>
         </div>
-    </div>
-    <!-- card end// -->
-</section>
 
-<script>
-    function downloadPdf(){
-        window.print()
-    }
-</script>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="table-responsive" id="Reload">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Order ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price & Quantity</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Payment Method</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <% let count=0 %>
+                            <% orders.forEach((order)=>{ %>
+                                <% order.products.forEach((product)=>{ %>
+                                    <% count++ %>
+                                        <tbody>
+                                            <td>
+                                                <%= count %>
+                                            </td>
+                                            <td>
+                                                <%= order.orderId %>
+                                            </td>
+                                            <td>
+                                                <div class="itemside">
+                                                    <div class="left">
+                                                        <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
+                                                            class="img-sm img-thumbnail" alt="Item" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <%= order.userId.name %>
+                                            </td>
+                                            <td>
+                                                <%= product.price %> & <%= product.quantity %>
+                                            </td>
+                                            <td>
+                                                <%= product.price * product.quantity %>
+                                            </td>
+                                            <td>
+                                                <%= order.date.toLocaleString('en-US', { day: 'numeric' , month: 'short'
+                                                    ,year: 'numeric' }) %>
+                                            </td>
+                                            <td>
+                                                <%= order.paymentMethod %>
+                                            </td>
+                                            <td>
+                                                <%= product.status %>
+                                            </td>
+                                        </tbody>
+                                        <% }) %>
+                                            <% }) %>
+                    </table>
+                    <!-- table-responsive.// -->
+                </div>
+            </div>
+        </div>
+        <!-- card end// -->
+    </section>
+
+    <script>
+        function downloadPdf() {
+            window.print();
+        }
+
+        function triggerExcelDownload(tableData) {
+            const data = tableData;
+            fetch('/admin/downloadExcel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then((data) => {
+                if (data.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Downloaded check downlods',
+                        showConfirmButton: false
+                    })
+                    setTimeout(() => {
+                        location.reload()
+
+                    }, 1000);
+                }
+            })
+        }
+
+        function gatherTableData() {
+            const tableRows = document.querySelectorAll('.table tbody tr');
+            const tableData = [];
+
+            tableRows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    rowData.push(cell.textContent.trim()); // Extracting cell text content
+                });
+                tableData.push(rowData); // Pushing row data to the array
+            });
+
+            return tableData;
+        }
+
+        function downloadExcel() {
+            const tableData = gatherTableData();
+            triggerExcelDownload(tableData);
+        }
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <%- include("../layout/admin/footer.ejs") -%>
-
-    
