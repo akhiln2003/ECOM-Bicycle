@@ -147,72 +147,70 @@ const loadDashboard = async (req, res) => {
             };
         });
 
-        // Top 5 products 
-        const topProducts = await Order.aggregate([
-            { $match: { status: "placed" } },
-            { $unwind: "$products" },
-            { $match: { "products.status": "delivered" } },
-            { $group: { _id: "$products.productId", quantity: { $sum: "$products.quantity" } } },
-            { $sort: { quantity: -1 } },
-            { $limit: 5 },
-            {
-                $lookup: {
-                    from: "products",
-                    localField: "_id",
-                    foreignField: "_id",
-                    as: "productDetails"
-                }
-            },
-            {
-                $project: {
-                    _id: "$_id",
-                    productName: { $arrayElemAt: ["$productDetails.productName", 0] },
-                    productImg: { $arrayElemAt: ["$productDetails.image", 0] },
-                }
-            }
+                // Top 10 
+                const topProducts = await Order.aggregate([
+                    { $match: { status: "placed" } },
+                    { $unwind: "$products" },
+                    { $match: { "products.status": "delivered" } },
+                    { $group: { _id: "$products.productId", quantity: { $sum: "$products.quantity" } } },
+                    { $sort: { quantity: -1 } },
+                    { $limit: 5},
+                    { $lookup: {
+                        from: "products",
+                        localField: "_id",
+                        foreignField: "_id",
+                        as: "productDetails"
+                    }},
+                    {
+                        $project: {
+                            _id: "$_id",
+                            productName:{  $arrayElemAt: ["$productDetails.productName", 0] },
+                            productImg:{ $arrayElemAt: ["$productDetails.image", 0] },
+                        }
+                    }
 
-        ]);
-        // Top 5 categorys
-        const topCategories = await Order.aggregate([
-            { $match: { 'products.status': 'delivered' } },
-            { $unwind: '$products' },
-            {
-                $lookup: {
-                    from: 'products',
-                    localField: 'products.productId',
-                    foreignField: '_id',
-                    as: 'product'
-                }
-            },
-            { $unwind: '$product' },
-            {
-                $group: {
-                    _id: '$product.category',
-                    orderCount: { $sum: 1 }
-                }
-            },
-            { $sort: { orderCount: -1 } },
-            {
-                $lookup: {
-                    from: 'categories',
-                    localField: '_id',
-                    foreignField: '_id',
-                    as: 'category'
-                }
-            },
-            { $unwind: '$category' },
-            {
-                $project: {
-                    categoryName: '$category.categoryName',
-                    orderCount: 1
-                }
-            },
-            { $sort: { orderCount: -1 } }
-        ]);
-
+                ]);
+              
+                const topCategories = await Order.aggregate([
+                    { $match: { 'products.status': 'delivered' } }, // Match orders with delivered products
+                    { $unwind: '$products' }, // Unwind the products array
+                    {
+                        $lookup: { // Lookup to fetch product details
+                            from: 'products',
+                            localField: 'products.productId',
+                            foreignField: '_id',
+                            as: 'product'
+                        }
+                    },
+                    { $unwind: '$product' }, // Unwind the product array
+                    {
+                        $group: { // Group by category and count the number of orders
+                            _id: '$product.category',
+                            orderCount: { $sum: 1 }
+                        }
+                    },
+                    { $sort: { orderCount: -1 } }, // Sort by order count in descending order
+                    {
+                        $lookup: { // Lookup to fetch category details
+                            from: 'categories',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'category'
+                        }
+                    },
+                    { $unwind: '$category' }, // Unwind the category array
+                    { 
+                        $project: { // Project to include only relevant fields
+                            categoryName: '$category.categoryName',
+                            orderCount: 1
+                        }
+                    },
+                    { $sort: { orderCount: -1 } } // Sort categories by order count in descending order
+                ]);
+                
 
         console.log(topCategories);
-
+   
         res.render('dashboard',
             {
                 orderscount,

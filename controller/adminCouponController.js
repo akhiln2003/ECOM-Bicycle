@@ -91,7 +91,7 @@ const updateCoupon = async (req, res) => {
                     discount: Discount
                 }
             })
-            res.redirect('/admin/coupon')
+            res.redirect('/admin/coupon');
         }
     } catch (error) {
         console.log(error);
