@@ -10,6 +10,7 @@ const customerController = require("../controller/customerController");
 const adminOrderController = require('../controller/adminOrderController');
 const adminCouponController = require('../controller/adminCouponController');
 const adminSalesreport = require('../controller/salesreportControllet');
+const offerController = require('../controller/adminOfferController');
 require('dotenv').config();
 
 
@@ -83,7 +84,18 @@ admin_route.put('/updatecoupon', auth.isLogOut, adminCouponController.updateCoup
 
 // BRAND
 admin_route.get('/brand', auth.isLogOut, brandController.loadBrand);
-admin_route.get('/addBrand', auth.isLogOut, brandController.loadAddBrand)
+admin_route.get('/addBrand', auth.isLogOut, brandController.loadAddBrand);
+
+// OFFER
+admin_route.get('/offer',auth.isLogOut,offerController.loadOffer);
+admin_route.get('/addoffer',auth.isLogOut,offerController.loadAddOffer);
+admin_route.post('/addoffer',auth.isLogOut,offerController.addOffer);
+admin_route.get('/editoffer',auth.isLogOut,offerController.loadEditoffer);
+admin_route.post('/editoffer',auth.isLogOut,offerController.editOffer);
+admin_route.post('/deleteoffer',auth.isLogOut,offerController.deleteOffer);
+
+
+
 
 
 
