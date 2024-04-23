@@ -4,6 +4,7 @@ const Cart = require('../models/cartModel');
 const Whishlist = require('../models/whishListModel');
 const Category = require('../models/category');
 const { isDeleted } = require('./categoryController');
+const products = require('../models/productModel');
 
 
 // SHOP
@@ -100,7 +101,23 @@ const loadProductDetails = async (req, res) => {
 }
 
 
+const searchProduct= async(req,res)=>{
+    try {
+       const {searchName,listedCategory} = req.body;
+       const regexPattern = new RegExp(`^${searchName}`, 'i');
+       const products = await Product.find({ productName: { $regex: regexPattern } });  
+        
+       if(listedCategory){
+
+       }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 module.exports = {
     loadShop,
-    loadProductDetails
+    loadProductDetails,
+    searchProduct
 }

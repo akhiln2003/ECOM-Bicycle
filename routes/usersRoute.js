@@ -68,6 +68,7 @@ user_route.post('/register', userController.insertuser);
 //  Shop Page
 user_route.get('/shop', shopController.loadShop);
 user_route.get('/productDetails', shopController.loadProductDetails);
+user_route.post('/searchproduct', shopController.searchProduct);
 
 
 // Profile page

@@ -49,16 +49,11 @@ const updateProfile = async (req, res) => {
     try {
         const { id, editName, editPhone } = req.body;
         const existname = await User.findOne({ _id: { $ne: id }, name: editName });
-        const existnumber = await User.findOne({ _id: { $ne: id }, mobile: editPhone });
-
         if (existname) {
             req.flash('error', "Name is alredy existed");
             res.redirect(`/editProfile?id=${id}`);
-        } if (existnumber) {
-            req.flash('error', "nu   mber is alredy existed");
-            res.redirect(`/editProfile?id=${id}`);
-        } else {
-            await User.findOneAndUpdate({ _id: id }, { name: editName, mobile: editPhone });
+        }else {
+            await User.findOneAndUpdate({ _id: id }, { name: editName });
             res.redirect('/profile');
         }
 

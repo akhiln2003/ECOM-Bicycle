@@ -356,7 +356,6 @@ const googleLogin = async (req, res) => {
         } else {
             const user = new User({ name: name, email });
             await user.save();
-            console.log();
             const newWallet = new Wallet({ userId: user._id, balance: 0 });
             await newWallet.save();
 

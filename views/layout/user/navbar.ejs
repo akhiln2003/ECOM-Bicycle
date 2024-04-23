@@ -56,10 +56,42 @@
 					<div style="display: flex; align-items: center; ">
 						<!-- Search Box -->
 						<div style="margin-left: 10rem; ">
-							<input type="text" placeholder="Search..."
+							<input type="text" id="search" placeholder="Search..."
 								style="color: #000000; background-color: rgb(209, 209, 209); border: 1px solid #ffffff; border-radius: 5px;">
 							<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
 						</div>
+						<script>
+							function findCategory() {
+								const urlParams = new URLSearchParams(window.location.search);
+								return urlParams.get('category');
+							}
+
+							const values = document.getElementById('search');
+							let timeoutId;
+
+							values.addEventListener('keyup', () => {
+								clearTimeout(timeoutId);
+								timeoutId = setTimeout(() => {
+									const searchName = values.value.trim();
+									const listedCategory = findCategory();
+									 const data = {searchName,listedCategory};
+									 console.log(data);
+									 fetch('/searchproduct', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+});
+
+									// Call your search function here
+								}, 2500); // Adjust the debounce time as needed (in milliseconds)
+							});
+
+
+
+
+						</script>
 
 						<!-- User Icon and Dropdown -->
 						<div class="cart-menu-area" style="margin-left: 5rem;">

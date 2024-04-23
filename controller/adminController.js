@@ -208,8 +208,6 @@ const loadDashboard = async (req, res) => {
                     { $sort: { orderCount: -1 } } // Sort categories by order count in descending order
                 ]);
                 
-
-        console.log(topCategories);
    
         res.render('dashboard',
             {
