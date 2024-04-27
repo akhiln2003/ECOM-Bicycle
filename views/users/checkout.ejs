@@ -17,6 +17,10 @@
                 background-color: #ff6600;
 
             }
+
+            .coupon-code {
+                font-size: 1.2rem;
+            }
         </style>
 
 
@@ -167,7 +171,7 @@
                                                                 <%= Product.quantity %>
                                                             </div>
                                                         </td>
-                                                        <td> ₹ <%= Product.totalPrice %>
+                                                        <td> ₹ <%= Product.productId.productPrice * Product.quantity %>
                                                         </td>
                                                     </tr>
                                                     <% }) %>
@@ -175,12 +179,6 @@
                                         </table>
                                     </div>
                                 </div>
-
-
-
-
-
-
                             </div>
                         </div>
                     </div>
@@ -188,60 +186,101 @@
 
 
                         <% let subtotal=cart.products.reduce((acc,value)=>{
-                            return acc+= value.totalPrice
+                            return acc+= (value.productId.productPrice * value.quantity)
                             },0) %>
-
                             <div class="single-check p-bottom50">
-                                <div class="check-title">
-                                    <h3 style="margin: 0;">Coupon Code</h3>
+                                <div class="check-title"
+                                    style="display: flex; align-items: center; justify-content: space-between;">
+                                    <h3>Coupon Code</h3>
+                                    <button style="margin-bottom: 1rem; width: 200px;" class="btn btn-success"
+                                        data-toggle="modal" data-target="#listcouponModal">Avilable Coupon</button>
                                 </div>
-                                <div class="single-input check-coupon">
-                                    <form>
 
-                                        <select class="input-text" id="coupon" style="height: 45px;">
-                                            <option value="select">select </option>
-                                            <% coupons.forEach((coupon)=>{ %>
-                                                <% if(coupon.minSpend <=subtotal){ %>
-                                                    <% if(coupon.type=="amount" ){ %>
-                                                        <option value="<%=coupon.name %>">
-                                                            <%=coupon.name %> ₹ <%=coupon.discount %> Off
-                                                        </option>
-                                                        <% }else{ %>
-                                                            <option value="<%=coupon.name %>">
-                                                                <%=coupon.name %>
-                                                                    <%=coupon.discount %> % Off
-                                                            </option>
+                                <!-- Modal -->
+                                <div class="modal fade" id="listcouponModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="listcouponModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="listcouponModalLabel">Avilable Coupons</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
 
-                                                            <% } %>
+                                            <div class="modal-body">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>Name</td>
+                                                            <td>Code</td>
+                                                            <td>Off</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% coupons.forEach((coupon)=> { %>
+                                                            <% if (coupon.minSpend <=subtotal) { %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <h5>
+                                                                            <%= coupon.name %>:
+                                                                        </h5>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= coupon.couponCod %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <% if (coupon.type=="amount" ) { %>
+                                                                            <h6>₹ <%= coupon.discount %> Off</h6>
+                                                                            <% } else { %>
+                                                                                <h6>
+                                                                                    <%= coupon.discount %> % Off
+                                                                                </h6>
+                                                                                <% } %>
+                                                                    </td>
+                                                                </tr>
                                                                 <% } %>
                                                                     <% }) %>
-                                        </select>
-                                        <div id="btn">
-                                            <% if(cart.couponDiscount>0){ %>
-                                                <button type="button" class="place-order-btn" id="remove"
-                                                    onclick="removeCoupon()">Remove</button>
-                                                <% }else{ %>
-                                                    <button type="button" class="place-order-btn" id="apply"
-                                                        onclick="applyCoupon()">Apply</button>
-                                                    <% } %>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
                                         </div>
-                                    </form>
+                                    </div>
+                                </div>
+
+                                <div class="single-input check-coupon" style="margin-top: 1rem;">
+                                    <div class="input-text">
+                                        <input type="text" name="coupon" id="coupon" />
+                                    </div>
+                                    <div id="applybtn">
+                                        <div id="applybtn">
+                                            <% if(!cart.couponApplyd.couponId ){ %>
+                                                <button id="couponSubmit" class="place-order-btn" onclick="applyCoupon('<%= subtotal %>')">Submit</button>
+                                                <% }else{ %>
+                                                    <button id="couponSubmit" class="place-order-btn" onclick="removeCoupon()">Remove</button>
+                                            <% } %>
+                                        </div>
+                                        
+                                        </div>
                                 </div>
                             </div>
 
-                            <div class="single-check p-bottom50" style="margin-top: 2rem;">
+                            <div class="single-check p-bottom50" style="margin-top: 1rem;">
                                 <div class="check-title">
                                     <h3 style="margin: 0;">Totals</h3>
                                 </div>
                                 <div class="subtotal clearfix" id="total">
                                     <p>Subtotal <strong class="floatright"> ₹ <%= subtotal %></strong></p>
-                                    <% if(cart.couponDiscount>0){ %>
-                                        <p>Coupon Discount<strong class="floatright"> ₹ <%=
-                                                    subtotal-(subtotal-cart.couponDiscount) %></strong></p>
-                                        <% }%>
+                                    <% if(cart.couponApplyd.couponId){ %>
+                                        <p>Coupon Discount<strong class="floatright"> ₹ <%= cart.couponApplyd.couponDiscount %></strong></p>
+                                        <p>Shipping <strong class="floatright">free delivery</strong></p>
+                                        <p>Total <strong class="floatright"><span> ₹ <%= subtotal-=cart.couponApplyd.couponDiscount %></span></strong></p>
+                                        <% } else{ %>
                                             <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                            <p>Total <strong class="floatright"><span> ₹ <%=
-                                                            subtotal-cart.couponDiscount %></span></strong></p>
+                                            <p>Total <strong class="floatright"><span> ₹ <%= subtotal %></span></strong></p>
+                                                            <% } %>
                                 </div>
                             </div>
 
@@ -252,7 +291,7 @@
                                 <div class="address-list" id="paymentOption">
                                     <div class="address-item mb-3 border p-3 rounded">
 
-                                        <% if( subtotal-cart.couponDiscount < 1000){ %>
+                                        <% if( subtotal < 1000){ %>
                                             <div class="form-check mt-2">
                                                 <input style="display: inline-block;" class="form-check-input"
                                                     type="radio" name="paymentMethod" id="cashOnDelivery" value="COD">
@@ -315,8 +354,8 @@
                         if (payment) {
                             const subTotal = document.getElementById('placeOrder').getAttribute('data-subTotal');
                             if (subTotal) {
-                                const name = document.getElementById('coupon').value
-                                const data = { index: index, payment: payment, subTotal: subTotal, name };
+                                const couponCod = document.getElementById('coupon').value
+                                const data = { index: index, payment: payment, subTotal: subTotal, couponCod, };
                                 fetch('/placeOrder', {
                                     method: 'POST',
                                     headers: {
@@ -441,27 +480,66 @@
             }
 
 
-            function applyCoupon() {
+            function applyCoupon(subtotal) {
                 const couponcod = document.getElementById('coupon').value;
-                fetch('/applycoupon', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ couponcod })
-                }).then((val) => val.json())
-                    .then((res) => {
-                        if (res.ok) {
-                            $('#total').load('/checkout #total')
-                            $('#btn').load('/checkout #btn')
-                            $('#paymentOption').load('/checkout #paymentOption')
-                            document.getElementById('coupon').value = res.name;
-                        }
-                    })
+                Swal.fire({
+                    icon: "warning",
+                    title: "Are You Sure",
+                    showCancelButton: "true",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!",
+                    confirmButtonColor: "#3085d6"
+                }).then((response) => {
+                    if (response.isConfirmed) {
+                        fetch('/applycoupon', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ couponcod,subtotal })
+                        }).then((data) => data.json())
+                            .then((result) => {
+                                if (result.ok) {
+                                    Swal.fire({
+                                        positon: "center",
+                                        icon: "success",
+                                        title: "Coupon Applyed",
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                    }).then((result) => {
+                                        $('#applybtn').load('/checkout #applybtn')
+                                        $('#total').load('/checkout #total')
+                                        $('#paymentOption').load('/checkout #paymentOption')
+                                        
+                                    })
+                                }
+                                if (result.notFount) {
+                                    Swal.fire({
+                                        positon: "",
+                                        icon: "error",
+                                        title: "Not valid Coupon",
+                                        showConfirmButton: false,
+                                        timer: 1500,
+                                    })
+                                }
+                            })
+
+                    }
+                })
+
             }
 
             function removeCoupon() {
-                fetch('/removecoupon', {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Are You Sure",
+                    showCancelButton: "true",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!",
+                    confirmButtonColor: "#3085d6"
+                }).then((response)=>{
+                    if(response.isConfirmed){
+                        fetch('/removecoupon', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -469,6 +547,9 @@
                 }).then((result) => {
                     location.reload()
                 })
+                    }
+                })
+               
             }
 
 

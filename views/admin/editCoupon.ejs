@@ -55,6 +55,19 @@
 
                                             </div>
                                             <div class="mb-4">
+                                                <select name="type" id="type" class="form-control">
+                                                    <% if(coupon.type=="amount" ){ %>
+                                                        <option value="amount">Amount</option>
+                                                        <option value="percentage">Percentage</option>
+                                                        <% }else{ %>
+                                                            <option value="percentage">Percentage</option>
+                                                            <option value="amount">Amount</option>
+                                                            <% } %>
+                                                </select>
+                                                <div id="typeError" class="forml" style="color: red;"></div>
+
+                                            </div>
+                                            <div class="mb-4">
                                                 <label for="product_title" class="form-label">Min spend</label>
                                                 <input name="limitOfUse" type="text" class="form-control" id="limit"
                                                     value="<%= coupon.minSpend %>" />
@@ -88,10 +101,15 @@
             const expiryDate = document.getElementById('expiryDate').value;
             const limit = document.getElementById('limit').value;
             const discount = document.getElementById('discount').value;
+            const type = document.getElementById('type').value;
+
+
             const nameRegex = /^[a-zA-Z\s]{5,}$/;
             var currentDate = new Date();
             var formattedCurrentDate = currentDate.toISOString().split('T')[0];
             const limitRegex = /^[0-9]+$/;
+            const discountRejex = /^[0-9]+$/;
+
 
             if (!nameRegex.test(name)) {
                 showError('nameError', 'Only use Alphabets Minimum 5 characters');
@@ -101,32 +119,38 @@
                 showError('expiryDateError', 'Invalid Expiry Date');
                 removeErrorsAfterDelay('expiryDateError');
                 return false;
+            } else if (type == "select") {
+                showError('typeError', 'Select Type');
+                removeErrorsAfterDelay('typeError');
+                return false;
             } else if (!limitRegex.test(limit)) {
                 showError('limitError', 'Only Asepted Number');
                 removeErrorsAfterDelay('limitError');
                 return false;
-            } else if (parseFloat(discount) > parseFloat(limit)) {
+            } else if (limit < 10) {
+                showError('limitError', "Minimum spend must be greater than 10.");
+                removeErrorsAfterDelay('limitError');
+                return false;
+            } else if (type == 'amount' && !discountRejex.test(discount)) {
+                showError('discountError', 'Only asepted Numbers');
+                removeErrorsAfterDelay('discountError');
+                return false;
+            } else if (type == "amount" && parseFloat(discount) > parseFloat(limit)) {
                 showError('discountError', 'Discount must be less than min amount spend');
                 removeErrorsAfterDelay('discountError');
                 return false;
+            } else if (type == 'percentage' && !discountRejex.test(discount)) {
+                showError('discountError', 'Only asepted Numbers');
+                removeErrorsAfterDelay('discountError');
+                return false
+            } else if (type == "percentage" && parseFloat(discount) > 100) {
+                showError('discountError', 'Discount must be less than 100%');
+                removeErrorsAfterDelay('discountError');
+                return false
             } else {
                 return true;
             }
         }
-
-        // Function to remove errors after a delay
-        function removeErrorsAfterDelay(errorId) {
-            setTimeout(() => {
-                document.getElementById(errorId).innerText = '';
-            }, 3000);
-        }
-
-        // Function to show error
-        function showError(id, message) {
-            document.getElementById(id).innerText = message;
-            document.getElementById(id.replace('Error', '')).classList.add('error-border');
-        }
-
     </script>
 
     <%- include("../layout/admin/footer.ejs") -%>

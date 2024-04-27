@@ -36,8 +36,8 @@ const loadCheckout = async (req, res) => {
 
         const currentDate = new Date().toISOString();
 
-        const coupons = await Coupon.find({ 'user.userId': { $ne: id }, expiryDate: { $gte: currentDate } });
         const cart = await Cart.findOne({ userId: id }).populate('products.productId');
+        const coupons = await Coupon.find({ 'user.userId': { $ne: id }, expiryDate: { $gte: currentDate } });
         res.render('checkout', { user, cart, coupons });
     } catch (error) {
         console.log(error);
@@ -69,7 +69,7 @@ const checkoutAddAddress = async (req, res) => {
 
 const placeOrder = async (req, res) => {
     try {
-        const { index, payment, subTotal, name } = req.body;
+        const { index, payment, subTotal, couponCod } = req.body;
         const userId = req.session.user._id;
         const userCart = await Cart.findOne({ userId: userId }).populate('products.productId');
         const products = userCart.products
@@ -83,7 +83,7 @@ const placeOrder = async (req, res) => {
             res.json({ quan: true, quantityLess })
         } else {
             const user = await User.findOne({ _id: userId });
-            const coupon = await Coupon.findOne({ name: name });
+            const coupon = await Coupon.findOne({ couponCod: couponCod });
             const status = payment == 'COD' ? 'placed' : 'pending';
             const address = user.address[index];
             const date = Date.now();
@@ -94,7 +94,7 @@ const placeOrder = async (req, res) => {
                     userId: userId,
                     orderId: orderid,
                     products: products,
-                    totalAmount: subTotal - userCart.couponDiscount,
+                    totalAmount: subTotal,
                     date: date,
                     status: status,
                     paymentMethod: payment,
@@ -105,7 +105,7 @@ const placeOrder = async (req, res) => {
                     userId: userId,
                     orderId: orderid,
                     products: products,
-                    totalAmount: subTotal - userCart.couponDiscount,
+                    totalAmount: subTotal - userCart.couponApplyd.couponDiscount,
                     date: date,
                     status: status,
                     paymentMethod: payment,
@@ -116,7 +116,7 @@ const placeOrder = async (req, res) => {
             }
             const orderDetails = await orders.save();
             const orderId = orderDetails.orderId;
-            await Coupon.updateOne({ name: name }, { $push: { user: { userId: userId } } })
+            await Coupon.updateOne({ couponCod: couponCod }, { $push: { user: { userId: userId } } })
 
             //  COD PAYMENT 
             if (orderDetails.paymentMethod == 'COD') {
@@ -184,11 +184,6 @@ const placeOrder = async (req, res) => {
             } else {
 
             }
-
-
-
-
-
         }
 
     } catch (error) {
@@ -227,40 +222,27 @@ const verifyPayment = async (req, res) => {
 
 const applyCoupon = async (req, res) => {
     try {
-        let discount;
-        const name = req.body.couponcod;
-        const id = req.session.user._id;
-        const userId = new ObjectId(id);
-        if (name != "select") {
-
-            const coupon = await Coupon.findOne({ name: name });
-            const totalPriceResult = await Cart.aggregate([
-                {
-                    $match: { userId: userId }
-                },
-                { $unwind: '$products' },
-                {
-                    $group: {
-                        _id: null,
-                        totalPrice: { $sum: '$products.totalPrice' }
+        const { couponcod, subtotal } = req.body;
+        let discountAmount;
+        const userId = req.session.user._id;
+        const coupon = await Coupon.findOne({ couponCod: couponcod });
+        if (coupon) {
+            if (coupon.type == "amount") {
+                discountAmount = coupon.discount;
+            } else {
+                discountAmount = subtotal * (coupon.discount / 100);
+            }
+            await Cart.findOneAndUpdate({ userId: userId }, {
+                $set: {
+                    couponApplyd: {
+                        couponId: coupon._id,
+                        couponDiscount: discountAmount
                     }
                 }
-            ]);
-            // Extract the total price from the aggregation result
-            const totalPrice = totalPriceResult.length > 0 ? totalPriceResult[0].totalPrice : 0;
-            if (coupon.type == "percentage") {
-                discount = totalPrice * (coupon.discount / 100);
-            } else {
-                discount = coupon.discount
-            }
-            let cart = await Cart.findOneAndUpdate({ userId: id }, {
-                $inc: {
-                    couponDiscount: discount
-                }
             })
-            res.json({ ok: true, name })
+            res.json({ ok: true, coupon });
         } else {
-            res.redirect('/checkout')
+            res.json({ notFount: true })
         }
 
 
@@ -273,9 +255,7 @@ const removeCoupon = async (req, res) => {
     try {
         const id = req.session.user._id
         await Cart.findOneAndUpdate({ userId: id }, {
-            $set: {
-                couponDiscount: 0
-            }
+            $unset: { couponApplyd: 1 }
         })
 
         res.json({ ok: true });

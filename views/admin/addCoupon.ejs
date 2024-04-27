@@ -54,9 +54,12 @@
                                             </div>
                                             <div class="mb-4">
                                                 <select name="type" id="type" class="form-control">
+                                                    <option value="select">Select</option>
                                                     <option value="amount">Amount</option>
                                                     <option value="percentage">Percentage</option>
                                                 </select>
+                                                <div id="typeError" class="forml" style="color: red;"></div>
+
                                             </div>
                                             <div class="mb-4">
                                                 <label for="product_title" class="form-label">Min spend</label>
@@ -91,7 +94,6 @@
             const limit = document.getElementById('limit').value;
             const discount = document.getElementById('discount').value;
             const type = document.getElementById('type').value;
-            let discountAmount
 
 
             const nameRegex = /^[a-zA-Z\s]{5,}$/;
@@ -109,16 +111,22 @@
                 showError('expiryDateError', 'Invalid Expiry Date');
                 removeErrorsAfterDelay('expiryDateError');
                 return false;
-            } else if (!limitRegex.test(limit)) {
+            }else if(type == "select"){
+                showError('typeError', 'Select Type');
+                removeErrorsAfterDelay('typeError');
+                return false;
+            }  else if (!limitRegex.test(limit)) {
                 showError('limitError', 'Only Asepted Number');
                 removeErrorsAfterDelay('limitError');
                 return false;
             } else if (limit < 10) {
                 showError('limitError', "Minimum spend must be greater than 10.");
                 removeErrorsAfterDelay('limitError');
+                return false;
             } else if (type == 'amount' && !discountRejex.test(discount)) {
                 showError('discountError', 'Only asepted Numbers');
                 removeErrorsAfterDelay('discountError');
+                return false;
             } else if (type == "amount" && parseFloat(discount) > parseFloat(limit)) {
                 showError('discountError', 'Discount must be less than min amount spend');
                 removeErrorsAfterDelay('discountError');
