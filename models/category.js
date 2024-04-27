@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const categorySchima = mongoose.Schema({
     categoryName: {
@@ -8,8 +9,9 @@ const categorySchima = mongoose.Schema({
     description: {
         type: String,
         required: true
-    },
-    isDeleted: {
+    },offer:{
+        type:ObjectId
+    },isDeleted: {
         type: Boolean,
         default: false
     }

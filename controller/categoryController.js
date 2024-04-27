@@ -1,5 +1,6 @@
 
 const Category = require('../models/category');
+const offer = require('../models/offerModel');
 
 // Load List Category         
 const loadCategory = async (req, res) => {
@@ -91,6 +92,46 @@ const isDeleted = async (req, res) => {
     }
 }
 
+
+const loadOffers = async(req,res)=>{
+    try {
+        const categoryId = req.query.id;
+        const offers = await offer.find({isDeleted:false});
+        res.render('applyOfferLiset',{offers,categoryId});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const applyOffer = async(req,res)=>{
+    try {
+        const { offerId , categoryId } = req.body;
+        await Category.findOneAndUpdate({_id:categoryId},{
+            $set:{
+                offer:offerId
+            }
+        });
+        res.json({ok:true});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const removeOffer = async(req,res)=>{
+    try {
+        const {categoryId} = req.body
+        await Category.findOneAndUpdate({_id:categoryId},{
+            $unset:{
+                offer:1
+            }
+        });
+        res.json({ok:true});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     loadCategory,
     loadAddcategory,
@@ -98,4 +139,7 @@ module.exports = {
     loadEditcategory,
     updateCategory,
     isDeleted,
+    loadOffers,
+    applyOffer,
+    removeOffer
 }
