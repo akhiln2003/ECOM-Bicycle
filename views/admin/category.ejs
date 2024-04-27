@@ -31,6 +31,7 @@
                                         <th>No</th>
                                         <th>Name</th>
                                         <th>Description</th>
+                                        <th>Offer</th>
                                         <th>Edit</th>
                                         <th class="text-end">Delete</th>
                                         </tr>
@@ -51,6 +52,20 @@
                                                                 <td>
                                                                     <%= value.description %>
                                                                 </td>
+                                                                <td>
+                                                                    <% if(value.offer){ %>
+                                                                        <button type="button"
+                                                                        class="btn btn-sm btn-warning rounded font-sm mt-15" onclick="removeOffer('<%= value._id %>')">
+                                                                       Remove
+                                                                    </button>
+                                                                        <% }else{ %>
+                                                                    <button type="button"
+                                                                    class="btn btn-sm btn-success rounded font-sm mt-15">
+                                                                    <a style="text-decoration: none; color: white;" href="/admin/showOffers?id=<%= value._id %>">Available</a>
+                                                                </button>
+                                                                <% } %>
+                                                            </td>
+
                                                                 <td><a href="/admin/editCategory?id=<%= value._id %>"><i
                                                                             class="material-icons md-edit"></i></a></td>
                                                                 <td class="text-end">
@@ -75,6 +90,37 @@
             </section>
 
             <script>
+
+                function removeOffer(categoryId){
+                    Swal.fire({
+                        icon: "warning",
+                        title: 'are you sure',
+                        showCancelButton: 'true',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'yes!',
+                        confirmButtonColor: '#3085d6'
+                    }).then((result)=>{
+                        if(result.isConfirmed){
+                            fetch('/admin/removeOffer',{
+                                method:'PUT',
+                                headers:{
+                                    'Content-Type': 'application/json'
+                                },
+                                body:JSON.stringify({categoryId})
+                            }).then(data=>{
+                                if(data.ok){
+                                    Swal.fire({
+                                            icon: 'success',
+                                            title: 'deleted'
+                                        })
+                                        $('#Reload').load('/admin/category   #Reload')
+                                }
+                            })
+                        }
+                    })
+                }
+
+               
 
                 function deleteCategory(categoryId) {
 

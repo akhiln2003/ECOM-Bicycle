@@ -61,6 +61,10 @@ admin_route.post('/addcategory', auth.isLogOut, categoryController.insertCategor
 admin_route.get('/editCategory', auth.isLogOut, categoryController.loadEditcategory);
 admin_route.post('/editCategory', auth.isLogOut, categoryController.updateCategory);
 admin_route.post('/deleteCategory', auth.isLogOut, categoryController.isDeleted);
+admin_route.get('/showOffers',auth.isLogOut,categoryController.loadOffers);
+admin_route.put('/applyCategoryOffer',auth.isLogOut,categoryController.applyOffer);
+admin_route.put('/removeOffer',auth.isLogOut,categoryController.removeOffer);
+
 
 // ORDERS
 admin_route.get('/orders', auth.isLogOut, adminOrderController.loadOrders);
