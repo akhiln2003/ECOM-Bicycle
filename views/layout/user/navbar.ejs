@@ -130,7 +130,9 @@
 										<a href="/cart">
 											<i class="fa-solid fa-cart-shopping" style="color: #ffffff; font-size: 21px;"></i>
 											<!-- Add a placeholder for the count -->
-											<span id="cartItemCount">0</span>
+											<% if(cartDetais && cartDetais.products && cartDetais.products.length > 0 ){ %>
+												<span ><%= locals.cartDetais.products.length %></span>
+												<% } %>
 										</a>
 										<ul class="cart-menu">
 											<!-- Additional cart items -->

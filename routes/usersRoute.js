@@ -2,6 +2,7 @@
 const express = require('express');
 const session = require('express-session');
 const auth = require('../middleware/userAuth');
+const {loadCartMiddleware} = require('../middleware/cartMiddleware');
 const userController = require("../controller/userController");
 const shopController = require('../controller/shopController');
 const profileController = require('../controller/userProfilecontroller');
@@ -27,6 +28,9 @@ user_route.use((req, res, next) => {
   next()
 })
 
+
+
+user_route.use(loadCartMiddleware)
 user_route.use(express.json());
 user_route.use(express.urlencoded({ extended: true }));
 
