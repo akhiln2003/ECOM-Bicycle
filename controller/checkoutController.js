@@ -72,7 +72,7 @@ const placeOrder = async (req, res) => {
         const { index, payment, subTotal, couponCod } = req.body;
         const userId = req.session.user._id;
         const userCart = await Cart.findOne({ userId: userId }).populate('products.productId');
-        const products = userCart.products
+        const products = userCart.products;
         let quantityLess = 0;
         products.forEach((product) => {
             if (product.productId.stok <= 0) {
@@ -99,6 +99,7 @@ const placeOrder = async (req, res) => {
                     status: status,
                     paymentMethod: payment,
                     deliveryAddress: address,
+
                 });
             } else {
                 orders = new Order({
@@ -210,6 +211,7 @@ const verifyPayment = async (req, res) => {
             "products.productId": { $in: products.map(product => product.productId) },
         }, {
             $set: {
+                status: "placed",
                 "products.$[].status": "placed",
                 paymentId: paymetn.razorpay_payment_id,
             }

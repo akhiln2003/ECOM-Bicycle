@@ -18,7 +18,7 @@ const loadOrders = async (req, res) => {
             next = totalPages
         }
 
-        const orders = await Orders.find().populate('userId').limit(limit).skip((page - 1) * limit);
+        const orders = await Orders.find().populate('userId').sort({ date: -1 }).limit(limit).skip((page - 1) * limit);
         res.render('orders', { orders, totalPages, next, previous });
     } catch (error) {
         console.log(error);
@@ -30,7 +30,13 @@ const loadOrders = async (req, res) => {
 const loadOrderdetails = async (req, res) => {
     try {
         const orderId = req.query.id.trim();
-        const order = await Orders.findById(orderId).populate('products.productId').populate('userId');
+        let order = await Orders.findById(orderId);
+        if (order.couponUsed) {
+            order = await Orders.findById(orderId).populate('products.productId').populate('userId').populate('couponUsed');
+        } else {
+            order = await Orders.findById(orderId).populate('products.productId').populate('userId');
+
+        }
         res.render('adminOrderDetails', { order });
     } catch (error) {
         console.log(error);

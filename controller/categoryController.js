@@ -93,40 +93,40 @@ const isDeleted = async (req, res) => {
 }
 
 
-const loadOffers = async(req,res)=>{
+const loadOffers = async (req, res) => {
     try {
         const categoryId = req.query.id;
-        const offers = await offer.find({isDeleted:false});
-        res.render('applyOfferLiset',{offers,categoryId});
+        const offers = await offer.find({ isDeleted: false });
+        res.render('applyCategoryOfferLiset', { offers, categoryId });
     } catch (error) {
         console.log(error);
     }
 }
 
-const applyOffer = async(req,res)=>{
+const applyOffer = async (req, res) => {
     try {
-        const { offerId , categoryId } = req.body;
-        await Category.findOneAndUpdate({_id:categoryId},{
-            $set:{
-                offer:offerId
+        const { offerId, categoryId } = req.body;
+        await Category.findOneAndUpdate({ _id: categoryId }, {
+            $set: {
+                offer: offerId
             }
         });
-        res.json({ok:true});
+        res.json({ ok: true });
     } catch (error) {
         console.log(error);
     }
 }
 
 
-const removeOffer = async(req,res)=>{
+const removeOffer = async (req, res) => {
     try {
-        const {categoryId} = req.body
-        await Category.findOneAndUpdate({_id:categoryId},{
-            $unset:{
-                offer:1
+        const { categoryId } = req.body
+        await Category.findOneAndUpdate({ _id: categoryId }, {
+            $unset: {
+                offer: 1
             }
         });
-        res.json({ok:true});
+        res.json({ ok: true });
     } catch (error) {
         console.log(error);
     }

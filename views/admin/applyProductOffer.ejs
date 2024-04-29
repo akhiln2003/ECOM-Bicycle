@@ -1,0 +1,128 @@
+<%- include("../layout/admin/header.ejs") -%>
+
+    <div class="screen-overlay"></div>
+
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <%- include("../layout/admin/sidbar.ejs") -%>
+    </aside>
+    <main class="main-wrap">
+
+        <%- include("../layout/admin/navbar.ejs") -%>
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">PRODUCT OFFER</h2>
+                        <p> Apply offers</p>
+                    </div>
+                    <div>
+                        <a href="/admin/product" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go
+                            Back</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="row">
+
+                        <div class="card-body">
+                            <div class="table-responsive" id="Reload">
+                                <% if( offers.length>0){ %>
+                                    <table class="table table-hover">
+                                        <thead>
+                                            </th>
+                                            <th>No</th>
+                                            <th>Name</th>
+                                            <th>Offer Percentage</th>
+                                            <th>Expiry Date</th>
+                                            <th class="text-end">Apply</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% let count=0 %>
+
+                                                <% offers.forEach((offer)=>{ %>
+                                                    <% if( offer.isDeleted==false){ %>
+                                                        <% count++ %>
+                                                            <tr>
+                                                                <td>
+                                                                    <%= count %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= offer.name %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= offer.offerPercentage %> %
+                                                                </td>
+                                                                <td>
+                                                                    <%= offer.expiryDate.toLocaleString('en-US', {
+                                                                        weekday: 'short' , month: 'short' ,
+                                                                        day: 'numeric' , year: 'numeric' ,
+                                                                        hour: 'numeric' , minute: 'numeric' ,
+                                                                        second: 'numeric' , hour12: true }) %>
+                                                                </td>
+
+
+                                                                <td class="text-end"> <button type="button"
+                                                                        class="btn btn-sm btn-success rounded font-sm mt-15"
+                                                                        onclick="applyOffer('<%= offer._id %>','<%= productId %>')">
+                                                                        Apply
+                                                                    </button> </td>
+                                                            </tr>
+                                                            <% } %>
+                                                                <% }) %>
+
+                                        </tbody>
+                                    </table>
+                                    <% }else{ %>
+                                        <h1 style="margin-left: 25rem;">NO OFFERS</h1>
+                                        <%} %>
+                            </div>
+
+                        </div>
+                        <!-- .row // -->
+                    </div>
+
+                    <!-- card .// -->
+            </section>
+
+
+            <script>
+                function applyOffer(offerId, productId) {
+                    const data = { offerId, productId }
+                    Swal.fire({
+                        icon: "warning",
+                        title: "are you sure",
+                        showCancelButton: "true",
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'yes!',
+                        confirmButtonColor: '#3085d6'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('/admin/applyProductOffer', {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data)
+                            }).then((data) => {
+                                if (data.ok) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Applyed',
+                                    }).then((response) => {
+                                        if (response.isConfirmed) {
+                                            location.href = '/admin/products'
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+
+            </script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+            <%- include("../layout/admin/footer.ejs") -%>

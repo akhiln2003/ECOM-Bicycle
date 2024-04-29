@@ -18,7 +18,7 @@ const loadCustomers = async (req, res) => {
       next = totalPages
     }
 
-    const users = await User.find().limit(limit).skip((page - 1) * limit).exec()
+    const users = await User.find({}).sort({ dateJoined: -1 }).limit(limit).skip((page - 1) * limit).exec()
     res.render('customers', { users, totalPages, next, previous });
 
   } catch (error) {

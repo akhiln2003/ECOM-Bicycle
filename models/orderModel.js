@@ -19,15 +19,11 @@ const orderSchima = mongoose.Schema({
                 ref: 'Product',
                 required: true
             },
-            name: {
-                type: String
+
+            productPrice: {
+                type: Number,
             },
-            price: {
-                type: Number
-            },
-            description: {
-                type: String
-            },
+
             status: {
                 type: String,
                 enum: ['placed', 'pending', 'outForDelivery', 'returnRequested', 'returned', 'returnDenied', 'shipped', 'delivered', 'cancelled',],

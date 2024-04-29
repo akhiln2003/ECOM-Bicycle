@@ -1,0 +1,178 @@
+
+<%- include('../layout/user/header.ejs') %>
+
+<style>
+  .order-summary {
+    margin-top: 20px;
+    max-width: 300px; /* Set maximum width */
+   
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.summary-table .label {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.summary-table .amount {
+    text-align: right;
+}
+
+.summary-table .total-row .label {
+    font-weight: bold;
+}
+
+.summary-table .total-row .amount {
+    font-weight: bold;
+}
+
+
+
+</style>
+
+
+<section class="py-3 py-md-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-9 col-xl-8 col-xxl-7">
+          <div class="row gy-3 mb-3">
+            <div class="col-6">
+              <h2 class="text-uppercase text-endx m-0">Invoice</h2>
+            </div>
+            <div class="col-6">
+              <a class="d-block text-end" href="#!">
+                <img src="./assets/img/bsb-logo.svg" class="img-fluid" alt="BootstrapBrain Logo" width="135" height="44">
+              </a>
+            </div>
+            <div class="col-12">
+              <h4>From</h4>
+              <address>
+                <strong>Cycle Craft</strong><br>
+                875 N Coast Hwybr<br>
+                Laguna Beach, California, 92651<br>
+                    INDIA<br>
+                Phone:  96*******<br>
+                Email: cyclecraft@domain.com
+              </address>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12 col-sm-6 col-md-8">
+              <h4>Bill To</h4>
+              <address>
+                <strong><%= orders.deliveryAddress.name %></strong><br>
+                <%= orders.deliveryAddress.city %>, <%= orders.deliveryAddress.state %>, <%= orders.deliveryAddress.pin %><br>
+                INDIA<br>
+                Phone: <%= orders.deliveryAddress.phone %><br>
+                Email: <%= email %>
+              </address>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+              <h4 class="row">
+                <span class="col-6">Invoice #</span>
+                <span class="col-6 text-sm-end">INT-001</span>
+              </h4>
+              <div class="row">
+                <span class="col-6">Account</span>
+                <span class="col-6 text-sm-end"><%= orders.totalAmount %></span>
+                <span class="col-6">Order ID</span>
+                <span class="col-6 text-sm-end"><%= orders.orderId %></span>
+                <span class="col-6"> Date</span>
+                <span class="col-6 text-sm-end">
+                    <%= orders.date.toLocaleString('en-US', {
+                        month: 'numeric',
+                        day: 'numeric',
+                        year: 'numeric'
+                    }) %>
+                </span>
+                
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-uppercase">Qty</th>
+                      <th scope="col" class="text-uppercase">Product</th>
+                      <th scope="col" class="text-uppercase">Status</th>
+                      <th scope="col" class="text-uppercase text-end">Unit Price</th>
+                      <th scope="col" class="text-uppercase text-end">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-group-divider">
+                    <% let subtotal = 0 %>
+                    <% orders.products.forEach((product)=>{ %>
+                        <% subtotal += product.productId.productPrice* product.quantity %>
+                    <tr>
+                      <th scope="row"><%= product.quantity %></th>
+                      <td><%= product.productId.productName %></td>
+                      <td><%= product.status %></td>
+                      <td class="text-end"><%= product.productId.productPrice %></td>
+                      <td class="text-end"><%=  product.quantity*product.productId.productPrice %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+                
+                </table>
+                <div class="order-summary" style="margin-top: 5rem;">
+                    <table class="summary-table">
+                        <tr>
+                            <td class="label">Subtotal:</td>
+                            <td class="amount"><%= subtotal %></td>
+                        </tr>
+                        <% if(orders.couponUsed){ %>
+                            <tr>
+                                <td class="label">Offer:</td>
+                                <td class="amount"><%= orders.couponUsed.type === "amount" ? "₹ " + orders.couponUsed.discount : orders.couponUsed.discount + "%" %></td>
+                            </tr>
+                        <% } %>
+                        <tr>
+                            <td class="label">Shipping:</td>
+                            <td class="amount">Free Delivery</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td class="label">Total:</td>
+                            <td class="amount"><%= orders.totalAmount %></td>
+                        </tr>
+                    </table>
+                </div>
+                >
+                
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-end">
+              <button type="submit" class="btn btn-primary mb-3" onclick="dowloadInvoice()">Download Invoice</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <script>
+    function dowloadInvoice(){
+        window.print()
+    }
+
+
+  </script>
+
+ 
+
+  <%- include('../layout/user/footer.ejs') %>

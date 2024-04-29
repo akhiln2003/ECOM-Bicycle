@@ -38,7 +38,7 @@ admin_route.get('/dashboard', auth.isLogOut, adminController.loadDashboard);
 
 admin_route.get('/salesreport', auth.isLogOut, adminSalesreport.loadSalesreport);
 admin_route.post('/listsails', auth.isLogOut, adminSalesreport.listOrders);
-admin_route.post("/downloadExcel",auth.isLogOut,adminSalesreport.dowloadExcel);
+admin_route.post("/downloadExcel", auth.isLogOut, adminSalesreport.dowloadExcel);
 
 //CUSTEMERS
 admin_route.get('/customers', auth.isLogOut, customerController.loadCustomers);
@@ -50,7 +50,11 @@ admin_route.get('/addProduct', auth.isLogOut, productController.loadAddproduct);
 admin_route.post('/addProduct', auth.isLogOut, multer.upload.array('image'), productController.addProducts);
 admin_route.get('/editProduct', auth.isLogOut, productController.loadEditproduct);
 admin_route.post('/editProduct', auth.isLogOut, multer.upload.array('image'), productController.editProducts);
-admin_route.post('/deleteProduct', auth.isLogOut, productController.isDeleted)
+admin_route.post('/deleteProduct', auth.isLogOut, productController.isDeleted);
+admin_route.get('/showproductOffers', auth.isLogOut, productController.loadOffers);
+admin_route.put('/applyProductOffer', auth.isLogOut, productController.applyOffer);
+admin_route.put('/removeProductOffer', auth.isLogOut, productController.removeOffer);
+
 
 
 
@@ -61,9 +65,9 @@ admin_route.post('/addcategory', auth.isLogOut, categoryController.insertCategor
 admin_route.get('/editCategory', auth.isLogOut, categoryController.loadEditcategory);
 admin_route.post('/editCategory', auth.isLogOut, categoryController.updateCategory);
 admin_route.post('/deleteCategory', auth.isLogOut, categoryController.isDeleted);
-admin_route.get('/showOffers',auth.isLogOut,categoryController.loadOffers);
-admin_route.put('/applyCategoryOffer',auth.isLogOut,categoryController.applyOffer);
-admin_route.put('/removeOffer',auth.isLogOut,categoryController.removeOffer);
+admin_route.get('/showcategoryOffers', auth.isLogOut, categoryController.loadOffers);
+admin_route.put('/applyCategoryOffer', auth.isLogOut, categoryController.applyOffer);
+admin_route.put('/removeCategoryOffer', auth.isLogOut, categoryController.removeOffer);
 
 
 // ORDERS
@@ -91,12 +95,12 @@ admin_route.get('/brand', auth.isLogOut, brandController.loadBrand);
 admin_route.get('/addBrand', auth.isLogOut, brandController.loadAddBrand);
 
 // OFFER
-admin_route.get('/offer',auth.isLogOut,offerController.loadOffer);
-admin_route.get('/addoffer',auth.isLogOut,offerController.loadAddOffer);
-admin_route.post('/addoffer',auth.isLogOut,offerController.addOffer);
-admin_route.get('/editoffer',auth.isLogOut,offerController.loadEditoffer);
-admin_route.post('/editoffer',auth.isLogOut,offerController.editOffer);
-admin_route.post('/deleteoffer',auth.isLogOut,offerController.deleteOffer);
+admin_route.get('/offer', auth.isLogOut, offerController.loadOffer);
+admin_route.get('/addoffer', auth.isLogOut, offerController.loadAddOffer);
+admin_route.post('/addoffer', auth.isLogOut, offerController.addOffer);
+admin_route.get('/editoffer', auth.isLogOut, offerController.loadEditoffer);
+admin_route.post('/editoffer', auth.isLogOut, offerController.editOffer);
+admin_route.post('/deleteoffer', auth.isLogOut, offerController.deleteOffer);
 
 
 

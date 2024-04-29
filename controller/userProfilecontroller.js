@@ -52,7 +52,7 @@ const updateProfile = async (req, res) => {
         if (existname) {
             req.flash('error', "Name is alredy existed");
             res.redirect(`/editProfile?id=${id}`);
-        }else {
+        } else {
             await User.findOneAndUpdate({ _id: id }, { name: editName });
             res.redirect('/profile');
         }
@@ -188,9 +188,28 @@ const loadOrHistory = async (req, res) => {
         let next = page < totalPages ? page + 1 : totalPages;
         let previous = page > 1 ? page - 1 : 1;
 
-        const orders = await Orders.find({ userId: id }).limit(limit).skip((page - 1) * limit);
+        const orders = await Orders.find({ userId: id }).sort({ date: -1 }).limit(limit).skip((page - 1) * limit);
 
         res.render('orderHistory', { orders, next, previous, totalPages });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const loadInvoice = async (req, res) => {
+    try {
+        const id = req.query.id
+        let orders;
+        const order = await Orders.findOne({ _id: id });
+        if (order.couponUsed) {
+            orders = await Orders.findOne({ _id: id }).populate('products.productId').populate('couponUsed');
+        } else {
+            orders = await Orders.findOne({ _id: id }).populate('products.productId');
+        }
+        const user = await User.findOne({ _id: req.session.user._id });
+        const email = user.email;
+        res.render('invoice', { orders, email });
     } catch (error) {
         console.log(error);
     }
@@ -211,5 +230,6 @@ module.exports = {
     loadEditaddress,
     updatEditaddress,
     loadOrHistory,
+    loadInvoice
 
 }

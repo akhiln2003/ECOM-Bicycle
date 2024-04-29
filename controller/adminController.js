@@ -54,24 +54,24 @@ const adminLogOut = async (req, res) => {
 const loadDashboard = async (req, res) => {
     try {
         // Orders count 
-        const orderscount = await Order.countDocuments({ status: "placed" });
+        const orderscount = await Order.countDocuments({ status: "placed", "products.status": "delivered" });
 
         // Product count 
         const productscount = await Products.countDocuments({ isDeleted: false });
 
         // Total revenue 
-        const revenueResult = await Order.aggregate([
-            { $match: { status: "placed" } },
-            { $unwind: "$products" },
-            { $match: { "products.status": "delivered" } },
-            {
-                $group: {
-                    _id: null,
-                    totalRevenue: { $sum: { $multiply: ["$products.price", "$products.quantity"] } }
+        const ordres = await Order.find({ status: "placed" }).populate("products.productId");
+
+        let totalRevenue = 0;
+        ordres.forEach(order => {
+            order.products.forEach(product => {
+                if (product.status == "delivered") {
+                    let totalPriceForProduct = product.productId.productPrice * product.quantity;
+                    totalRevenue += totalPriceForProduct;
                 }
-            }
-        ]);
-        const totalRevenue = revenueResult.length ? revenueResult[0].totalRevenue : 0;
+            });
+        });
+
 
         // Monthly Revenue and Orders Count
         const monthlyResult = await Order.aggregate([
@@ -79,13 +79,30 @@ const loadDashboard = async (req, res) => {
             { $unwind: "$products" },
             { $match: { "products.status": "delivered" } },
             {
+                $lookup: {
+                    from: "products",
+                    localField: "products.productId",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            { $unwind: "$product" },
+            {
                 $group: {
                     _id: { month: { $month: "$date" } },
-                    totalRevenue: { $sum: { $multiply: ["$products.price", "$products.quantity"] } },
-                    count: { $sum: 1 }
+                    totalRevenue: { $sum: { $multiply: ["$product.productPrice", "$products.quantity"] } },
+                    count: { $addToSet: "$_id" } // Count the distinct order IDs
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    totalRevenue: 1,
+                    count: { $size: "$count" } // Calculate the size of the array containing distinct order IDs
                 }
             }
         ]);
+
 
         // Create an array to hold monthly earnings
         const monthlyEarnings = Array.from({ length: 12 }, (_, i) => {
@@ -147,68 +164,70 @@ const loadDashboard = async (req, res) => {
             };
         });
 
-                // Top 10 
-                const topProducts = await Order.aggregate([
-                    { $match: { status: "placed" } },
-                    { $unwind: "$products" },
-                    { $match: { "products.status": "delivered" } },
-                    { $group: { _id: "$products.productId", quantity: { $sum: "$products.quantity" } } },
-                    { $sort: { quantity: -1 } },
-                    { $limit: 5},
-                    { $lookup: {
-                        from: "products",
-                        localField: "_id",
-                        foreignField: "_id",
-                        as: "productDetails"
-                    }},
-                    {
-                        $project: {
-                            _id: "$_id",
-                            productName:{  $arrayElemAt: ["$productDetails.productName", 0] },
-                            productImg:{ $arrayElemAt: ["$productDetails.image", 0] },
-                        }
-                    }
+        // Top 10 
+        const topProducts = await Order.aggregate([
+            { $match: { status: "placed" } },
+            { $unwind: "$products" },
+            { $match: { "products.status": "delivered" } },
+            { $group: { _id: "$products.productId", quantity: { $sum: "$products.quantity" } } },
+            { $sort: { quantity: -1 } },
+            { $limit: 5 },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            {
+                $project: {
+                    _id: "$_id",
+                    productName: { $arrayElemAt: ["$productDetails.productName", 0] },
+                    productImg: { $arrayElemAt: ["$productDetails.image", 0] },
+                }
+            }
 
-                ]);
-              
-                const topCategories = await Order.aggregate([
-                    { $match: { 'products.status': 'delivered' } }, // Match orders with delivered products
-                    { $unwind: '$products' }, // Unwind the products array
-                    {
-                        $lookup: { // Lookup to fetch product details
-                            from: 'products',
-                            localField: 'products.productId',
-                            foreignField: '_id',
-                            as: 'product'
-                        }
-                    },
-                    { $unwind: '$product' }, // Unwind the product array
-                    {
-                        $group: { // Group by category and count the number of orders
-                            _id: '$product.category',
-                            orderCount: { $sum: 1 }
-                        }
-                    },
-                    { $sort: { orderCount: -1 } }, // Sort by order count in descending order
-                    {
-                        $lookup: { // Lookup to fetch category details
-                            from: 'categories',
-                            localField: '_id',
-                            foreignField: '_id',
-                            as: 'category'
-                        }
-                    },
-                    { $unwind: '$category' }, // Unwind the category array
-                    { 
-                        $project: { // Project to include only relevant fields
-                            categoryName: '$category.categoryName',
-                            orderCount: 1
-                        }
-                    },
-                    { $sort: { orderCount: -1 } } // Sort categories by order count in descending order
-                ]);
-                
-   
+        ]);
+
+        const topCategories = await Order.aggregate([
+            { $match: { 'products.status': 'delivered' } }, // Match orders with delivered products
+            { $unwind: '$products' }, // Unwind the products array
+            {
+                $lookup: { // Lookup to fetch product details
+                    from: 'products',
+                    localField: 'products.productId',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            { $unwind: '$product' }, // Unwind the product array
+            {
+                $group: { // Group by category and count the number of orders
+                    _id: '$product.category',
+                    orderCount: { $sum: 1 }
+                }
+            },
+            { $sort: { orderCount: -1 } }, // Sort by order count in descending order
+            {
+                $lookup: { // Lookup to fetch category details
+                    from: 'categories',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            { $unwind: '$category' }, // Unwind the category array
+            {
+                $project: { // Project to include only relevant fields
+                    categoryName: '$category.categoryName',
+                    orderCount: 1
+                }
+            },
+            { $sort: { orderCount: -1 } } // Sort categories by order count in descending order
+        ]);
+
+
         res.render('dashboard',
             {
                 orderscount,

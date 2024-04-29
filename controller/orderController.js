@@ -24,11 +24,10 @@ const loadOrderDetails = async (req, res) => {
         let orders;
         if (order.couponUsed) {
 
-            orders = await Orders.findOne({ userId: userId, orderId: orderId }).populate('products.productId').populate('couponUsed');
+            orders = await Orders.findOne({ userId: userId, orderId: orderId }).populate('products.productId').populate("userId").populate('couponUsed');
         } else {
-            orders = await Orders.findOne({ userId: userId, orderId: orderId }).populate('products.productId')
+            orders = await Orders.findOne({ userId: userId, orderId: orderId }).populate('products.productId').populate("userId");
         }
-
         res.render('orderDetails', { orders });
     } catch (error) {
         console.log(error);

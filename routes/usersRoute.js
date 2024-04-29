@@ -2,7 +2,7 @@
 const express = require('express');
 const session = require('express-session');
 const auth = require('../middleware/userAuth');
-const {loadCartMiddleware} = require('../middleware/cartMiddleware');
+const { loadCartMiddleware } = require('../middleware/cartMiddleware');
 const userController = require("../controller/userController");
 const shopController = require('../controller/shopController');
 const profileController = require('../controller/userProfilecontroller');
@@ -88,6 +88,7 @@ user_route.get('/editAddress', auth.isLogOut, profileController.loadEditaddress)
 user_route.post('/editAddress', auth.isLogOut, profileController.updatEditaddress);
 user_route.post('/deletAddress', auth.isLogOut, profileController.deletAddress);
 user_route.get('/orderHistory', auth.isLogOut, profileController.loadOrHistory);
+user_route.get('/invoice', auth.isLogOut, profileController.loadInvoice);
 
 
 

@@ -12,7 +12,7 @@
             <section class="content-main">
                 <div class="content-header">
                     <div>
-                        <h2 class="content-title card-title">OFFER</h2>
+                        <h2 class="content-title card-title">CATEGORY OFFER</h2>
                         <p> Apply offers</p>
                     </div>
                     <div>
@@ -63,7 +63,8 @@
 
                                                                 <td class="text-end"> <button type="button"
                                                                         class="btn btn-sm btn-success rounded font-sm mt-15"
-                                                                        onclick="applyOffer('<%= offer._id %>','<%= categoryId %>')"> Apply
+                                                                        onclick="applyOffer('<%= offer._id %>','<%= categoryId %>')">
+                                                                        Apply
                                                                     </button> </td>
                                                             </tr>
                                                             <% } %>
@@ -79,14 +80,14 @@
                         </div>
                         <!-- .row // -->
                     </div>
-                  
+
                     <!-- card .// -->
             </section>
 
 
             <script>
-                function applyOffer(offerId,categoryId) {
-                  const data = {offerId,categoryId}
+                function applyOffer(offerId, categoryId) {
+                    const data = { offerId, categoryId }
                     Swal.fire({
                         icon: "warning",
                         title: "are you sure",
@@ -102,13 +103,13 @@
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify(data)
-                            }).then((data)=>{
-                                if(data.ok){
+                            }).then((data) => {
+                                if (data.ok) {
                                     Swal.fire({
-										icon: 'success',
-										title: 'Applyed',
-									}).then((response)=>{
-                                        if(response.isConfirmed){
+                                        icon: 'success',
+                                        title: 'Applyed',
+                                    }).then((response) => {
+                                        if (response.isConfirmed) {
                                             location.href = '/admin/category'
                                         }
                                     })

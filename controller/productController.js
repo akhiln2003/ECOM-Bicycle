@@ -1,5 +1,6 @@
 const Product = require('../models/productModel');
 const Category = require('../models/category');
+const Offers = require('../models/offerModel');
 const sharp = require('sharp');
 
 
@@ -19,7 +20,7 @@ const loadProducts = async (req, res) => {
         let previous = page > 1 ? page - 1 : 1;
         let next = page < totalPages ? page + 1 : totalPages;
         const category = await Category.find({});
-        const product = await Product.find({}).populate('category').limit(limit).skip((page - 1) * limit);
+        const product = await Product.find({}).populate('category').sort({ dateJoined: -1 }).limit(limit).skip((page - 1) * limit);
         res.render('products', { category, product, totalPages, next, previous });
     } catch (error) {
         console.log(error);
@@ -143,11 +144,56 @@ const isDeleted = async (req, res) => {
         console.log(error);
     }
 }
+
+
+const loadOffers = async (req, res) => {
+    try {
+        const productId = req.query.id;
+        const offers = await Offers.find({ isDeleted: false });
+        res.render('applyProductOffer', { offers, productId });
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const applyOffer = async (req, res) => {
+    try {
+        const { offerId, productId } = req.body;
+        await Product.findOneAndUpdate({ _id: productId }, {
+            $set: {
+                offer: offerId
+            }
+        });
+        res.json({ ok: true });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const removeOffer = async (req, res) => {
+    try {
+        const { productId } = req.body
+        await Product.findOneAndUpdate({ _id: productId }, {
+            $unset: {
+                offer: 1
+            }
+        });
+        res.json({ ok: true });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     loadProducts,
     loadAddproduct,
     addProducts,
     loadEditproduct,
     editProducts,
-    isDeleted
+    isDeleted,
+    loadOffers,
+    applyOffer,
+    removeOffer
 }
