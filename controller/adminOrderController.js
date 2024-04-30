@@ -1,4 +1,6 @@
 const Orders = require('../models/orderModel');
+const Wallet = require('../models/walletModel');
+const Product = require('../models/productModel');
 
 
 // LOAD ORDERS
@@ -109,12 +111,60 @@ const loadReturnDetails = async (req, res) => {
 
 const changeReturnStatus = async (req, res) => {
     try {
-        const { orderId, productId, status } = req.body;
-        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
+        const { orderId, productId, status, userId , productid} = req.body;
+       let order = await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
             $set: {
                 'products.$.status': status
             }
         })
+        if (status == "returned") {
+            let existOffer,existsCategoryOffer,product,productPrice;
+            let findProduct = await Product.findOne({ _id: productid }).populate('category');
+            if (findProduct.offer && findProduct.category.offer) {
+                existOffer = true
+                existsCategoryOffer = true
+                product = await Product.findOne({ _id: productid }).populate('offer').populate({ path: 'category', populate: { path: 'offer' } });
+
+            } else if (findProduct.category.offer && !findProduct.offer) {
+
+                existsCategoryOffer = true
+                product = await Product.findOne({ _id: productid }).populate({ path: 'category', populate: { path: 'offer' } });
+            } else if (!findProduct.category.offer && findProduct.offer) {
+                existOffer = true
+                product = await Product.findOne({ _id: productid }).populate('offer');
+            } else {
+                product = await Product.findOne({ _id: productid });
+            }
+             
+            if(existOffer && existsCategoryOffer ){
+                if(product.offer.offerPercentage < product.category.offer.offerPercentage){
+                    productPrice = product.category.offer.offerPercentage
+                }else{
+                    productPrice = product.offer.offerPercentage
+
+                }
+            }else if(!existOffer && existsCategoryOffer ){
+                
+                productPrice = product.category.offer.offerPercentage
+            }else if(existOffer && !existsCategoryOffer ){
+                productPrice = product.offer.offerPercentage
+
+            }else{
+                productPrice = product.productPrice
+
+            }
+            const wallet = await Wallet.findOne({ userId: userId });
+            wallet.balance += product.productPrice-(product.productPrice*(productPrice/100)) ;
+            wallet.walletHistory.push({
+                amount: product.productPrice-(product.productPrice*(productPrice/100)) ,
+                type: 'Credit',
+                reason: `Order ${status === 'Cancelled' ? 'cancellation' : 'return'} refund`,
+                orderId: orderId,
+                orderId2: order.orderId,
+                date: new Date()
+            });
+            await wallet.save();
+        }
         res.json({ ok: true })
     } catch (error) {
         console.log(error);
