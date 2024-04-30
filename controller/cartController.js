@@ -10,7 +10,7 @@ const { logOut } = require('./userController');
 const loadCart = async (req, res) => {
     try {
         const id = req.session.user._id;
-        const cart = await Cart.findOne({ userId: id }).populate('products.productId');
+        const cart = await Cart.findOne({ userId: id }).populate({ path: 'products', populate: { path: 'productId', populate: { path: 'category',populate:{path:'offer'} } } });
         res.render('cart', { cart });
     } catch (error) {
         console.log(error);
@@ -23,16 +23,16 @@ const addtoCart = async (req, res) => {
     try {
         const userId = req.session.user._id;
         const { productId, quantity } = req.body;
-        let price;
         const product = await Product.findOne({ _id: productId }).populate('category');
         const cart = await Cart.findOne({ userId: userId });
+
         if (cart) {
             const existProduct = await cart.products.find((product) => product.productId == productId);
             if (existProduct) {
                 await Cart.findOneAndUpdate({ userId: userId, 'products.productId': productId }, {
                     $inc: {
                         'product.$.quantity': quantity,
-                        'product.$.totalPrice': quantity * existProduct.productPrice
+
                     }
                 })
             } else {
@@ -41,8 +41,6 @@ const addtoCart = async (req, res) => {
                         products: {
                             productId: productId,
                             quantity: quantity,
-                            price: product.productPrice,
-                            totalPrice: quantity * product.productPrice
                         }
                     }
                 })
@@ -54,8 +52,6 @@ const addtoCart = async (req, res) => {
                     {
                         productId: productId,
                         quantity: quantity,
-                        price: product.productPrice,
-                        totalPrice: quantity * product.productPrice
                     }
                 ]
             })

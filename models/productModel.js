@@ -47,7 +47,8 @@ const productSchema = mongoose.Schema({
     default: false,
     required: true
   }, offer: {
-    type: ObjectId
+    type: ObjectId,
+    ref: 'Offer'
   }
 
 

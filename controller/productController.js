@@ -148,8 +148,9 @@ const isDeleted = async (req, res) => {
 
 const loadOffers = async (req, res) => {
     try {
+        const currentDate = new Date();
         const productId = req.query.id;
-        const offers = await Offers.find({ isDeleted: false });
+        const offers = await Offers.find({ isDeleted: false , expiryDate:{$gte:currentDate }});
         res.render('applyProductOffer', { offers, productId });
 
     } catch (error) {

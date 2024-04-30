@@ -95,8 +95,9 @@ const isDeleted = async (req, res) => {
 
 const loadOffers = async (req, res) => {
     try {
+        const currentDate = new Date();
         const categoryId = req.query.id;
-        const offers = await offer.find({ isDeleted: false });
+        const offers = await offer.find({ isDeleted: false , expiryDate:{$gte:currentDate }});
         res.render('applyCategoryOfferLiset', { offers, categoryId });
     } catch (error) {
         console.log(error);

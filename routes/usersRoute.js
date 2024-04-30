@@ -113,6 +113,7 @@ user_route.get('/checkout', auth.isLogOut, checkoutController.loadCheckout);
 user_route.post('/addaddressCheckout', auth.isLogOut, checkoutController.checkoutAddAddress);
 user_route.post('/placeOrder', auth.isLogOut, checkoutController.placeOrder);
 user_route.post('/verifyPayment', auth.isLogOut, checkoutController.verifyPayment);
+user_route.post('/countinuePayment', auth.isLogOut, checkoutController.paymentCountinue);
 user_route.put('/applycoupon', auth.isLogOut, checkoutController.applyCoupon);
 user_route.put('/removecoupon', auth.isLogOut, checkoutController.removeCoupon);
 

@@ -71,7 +71,7 @@
 					</div>
 					<% } %>
 
-						<form id="verificationForm" onsubmit="return validateForm()" method="post" action=""
+						<form id="verificationForm" onsubmit="return validateForm()"
 							style="margin-top: 2rem;">
 
 
@@ -132,7 +132,7 @@
 															required>
 													</div>
 													<button type="submit" class="btn d-block w-100 my-4"
-														style="background-color: #198754;">Submit</button>
+														style="background-color: #198754;" onclick="enterOTP('<%= locals.email %>')">Submit</button>
 						</form>
 						<span class="time text-center" id="time"></span>
 						<div class="text-center ">
@@ -155,7 +155,6 @@
 
 
 					function resend() {
-						console.log("Hello");
 						clearInterval(countdownInterval);
 						startCountdown(60);
 					}
@@ -193,5 +192,67 @@
 							}
 						}
 					}
+
+
+					function enterOTP(email) {
+    document.getElementById('verificationForm').addEventListener('submit', function(event) {
+        // Prevent the default form submission
+        event.preventDefault();
+
+        // Collect OTP data from input fields
+        const digit1 = document.getElementById('digit1').value;
+        const digit2 = document.getElementById('digit2').value;
+        const digit3 = document.getElementById('digit3').value;
+        const digit4 = document.getElementById('digit4').value;
+
+        // Construct JSON object with OTP data
+        const otpData = {
+            digit1: digit1,
+            digit2: digit2,
+            digit3: digit3,
+            digit4: digit4,
+			email:email
+        };
+
+        // Send POST request with OTP data
+        fetch('/otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(otpData)
+        })
+        .then(response => {
+            // Handle response from server
+            if (!response.ok) {
+                // Handle incorrect OTP response
+                // Set border color of input fields to red
+                document.getElementById('digit1').style.borderColor = 'red';
+                document.getElementById('digit2').style.borderColor = 'red';
+                document.getElementById('digit3').style.borderColor = 'red';
+                document.getElementById('digit4').style.borderColor = 'red';
+
+                // Display error message
+				
+                // alert('Incorrect OTP! Please try again.');
+
+                // Reset border colors after 3 seconds
+                setTimeout(function() {
+                    document.getElementById('digit1').style.borderColor = '';
+                    document.getElementById('digit2').style.borderColor = '';
+                    document.getElementById('digit3').style.borderColor = '';
+                    document.getElementById('digit4').style.borderColor = '';
+                }, 3000);
+            }else{
+				location.href = '/login'
+			}
+        })
+        .catch(error => {
+            // Handle network error
+            console.error('Error:', error);
+        });
+    });
+}
+
 				</script>
 				<%- include('../layout/user/footer.ejs') %>

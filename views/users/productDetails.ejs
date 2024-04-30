@@ -74,8 +74,43 @@
 								<h3>
 									<%= product.productName %>
 								</h3>
-								<h1> ₹ <%= product.productPrice %>
-								</h1>
+								<div style="margin-top: 2rem; margin-bottom: 2rem;">
+									<% if(existOffer){ %>
+									<% if(existsCategoryOffer){ %>
+										<% if(product.offer.offerPercentage > product.category.offer){ %>
+											<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+												<h3 style="margin-left: 1rem;">
+													<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
+													</span>
+												</h3></div>
+											<% }else{ %>
+												<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+													<h3 style="margin-left: 1rem;">
+														<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
+														</span>
+													</h3></div>
+										<% } %>
+										<% }else{ %>
+											<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+												<h3 style="margin-left: 1rem;">
+													<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
+													</span>
+												</h3></div>
+											
+											<% } %>
+										<% }else if(existsCategoryOffer){ %>
+											<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+												<h3 style="margin-left: 1rem;">
+													<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
+													</span>
+												</h3></div>
+											<% }else { %>
+										<h1> ₹ <%= product.productPrice %>
+										</h1>
+										<% } %>
+									
+								</div>
+								
 								<div class="ratting">
 									<i class="fa fa-star"></i>
 									<i class="fa fa-star"></i>
@@ -90,7 +125,7 @@
 								</p>
 								<hr />
 								<div class="color-brand clearfix">
-									<div class="s-select">
+									<!-- <div class="s-select">
 										<div class="custom-select">
 											<select class="form-control">
 												<option>Color</option>
@@ -109,8 +144,11 @@
 												<option>Shirt</option>
 											</select>
 										</div>
+									</div> -->
+									<div style="display: flex;"> 
+										<h5>Select Quantity</h5>
+										<input style="margin-left: 2rem;" id="quantity" type="number" value="1" name="qtybutton" min="1" max="5">
 									</div>
-									<input id="quantity" type="number" value="1" name="qtybutton" min="1" max="5">
 								</div>
 								<div class="actions-btn">
 									<ul class="clearfix text-center">

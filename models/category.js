@@ -10,7 +10,8 @@ const categorySchima = mongoose.Schema({
         type: String,
         required: true
     },offer:{
-        type:ObjectId
+        type:ObjectId,
+        ref: 'Offer'
     },isDeleted: {
         type: Boolean,
         default: false

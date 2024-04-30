@@ -86,10 +86,10 @@
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
-                                    <% let total = 0 %>
+                                    <% let total=0 %>
                                         <% cart.products.forEach((product)=>{ %>
-                                            <% total += ( product.productId.productPrice * product.quantity ) %>
-                                            <tbody>
+                                           
+                                                <tbody>
                                                     <tr>
                                                         <td>
                                                             <a href="#"><img
@@ -100,29 +100,81 @@
                                                         <td>
                                                             <%= product.productId.productName %>
                                                         </td>
-                                                        <td> ₹ <%= product.productId.productPrice %>
-                                                        </td>
-                                                        <td>
-                                                            <form action="#">
-                                                                <div class="plus-minus text-center">
-                                                                    <a onclick="updateProductQuantity('<%= product.productId._id %>', -1)"
-                                                                        class="quantity-button minus"
-                                                                        style="text-decoration: none;">-</a>
-                                                                    <input type="text" readonly
-                                                                        value="<%= product.quantity %>" name="qtybutton"
-                                                                        class="quantity-input">
-                                                                    <a onclick="updateProductQuantity('<%= product.productId._id %>', 1)"
-                                                                        class="quantity-button plus"
-                                                                        style="text-decoration: none;">+</a>
-                                                                </div>
-                                                            </form>
-                                                        </td>
+                                                        <% let productPrice %>
+                                                            <% if( product.productId.category.offer &&
+                                                                product.productId.offer){ %>
+                                                                <% if(product.productId.category.offer.offerPercentage <
+                                                                    product.productId.offer.offerPercentage) { %>
+                                                                    <% productPrice=product.productId.productPrice -
+                                                                        (product.productId.productPrice *
+                                                                        (product.productId.offer.offerPercentage/100))
+                                                                        %>
+                                                                        <% }else{ %>
+                                                                            <% productPrice=product.productId.productPrice
+                                                                                - (product.productId.productPrice *
+                                                                                (product.productId.category.offer.offerPercentage/100))
+                                                                                %>
+                                                                                <% } %>
+                                                                                    <% } else if(
+                                                                                        !product.productId.category.offer
+                                                                                        && product.productId.offer){ %>
+                                                                                        <% productPrice=product.productId.productPrice
+                                                                                            -
+                                                                                            (product.productId.productPrice
+                                                                                            *
+                                                                                            (product.productId.offer.offerPercentage/100))
+                                                                                            %>
+                                                                                            <% }else if(
+                                                                                                product.productId.category.offer
+                                                                                                &&
+                                                                                                !product.productId.offer){
+                                                                                                %>
+                                                                                                <% productPrice=product.productId.productPrice
+                                                                                                    -
+                                                                                                    (product.productId.productPrice
+                                                                                                    *
+                                                                                                    (product.productId.category.offer.offerPercentage/100))
+                                                                                                    %>
 
-                                                        <td> ₹ <%= product.productId.productPrice * product.quantity %>
-                                                        </td>
-                                                        <td><i class="fa fa-trash"
-                                                                onclick=" removeProduct('<%= product.productId._id  %>')"></i>
-                                                        </td>
+                                                                                                    <% }else{ %>
+                                                                                                        <% productPrice = product.productId.productPrice
+                                                                                                            %>
+
+                                                                                                            <% } %>
+
+                                                                                                            <% total +=( productPrice * product.quantity ) %>
+
+                                                                                                            <td><%= productPrice %></td>
+                                                                                                                <td>
+                                                                                                                    <form
+                                                                                                                        action="#">
+                                                                                                                        <div
+                                                                                                                            class="plus-minus text-center">
+                                                                                                                            <a onclick="updateProductQuantity('<%= product.productId._id %>', -1)"
+                                                                                                                                class="quantity-button minus"
+                                                                                                                                style="text-decoration: none;">-</a>
+                                                                                                                            <input
+                                                                                                                                type="text"
+                                                                                                                                readonly
+                                                                                                                                value="<%= product.quantity %>"
+                                                                                                                                name="qtybutton"
+                                                                                                                                class="quantity-input">
+                                                                                                                            <a onclick="updateProductQuantity('<%= product.productId._id %>', 1)"
+                                                                                                                                class="quantity-button plus"
+                                                                                                                                style="text-decoration: none;">+</a>
+                                                                                                                        </div>
+                                                                                                                    </form>
+                                                                                                                </td>
+
+                                                                                                                <td> ₹
+                                                                                                                    <%= productPrice
+                                                                                                                        *
+                                                                                                                        product.quantity
+                                                                                                                        %>
+                                                                                                                </td>
+                                                                                                                <td><i class="fa fa-trash"
+                                                                                                                        onclick=" removeProduct('<%= product.productId._id  %>')"></i>
+                                                                                                                </td>
                                                     </tr>
 
                                                 </tbody>
@@ -188,7 +240,7 @@
                                     icon: 'success',
                                     title: 'deleted'
                                 })
-                               location.reload()
+                                location.reload()
                             }
                         })
                     }
@@ -208,7 +260,7 @@
                 }).then((data) => data.json())
                     .then((response) => {
                         if (response.ok) {
-                            $('#reloadArea').load('/cart #reloadArea'); 
+                            $('#reloadArea').load('/cart #reloadArea');
                         } else if (response.min) {
                             Swal.fire({
                                 icon: 'warning',

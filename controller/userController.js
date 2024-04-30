@@ -179,8 +179,8 @@ const verifyOtp = async (req, res) => {
                     });
             }
         } else {
-            req.flash('expire', "Incorrect OTP");
-            res.redirect(`/otp?email=${email}`);
+            res.json({incurrect:true});
+           
         }
         const user = await User.findOne({ email: email });
         await userOtpVerification.deleteOne({ email: email });
@@ -191,7 +191,7 @@ const verifyOtp = async (req, res) => {
                     name: user.name,
                     email: user.email
                 }
-                res.redirect('/login');
+                res.json({ok:true});
             } else {
                 req.flash('blocked', "you are blocked for this contact with admin");
                 res.redirect(`/otp?email=${email}`);

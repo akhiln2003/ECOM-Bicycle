@@ -36,7 +36,7 @@ const loadCheckout = async (req, res) => {
 
         const currentDate = new Date().toISOString();
 
-        const cart = await Cart.findOne({ userId: id }).populate('products.productId');
+        const cart = await Cart.findOne({ userId: id }).populate({ path: 'products', populate: { path: 'productId', populate: { path: 'category',populate:{path:'offer'} } } }).populate({path:'couponApplyd' ,  populate:{path: 'couponId'}});
         const coupons = await Coupon.find({ 'user.userId': { $ne: id }, expiryDate: { $gte: currentDate } });
         res.render('checkout', { user, cart, coupons });
     } catch (error) {
@@ -222,6 +222,37 @@ const verifyPayment = async (req, res) => {
     }
 }
 
+
+const paymentCountinue = async(req,res)=>{
+    try {
+        const { orderId } = req.body;
+        const order = await Order.findOne({ orderId: orderId }).populate('userId');
+
+        const option = {
+            amount: order.totalAmount * 100,
+            currency: "INR",
+            receipt: "" + order.orderId,
+        };
+
+        instance.orders.create(option, function (err, order) {
+            if (err) {
+                // Handle the error appropriately
+                console.error("Error creating order:", err);
+                res.status(500).json({ error: "Failed to create order" });
+                return;
+            }
+            res.json({ order: order });
+        });
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+
+
 const applyCoupon = async (req, res) => {
     try {
         const { couponcod, subtotal } = req.body;
@@ -272,6 +303,7 @@ module.exports = {
     placeOrder,
     checkoutAddAddress,
     verifyPayment,
+    paymentCountinue,
     applyCoupon,
     removeCoupon
 

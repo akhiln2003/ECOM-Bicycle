@@ -156,22 +156,69 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% cart.products.forEach((Product)=>{ %>
+                                                <% let total = 0 %> 
+                                                <% let subtotal = 0 %> 
+
+                                                <% cart.products.forEach((product)=>{ %>
+                                                    <% let productPrice %>
+                                                    <% if( product.productId.category.offer &&
+                                                        product.productId.offer){ %>
+                                                        <% if(product.productId.category.offer.offerPercentage <
+                                                            product.productId.offer.offerPercentage) { %>
+                                                            <% productPrice=product.productId.productPrice -
+                                                                (product.productId.productPrice *
+                                                                (product.productId.offer.offerPercentage/100))
+                                                                %>
+                                                                <% }else{ %>
+                                                                    <% productPrice=product.productId.productPrice
+                                                                        - (product.productId.productPrice *
+                                                                        (product.productId.category.offer.offerPercentage/100))
+                                                                        %>
+                                                                        <% } %>
+                                                                            <% } else if(
+                                                                                !product.productId.category.offer
+                                                                                && product.productId.offer){ %>
+                                                                                <% productPrice=product.productId.productPrice
+                                                                                    -
+                                                                                    (product.productId.productPrice
+                                                                                    *
+                                                                                    (product.productId.offer.offerPercentage/100))
+                                                                                    %>
+                                                                                    <% }else if(
+                                                                                        product.productId.category.offer
+                                                                                        &&
+                                                                                        !product.productId.offer){
+                                                                                        %>
+                                                                                        <% productPrice=product.productId.productPrice
+                                                                                            -
+                                                                                            (product.productId.productPrice
+                                                                                            *
+                                                                                            (product.productId.category.offer.offerPercentage/100))
+                                                                                            %>
+
+                                                                                            <% }else{ %>
+                                                                                                <% productPrice = product.productId.productPrice
+                                                                                                    %>
+
+                                                                                                    <% } %>
+
+                                                                                                    <% total +=( productPrice * product.quantity ) %>
+
                                                     <tr>
                                                         <td class="td-text">
 
                                                             <div class="order-dsc">
                                                                 <p>
-                                                                    <%= Product.productId.productName%>
+                                                                    <%= product.productId.productName %>
                                                                 </p>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="qty-input">
-                                                                <%= Product.quantity %>
+                                                                <%= product.quantity %>
                                                             </div>
                                                         </td>
-                                                        <td> ₹ <%= Product.productId.productPrice * Product.quantity %>
+                                                        <td> ₹ <%= productPrice %>
                                                         </td>
                                                     </tr>
                                                     <% }) %>
@@ -185,9 +232,7 @@
                     <div class="col-md-6">
 
 
-                        <% let subtotal=cart.products.reduce((acc,value)=>{
-                            return acc+= (value.productId.productPrice * value.quantity)
-                            },0) %>
+                        
                             <div class="single-check p-bottom50">
                                 <div class="check-title"
                                     style="display: flex; align-items: center; justify-content: space-between;">
@@ -220,7 +265,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <% coupons.forEach((coupon)=> { %>
-                                                            <% if (coupon.minSpend <=subtotal) { %>
+                                                            <% if (coupon.minSpend <=total) { %>
                                                                 <tr>
                                                                     <td>
                                                                         <h5>
@@ -249,15 +294,19 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="single-input check-coupon" style="margin-top: 1rem;">
                                     <div class="input-text">
-                                        <input type="text" name="coupon" id="coupon" />
+                                       <% if(cart.couponApplyd.couponDiscount >0){ %>
+                                        <input type="text" name="coupon" id="coupon" value="<%= cart.couponApplyd.couponId.couponCod%>" />
+                                        <% }else{ %>
+                                            <input type="text" name="coupon" id="coupon" />
+
+                                            <% } %>
                                     </div>
                                     <div id="applybtn">
                                         <div id="applybtn">
                                             <% if(!cart.couponApplyd.couponId ){ %>
-                                                <button id="couponSubmit" class="place-order-btn" onclick="applyCoupon('<%= subtotal %>')">Submit</button>
+                                                <button id="couponSubmit" class="place-order-btn" onclick="applyCoupon('<%= total %>')">Submit</button>
                                                 <% }else{ %>
                                                     <button id="couponSubmit" class="place-order-btn" onclick="removeCoupon()">Remove</button>
                                             <% } %>
@@ -272,14 +321,14 @@
                                     <h3 style="margin: 0;">Totals</h3>
                                 </div>
                                 <div class="subtotal clearfix" id="total">
-                                    <p>Subtotal <strong class="floatright"> ₹ <%= subtotal %></strong></p>
+                                    <p>Subtotal <strong class="floatright"> ₹ <%= total %></strong></p>
                                     <% if(cart.couponApplyd.couponId){ %>
                                         <p>Coupon Discount<strong class="floatright"> ₹ <%= cart.couponApplyd.couponDiscount %></strong></p>
                                         <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                        <p>Total <strong class="floatright"><span> ₹ <%= subtotal-=cart.couponApplyd.couponDiscount %></span></strong></p>
+                                        <p>Total <strong class="floatright"><span> ₹ <%= total= total- cart.couponApplyd.couponDiscount %></span></strong></p>
                                         <% } else{ %>
                                             <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                            <p>Total <strong class="floatright"><span> ₹ <%= subtotal %></span></strong></p>
+                                            <p>Total <strong class="floatright"><span> ₹ <%= total %></span></strong></p>
                                                             <% } %>
                                 </div>
                             </div>
@@ -291,7 +340,7 @@
                                 <div class="address-list" id="paymentOption">
                                     <div class="address-item mb-3 border p-3 rounded">
 
-                                        <% if( subtotal < 1000){ %>
+                                        <% if( total < 1000){ %>
                                             <div class="form-check mt-2">
                                                 <input style="display: inline-block;" class="form-check-input"
                                                     type="radio" name="paymentMethod" id="cashOnDelivery" value="COD">
@@ -330,7 +379,7 @@
 
                             </div>
                             <button style="margin-left: 25rem; margin-top: 2rem;" id="placeOrder"
-                                class="place-order-btn" data-subTotal="<%= subtotal %>" onclick="placeOrder()">Place
+                                class="place-order-btn" data-subTotal="<%= total %>" onclick="placeOrder()">Place
                                 Order</button>
                     </div>
                 </div>

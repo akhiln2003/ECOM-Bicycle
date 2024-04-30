@@ -162,228 +162,326 @@
                     <div class="col-lg-12">
                         <div class="table-responsive mt-5">
 
+                            <% if(orders.paymentMethod=="RAZORPAY" && orders.products[0].status=="pending" ){ %>
+                                <table class="address-table" id="Reload">
+                                    <thead>
+                                        <tr>
+                                            <th>Index</th>
+                                            <th scope="col">Image</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">SubTotal</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% let subtotal=0 %>
+                                            <% orders.products.forEach((product,i)=>{ %>
+                                                <% let amout=product.productId.productPrice*product.quantity %>
+                                                    <% subtotal +=(product.quantity* product.productId.productPrice) %>
+                                                        <tr>
 
-                            <table class="address-table" id="Reload">
-                                <thead>
-                                    <tr>
-                                        <th>Index</th>
-                                        <th scope="col">Image</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">SubTotal</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% let subtotal=0 %>
-                                        <% orders.products.forEach((product,i)=>{ %>
-                                            <% let amout=product.productId.productPrice*product.quantity %>
-                                                <% subtotal +=(product.quantity* product.productId.productPrice) %>
-                                                    <tr>
-
-                                                        <td>
-                                                            <%= i+1 %>
-                                                        </td>
-                                                        <td><b> <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
-                                                                    alt="" style="width: 80px; height: 80px;"> </b>
-                                                        </td>
-                                                        <td>
-                                                            <%= orders.deliveryAddress.name %>
-                                                        </td>
-                                                        <td> ₹ <%= product.productId.productPrice %>
-                                                        </td>
-                                                        <td>
-                                                            <%= product.quantity %>
-                                                        </td>
-                                                        <td>
-                                                            <%= amout %>
-                                                        </td>
-                                                        <td><span class=" " style="font-weight: 900;">
-                                                                <%= product.status %>
-                                                            </span></td>
-                                                        <td>
-                                                            <%= orders.date.toLocaleString('en-US', { weekday: 'short' ,
-                                                                month: 'short' , day: 'numeric' , year: 'numeric' ,
-                                                                hour: 'numeric' , minute: 'numeric' , second: 'numeric'
-                                                                , hour12: true }) %>
-                                                        </td>
-
-                                                        <% if (product.status !="cancelled" && product.status
-                                                            !=="returned" && product.status !=="returnDenied" &&
-                                                            product.status !="delivered" && product.status
-                                                            !="returnRequested" && orders.paymentMethod !=="RAZORPAY" )
-                                                            { %>
-                                                            <td class="text-right-cell">
-                                                                <button class="btn btn-danger cancelOrderBtn"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#cancelOrderModal_<%= i %>">Cancel</button>
+                                                            <td>
+                                                                <%= i+1 %>
                                                             </td>
-                                                            <% } else if (product.status=="delivered" ) { %>
-                                                                <td class="text-right-cell">
-                                                                    <button class="btn btn-danger returnOrderBtn"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#returnOrderModal_<%= i %>">Return</button>
-                                                                </td>
-                                                                <% } else if(product.status=="pending" &&
-                                                                    orders.paymentMethod=="RAZORPAY" ){ %>
-                                                                    <td class="text-right-cell">
-                                                                        <button
-                                                                            class="btn btn-danger returnOrderBtn">PayAgain</button>
-                                                                    </td>
-                                                                    <% } else { %>
-                                                                        <td>
-                                                                            <h5 style="color: #c82333;">
-                                                                                <%= product.status %>
-                                                                            </h5>
-                                                                        </td>
-                                                                        <% } %>
-                                                                            <!-- Modal for Cancel -->
-                                                                            <div class="modal fade"
-                                                                                id="cancelOrderModal_<%= i %>"
-                                                                                tabindex="-1"
-                                                                                aria-labelledby="cancelOrderModalLabel_<%= i %>"
-                                                                                aria-hidden="true">
-                                                                                <div
-                                                                                    class="modal-dialog modal-dialog-centered">
-                                                                                    <div class="modal-content">
-                                                                                        <div class="modal-header">
-                                                                                            <h5 class="modal-title"
-                                                                                                id="exampleModalLabel">
-                                                                                                Cancel Order</h5>
-                                                                                        </div>
-                                                                                        <div class="modal-body">
-                                                                                            <form
-                                                                                                id="cancelOrderForm_<%= i %>">
-                                                                                                <div class="mb-3">
-                                                                                                    <label
-                                                                                                        for="cancelReason_<%= i %>"
-                                                                                                        class="form-label">Reason
-                                                                                                        for
-                                                                                                        Canceling:</label>
-                                                                                                    <input required
-                                                                                                        type="text"
-                                                                                                        class="form-control"
-                                                                                                        id="cancelReason_<%= i %>"
-                                                                                                        placeholder="Enter reason">
-                                                                                                    <div id="fieldError_<%= i %>"
-                                                                                                        class="form-text"
-                                                                                                        style="color: red;">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div
-                                                                                                    class="d-flex justify-content-end">
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        class="btn btn-secondary me-2"
-                                                                                                        data-bs-dismiss="modal">Go
-                                                                                                        Back</button>
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        class="btn btn-danger"
-                                                                                                        onclick="validateAndCancel('<%= product._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
-                                                                                                        Cancel</button>
-                                                                                                </div>
-                                                                                            </form>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <!-- Modal for Return -->
-                                                                            <div class="modal fade"
-                                                                                id="returnOrderModal_<%= i %>"
-                                                                                tabindex="-1"
-                                                                                aria-labelledby="returnOrderModalLabel_<%= i %>"
-                                                                                aria-hidden="true">
-                                                                                <div
-                                                                                    class="modal-dialog modal-dialog-centered">
-                                                                                    <div class="modal-content">
-                                                                                        <div class="modal-header">
-                                                                                            <h5 class="modal-title"
-                                                                                                id="exampleModalLabel">
-                                                                                                Return Order</h5>
-                                                                                        </div>
-                                                                                        <div class="modal-body">
-                                                                                            <form
-                                                                                                id="returnOrderForm_<%= i %>">
-                                                                                                <div class="mb-3">
-                                                                                                    <label
-                                                                                                        for="returnReason_<%= i %>"
-                                                                                                        class="form-label">Reason
-                                                                                                        for
-                                                                                                        Returning:</label>
-                                                                                                    <input required
-                                                                                                        type="text"
-                                                                                                        class="form-control"
-                                                                                                        id="returnReason_<%= i %>"
-                                                                                                        placeholder="Enter reason">
-                                                                                                    <div id="returnFieldError_<%= i %>"
-                                                                                                        class="form-text"
-                                                                                                        style="color: red;">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div
-                                                                                                    class="d-flex justify-content-end">
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        class="btn btn-secondary me-2"
-                                                                                                        data-bs-dismiss="modal">Go
-                                                                                                        Back</button>
-                                                                                                    <button
-                                                                                                        type="button"
-                                                                                                        class="btn btn-danger"
-                                                                                                        onclick="validateAndReturn('<%= product._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
-                                                                                                        Return</button>
-                                                                                                </div>
-                                                                                            </form>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
+                                                            <td><b> <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
+                                                                        alt="" style="width: 80px; height: 80px;"> </b>
+                                                            </td>
+                                                            <td>
+                                                                <%= orders.deliveryAddress.name %>
+                                                            </td>
+                                                            <td> ₹ <%= product.productId.productPrice %>
+                                                            </td>
+                                                            <td>
+                                                                <%= product.quantity %>
+                                                            </td>
+                                                            <td>
+                                                                <%= amout %>
+                                                            </td>
+                                                            <td><span class=" " style="font-weight: 900;">
+                                                                    <%= product.status %>
+                                                                </span></td>
+                                                            <td>
+                                                                <%= orders.date.toLocaleString('en-US', {
+                                                                    weekday: 'short' , month: 'short' , day: 'numeric' ,
+                                                                    year: 'numeric' , hour: 'numeric' ,
+                                                                    minute: 'numeric' , second: 'numeric' , hour12: true
+                                                                    }) %>
+                                                            </td>
 
 
-                                                                            <% }) %>
-                                                    <tr>
 
 
-                                                        <% if(orders.couponUsed){ %>
-                                                            <td colspan="3" class="text-right-cell"><strong>Sub
-                                                                    Total:</strong></td>
-                                                            <td class="text-right-cell"><strong>₹ <%= subtotal %>
-                                                                </strong></td>
-                                                            <td colspan="3" class="text-right-cell"><strong>Total
-                                                                    Price:</strong></td>
-                                                            <td class="text-right-cell"><strong>₹ <%= orders.totalAmount
-                                                                        %></strong></td>
-                                                            <% if(orders.couponUsed.type=="amount" ){ %>
+                                                            <% }) %>
+                                                        <tr>
+
+
+                                                            <% if(orders.couponUsed){ %>
+                                                                <td colspan="2" class="text-right-cell"><strong>Sub
+                                                                        Total:</strong></td>
+                                                                <td class="text-right-cell"><strong>₹ <%= subtotal %>
+                                                                    </strong></td>
+                                                                <td colspan="3" class="text-right-cell"><strong>Total
+                                                                        Price:</strong></td>
                                                                 <td class="text-right-cell"><strong>₹ <%=
-                                                                            orders.couponUsed.discount %>
-                                                                            Off</strong></td>
-                                                                <% }else{ %>
-                                                                    <td class="text-right-cell"><strong>
-                                                                            <%= orders.couponUsed.discount %> % Off
-                                                                        </strong></td>
-                                                                    <% } %>
-                                                                        <% } else{ %>
+                                                                            orders.totalAmount %></strong></td>
+                                                                <% if(orders.couponUsed.type=="amount" ){ %>
+                                                                    <td class="text-right-cell"><strong>₹ <%=
+                                                                                orders.couponUsed.discount %>
+                                                                                Off</strong></td>
+                                                                    <% }else{ %>
+                                                                        <td class="text-right-cell"><strong>
+                                                                                <%= orders.couponUsed.discount %> % Off
+                                                                            </strong></td>
+                                                                        <% } %>
+                                                                            <% } else{ %>
 
-                                                                            <td colspan="8" class="text-right-cell">
-                                                                                <strong>Total Price:</strong>
+                                                                                <td colspan="7" class="text-right-cell">
+                                                                                    <strong>Total Price:</strong>
+                                                                                </td>
+                                                                                <td class="text-right-cell"><strong>₹
+                                                                                        <%= orders.totalAmount %>
+                                                                                    </strong></td>
+                                                                                <% } %>
+
+                                                        </tr>
+                                                        </tr>
+
+                                                        <button style="margin-left: 75rem;" type="button"
+                                                            class="btn btn-danger"
+                                                            onclick="PayAgain('<%= orders.orderId%>')">Pay
+                                                            Again</button>
+                                    </tbody>
+                                </table>
+
+
+                                <% }else{ %>
+                                    <table class="address-table" id="Reload">
+                                        <thead>
+                                            <tr>
+                                                <th>Index</th>
+                                                <th scope="col">Image</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">SubTotal</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Date</th>
+
+                                                <th scope="col">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% let subtotal=0 %>
+                                                <% orders.products.forEach((product,i)=>{ %>
+                                                    <% let amout=product.productId.productPrice*product.quantity %>
+                                                        <% subtotal +=(product.quantity* product.productId.productPrice)
+                                                            %>
+                                                            <tr>
+
+                                                                <td>
+                                                                    <%= i+1 %>
+                                                                </td>
+                                                                <td><b> <img src="/admin/assets/images/product/sharpedproduct/<%= product.productId.image[0] %>"
+                                                                            alt="" style="width: 80px; height: 80px;">
+                                                                    </b>
+                                                                </td>
+                                                                <td>
+                                                                    <%= orders.deliveryAddress.name %>
+                                                                </td>
+                                                                <td> ₹ <%= product.productId.productPrice %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= product.quantity %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= amout %>
+                                                                </td>
+                                                                <td><span class=" " style="font-weight: 900;">
+                                                                        <%= product.status %>
+                                                                    </span></td>
+                                                                <td>
+                                                                    <%= orders.date.toLocaleString('en-US', {
+                                                                        weekday: 'short' , month: 'short' ,
+                                                                        day: 'numeric' , year: 'numeric' ,
+                                                                        hour: 'numeric' , minute: 'numeric' ,
+                                                                        second: 'numeric' , hour12: true }) %>
+                                                                </td>
+
+                                                                <% if (product.status !="cancelled" && product.status
+                                                                    !=="returned" && product.status !=="returnDenied" &&
+                                                                    product.status !="delivered" && product.status
+                                                                    !="returnRequested" ) { %>
+                                                                    <td class="text-right-cell">
+                                                                        <button class="btn btn-danger cancelOrderBtn"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#cancelOrderModal_<%= i %>">Cancel</button>
+                                                                    </td>
+                                                                    <% } else if (product.status=="delivered" ) { %>
+                                                                        <td class="text-right-cell">
+                                                                            <button
+                                                                                class="btn btn-danger returnOrderBtn"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#returnOrderModal_<%= i %>">Return</button>
+                                                                        </td>
+                                                                        <% } else { %>
+                                                                            <td>
+                                                                                <h5 style="color: #c82333;">
+                                                                                    <%= product.status %>
+                                                                                </h5>
                                                                             </td>
-                                                                            <td class="text-right-cell"><strong>₹
-                                                                                    <%= orders.totalAmount %>
+                                                                            <% } %>
+                                                                                <!-- Modal for Cancel -->
+                                                                                <div class="modal fade"
+                                                                                    id="cancelOrderModal_<%= i %>"
+                                                                                    tabindex="-1"
+                                                                                    aria-labelledby="cancelOrderModalLabel_<%= i %>"
+                                                                                    aria-hidden="true">
+                                                                                    <div
+                                                                                        class="modal-dialog modal-dialog-centered">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <h5 class="modal-title"
+                                                                                                    id="exampleModalLabel">
+                                                                                                    Cancel Order</h5>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <form
+                                                                                                    id="cancelOrderForm_<%= i %>">
+                                                                                                    <div class="mb-3">
+                                                                                                        <label
+                                                                                                            for="cancelReason_<%= i %>"
+                                                                                                            class="form-label">Reason
+                                                                                                            for
+                                                                                                            Canceling:</label>
+                                                                                                        <input required
+                                                                                                            type="text"
+                                                                                                            class="form-control"
+                                                                                                            id="cancelReason_<%= i %>"
+                                                                                                            placeholder="Enter reason">
+                                                                                                        <div id="fieldError_<%= i %>"
+                                                                                                            class="form-text"
+                                                                                                            style="color: red;">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="d-flex justify-content-end">
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-secondary me-2"
+                                                                                                            data-bs-dismiss="modal">Go
+                                                                                                            Back</button>
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-danger"
+                                                                                                            onclick="validateAndCancel('<%= product._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
+                                                                                                            Cancel</button>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Modal for Return -->
+                                                                                <div class="modal fade"
+                                                                                    id="returnOrderModal_<%= i %>"
+                                                                                    tabindex="-1"
+                                                                                    aria-labelledby="returnOrderModalLabel_<%= i %>"
+                                                                                    aria-hidden="true">
+                                                                                    <div
+                                                                                        class="modal-dialog modal-dialog-centered">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <h5 class="modal-title"
+                                                                                                    id="exampleModalLabel">
+                                                                                                    Return Order</h5>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <form
+                                                                                                    id="returnOrderForm_<%= i %>">
+                                                                                                    <div class="mb-3">
+                                                                                                        <label
+                                                                                                            for="returnReason_<%= i %>"
+                                                                                                            class="form-label">Reason
+                                                                                                            for
+                                                                                                            Returning:</label>
+                                                                                                        <input required
+                                                                                                            type="text"
+                                                                                                            class="form-control"
+                                                                                                            id="returnReason_<%= i %>"
+                                                                                                            placeholder="Enter reason">
+                                                                                                        <div id="returnFieldError_<%= i %>"
+                                                                                                            class="form-text"
+                                                                                                            style="color: red;">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="d-flex justify-content-end">
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-secondary me-2"
+                                                                                                            data-bs-dismiss="modal">Go
+                                                                                                            Back</button>
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            class="btn btn-danger"
+                                                                                                            onclick="validateAndReturn('<%= product._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
+                                                                                                            Return</button>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+
+                                                                                <% }) %>
+                                                            <tr>
+
+
+                                                                <% if(orders.couponUsed){ %>
+                                                                    <td colspan="3" class="text-right-cell"><strong>Sub
+                                                                            Total:</strong></td>
+                                                                    <td class="text-right-cell"><strong>₹ <%= subtotal
+                                                                                %>
+                                                                        </strong></td>
+                                                                    <td colspan="3" class="text-right-cell">
+                                                                        <strong>Total
+                                                                            Price:</strong></td>
+                                                                    <td class="text-right-cell"><strong>₹ <%=
+                                                                                orders.totalAmount %></strong></td>
+                                                                    <% if(orders.couponUsed.type=="amount" ){ %>
+                                                                        <td class="text-right-cell"><strong>₹ <%=
+                                                                                    orders.couponUsed.discount %>
+                                                                                    Off</strong></td>
+                                                                        <% }else{ %>
+                                                                            <td class="text-right-cell"><strong>
+                                                                                    <%= orders.couponUsed.discount %> %
+                                                                                        Off
                                                                                 </strong></td>
                                                                             <% } %>
+                                                                                <% } else{ %>
 
-                                                    </tr>
-                                                    </tr>
+                                                                                    <td colspan="8"
+                                                                                        class="text-right-cell">
+                                                                                        <strong>Total Price:</strong>
+                                                                                    </td>
+                                                                                    <td class="text-right-cell">
+                                                                                        <strong>₹
+                                                                                            <%= orders.totalAmount %>
+                                                                                        </strong></td>
+                                                                                    <% } %>
+
+                                                            </tr>
+                                                            </tr>
 
 
-                                </tbody>
-                            </table>
+                                        </tbody>
+                                    </table>
+                                    <% } %>
                         </div>
                     </div>
                 </div>
@@ -490,8 +588,87 @@
                 }
             }
 
+
+
+            function PayAgain(id) {
+                fetch('/countinuePayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId: id })
+                }).then((data) => data.json())
+                .then((response)=>{
+                    if(response.order){
+                        razorpay(response.order); // Corrected function name to razorpay
+                    }
+                })
+            }
+
+            function razorpay(order){
+                try {
+                    let options = {
+                        "key": '<%=  process.env.RAZORPAY_KEY_ID %>',  // the key id coming from env file 
+                        "amount": order.amount,                       // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Cycle Craft",                       // company name 
+                        "description": "Test Transaction",           //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "image": "",
+                        "order_id": order.id,
+                        handler: (response) => {
+                            verifyPayment(response, order);
+                        },
+                        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                            "name": "Cycle Craft", //your customer's name
+                            "email": "4khiln@gmail.com",
+                            "contact": "8100901095" //Provide the customer's phone number for better conversion rates 
+                        },
+                        "notes": {
+                            "address": "Cycle Craft"
+                        },
+                        "theme": {
+                            "color": "#3b5d50"
+                        }
+                    };
+                    var rzp1 = new Razorpay(options);
+                    rzp1.on('payment.failed', (err) => {
+                        const total = parseFloat(document.getElementById('placeOrder').getAttribute('data-subTotal'));
+                        location.href = `/orderDetails?id=${order.receipt}` // Redirect to the user page
+                    })
+                    rzp1.open();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            function verifyPayment(paymetn, order) {
+                const data = { paymetn, order };
+                fetch('/verifyPayment', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then((result) => result.json())
+                    .then((data) => {
+                        if (data.paymentSuccess) {
+                            location.href = `/orderSuccess/${data.orderId}`
+                        } else {
+                            Swal.fire({
+                                positon: "center",
+                                icon: "error",
+                                title: "Payment 0-0- failed",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            })
+                        }
+                    })
+            }
+
         </script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 
 

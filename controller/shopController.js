@@ -70,7 +70,26 @@ const loadProductDetails = async (req, res) => {
     try {
         const productId = req.query.id;
         const userId = req.session.user._id;
-        const product = await Product.findOne({ _id: productId });
+        let product
+        let existOffer =false ;
+        let existsCategoryOffer = false;
+        let findProduct = await Product.findOne({ _id: productId }).populate('category');
+        if(findProduct.offer && findProduct.category.offer){
+            existOffer = true 
+            existsCategoryOffer =true
+            product = await Product.findOne({ _id: productId }).populate('offer') .populate({ path: 'category',  populate: { path: 'offer' }   });
+            
+                }else if(findProduct.category.offer && !findProduct.offer){
+                    existsCategoryOffer =true
+                    product = await Product.findOne({ _id: productId }).populate({ path: 'category',  populate: { path: 'offer' }   });
+
+        }else if(!findProduct.category.offer && findProduct.offer){
+            existOffer = true 
+            product =  await Product.findOne({ _id: productId }).populate('offer');
+        }else{
+
+            product =  await Product.findOne({ _id: productId });
+        }
         const user = await User.findOne({ _id: userId });
         const category = product.category;
         const relatedProduct = await Product.find({ category: category });
@@ -93,7 +112,7 @@ const loadProductDetails = async (req, res) => {
 
             }
         }
-        res.render('productDetails', { product, relatedProduct, inCart, inWhishlist });
+        res.render('productDetails', { product, relatedProduct, inCart, inWhishlist , existOffer,existsCategoryOffer });
     } catch (error) {
         res.render('error404')
         console.log(error);
