@@ -36,7 +36,17 @@ const loadCheckout = async (req, res) => {
 
         const currentDate = new Date().toISOString();
 
-        const cart = await Cart.findOne({ userId: id }).populate({ path: 'products', populate: { path: 'productId', populate: { path: 'category',populate:{path:'offer'} } } }).populate({path:'couponApplyd' ,  populate:{path: 'couponId'}});
+        const cart = await Cart.findOne({ userId: id }).populate({
+            path: 'products',
+            populate: {
+                path: 'productId',
+                populate: [
+                    { path: 'offer' },
+                    { path: 'category', populate: { path: 'offer' } }
+                ]
+            }
+        })
+            .populate({ path: 'couponApplyd', populate: { path: 'couponId' } });
         const coupons = await Coupon.find({ 'user.userId': { $ne: id }, expiryDate: { $gte: currentDate } });
         res.render('checkout', { user, cart, coupons });
     } catch (error) {
@@ -71,8 +81,47 @@ const placeOrder = async (req, res) => {
     try {
         const { index, payment, subTotal, couponCod } = req.body;
         const userId = req.session.user._id;
-        const userCart = await Cart.findOne({ userId: userId }).populate('products.productId');
-        const products = userCart.products;
+        const userCart = await Cart.findOne({ userId: userId }).populate({
+            path: 'products',
+            populate: {
+                path: 'productId',
+                populate: [
+                    { path: 'offer' },
+                    { path: 'category', populate: { path: 'offer' } }
+                ]
+            }
+        })
+
+        const products = userCart.products.map(product => {
+            let productPrice;
+
+            if (product.productId.offer && product.productId.category.offer) {
+
+                if (product.productId.offer.offerPercentage > product.productId.category.offer.offerPercentage) {
+
+                    productPrice = product.productId.productPrice - (product.productId.productPrice * (product.productId.offer.offerPercentage / 100))
+                } else {
+                    productPrice = product.productId.productPrice - (product.productId.productPrice * (product.productId.category.offer.offerPercentage / 100))
+                }
+            } else if (product.productId.category.offer && !product.productId.offer) {
+
+                productPrice = product.productId.productPrice - (product.productId.productPrice * (product.productId.category.offer.offerPercentage / 100))
+
+            } else if (!product.productId.category.offer && product.productId.offer) {
+
+                productPrice = product.productId.productPrice - (product.productId.productPrice * (product.productId.offer.offerPercentage / 100))
+            } else {
+
+                productPrice = product.productId.productPrice;
+            }
+
+            return {
+                productId: product.productId._id,
+                price: productPrice,
+                quantity: product.quantity,
+            };
+        });
+
         let quantityLess = 0;
         products.forEach((product) => {
             if (product.productId.stok <= 0) {
@@ -106,7 +155,7 @@ const placeOrder = async (req, res) => {
                     userId: userId,
                     orderId: orderid,
                     products: products,
-                    totalAmount: subTotal - userCart.couponApplyd.couponDiscount,
+                    totalAmount: subTotal ,
                     date: date,
                     status: status,
                     paymentMethod: payment,
@@ -153,8 +202,8 @@ const placeOrder = async (req, res) => {
             }                // WALLET
             else if (orderDetails.paymentMethod == "WALLET") {
                 let wallet = await Wallet.findOne({ userId: userId });
-                if (wallet.balance >= subTotal - userCart.couponDiscount) {
-                    wallet.balance -= subTotal - userCart.couponDiscount;
+                if (wallet.balance >= subTotal -  (userCart.couponApplyd.couponDiscount ||  0) ) {
+                    wallet.balance -= subTotal - (userCart.couponApplyd.couponDiscount ||  0);
                     wallet.walletHistory.push({
                         amount: subTotal,
                         type: "Debit",
@@ -166,9 +215,16 @@ const placeOrder = async (req, res) => {
                     await wallet.save();
                     paymentStatus = 'success'
 
-                    await Order.findOneAndUpdate({ orderId: orderDetails.orderId, }, {
-                        $set: { "products.$[].status": "placed" }
-                    })
+                    await Order.findOneAndUpdate(
+                        { orderId: orderDetails.orderId },
+                        { 
+                            $set: { 
+                                status: "placed", 
+                                "products.$[].status": "placed" 
+                            } 
+                        }
+                    );
+                    
 
                     await Cart.deleteOne({ userId: userId });
 
@@ -223,7 +279,7 @@ const verifyPayment = async (req, res) => {
 }
 
 
-const paymentCountinue = async(req,res)=>{
+const paymentCountinue = async (req, res) => {
     try {
         const { orderId } = req.body;
         const order = await Order.findOne({ orderId: orderId }).populate('userId');

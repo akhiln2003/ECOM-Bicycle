@@ -2,9 +2,81 @@
 
     <div class="screen-overlay"></div>
 
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <%- include("../layout/admin/sidbar.ejs") -%>
-    </aside>
+    
+                        <!-- SIDE NAV START -->
+<aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+        <a href="/admin/dashboard" class="brand-wrap">
+            <img src="assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
+        </a>
+        <div>
+            <button class="btn btn-icon btn-aside-minimize"><i
+                    class="text-muted material-icons md-menu_open"></i></button>
+        </div>
+    </div>
+    <nav>
+        <ul class="menu-aside">
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/dashboard">
+                    <i class="icon material-icons md-home"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/customers">
+                    <i class="icon material-icons md-group"></i>
+                    <span class="text">Customers</span>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/products">
+                    <i class="icon material-icons md-shopping_bag"></i>
+                    <span class="text">Products</span>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/category">
+                    <i class="icon material-icons md-category"></i>
+                    <span class="text">Category</span>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/orders">
+                    <i class="icon material-icons md-shopping_cart"></i>
+                    <span class="text">Orders</span>
+                </a>
+
+            </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/returns">
+                    <i class="icon material-icons md-settings_backup_restore"></i>
+                    <span class="text">Return</span>
+                </a>
+            </li>
+            <li class="menu-item active">
+                <a class="menu-link" href="/admin/coupon">
+                    <i class="icon material-icons md-add_circle"></i>
+                    <span class="text">Coupon</span>
+                </a>
+            </li>
+       
+            <li class="menu-item">
+                <a class="menu-link" disabled href="/admin/offer">
+                    <i class="icon material-icons md-percent">&#37;</i>
+                    <span class="text">Offer</span>
+                </a>
+            </li>
+            
+
+
+        </ul>
+        <br />
+        <br />
+    </nav>
+</aside>
+
+                        <!-- SIDE NAV END -->
     <main class="main-wrap">
 
         <%- include("../layout/admin/navbar.ejs") -%>

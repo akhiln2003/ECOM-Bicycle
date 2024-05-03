@@ -276,8 +276,8 @@
                                         <tbody>
                                             <% let subtotal=0 %>
                                                 <% orders.products.forEach((product,i)=>{ %>
-                                                    <% let amout=product.productId.productPrice*product.quantity %>
-                                                        <% subtotal +=(product.quantity* product.productId.productPrice)
+                                                    <% let amout=product.price*product.quantity %>
+                                                        <% subtotal +=(product.quantity* product.price)
                                                             %>
                                                             <tr>
 
@@ -291,7 +291,7 @@
                                                                 <td>
                                                                     <%= orders.deliveryAddress.name %>
                                                                 </td>
-                                                                <td> ₹ <%= product.productId.productPrice %>
+                                                                <td> ₹ <%= product.price %>
                                                                 </td>
                                                                 <td>
                                                                     <%= product.quantity %>
@@ -376,7 +376,7 @@
                                                                                                         <button
                                                                                                             type="button"
                                                                                                             class="btn btn-danger"
-                                                                                                            onclick="validateAndCancel('<%= product._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
+                                                                                                            onclick="validateAndCancel('<%= product._id %>','<%= product.productId._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
                                                                                                             Cancel</button>
                                                                                                     </div>
                                                                                                 </form>
@@ -428,7 +428,7 @@
                                                                                                         <button
                                                                                                             type="button"
                                                                                                             class="btn btn-danger"
-                                                                                                            onclick="validateAndReturn('<%= product._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
+                                                                                                            onclick="validateAndReturn('<%= product._id %>','<%= product.productId._id %>', '<%= orders._id %>', '<%= i %>')">Confirm
                                                                                                             Return</button>
                                                                                                     </div>
                                                                                                 </form>
@@ -450,7 +450,8 @@
                                                                         </strong></td>
                                                                     <td colspan="3" class="text-right-cell">
                                                                         <strong>Total
-                                                                            Price:</strong></td>
+                                                                            Price:</strong>
+                                                                    </td>
                                                                     <td class="text-right-cell"><strong>₹ <%=
                                                                                 orders.totalAmount %></strong></td>
                                                                     <% if(orders.couponUsed.type=="amount" ){ %>
@@ -472,7 +473,8 @@
                                                                                     <td class="text-right-cell">
                                                                                         <strong>₹
                                                                                             <%= orders.totalAmount %>
-                                                                                        </strong></td>
+                                                                                        </strong>
+                                                                                    </td>
                                                                                     <% } %>
 
                                                             </tr>
@@ -511,23 +513,26 @@
         </script>
 
         <script>
-            function validateAndCancel(productId, orderId, index) {
-
+            function validateAndCancel(productId, productid, orderId, index) {
                 const reasonField = document.getElementById(`cancelReason_${index}`);
                 const reason = reasonField.value.trim();
                 const errorField = document.getElementById(`fieldError_${index}`);
+                const reasonRegex = /^[a-zA-Z\s]{6,}$/;
 
-                if (reason === "") {
-                    errorField.innerText = "Please enter a reason for canceling.";
+                if (reason === "" || !reasonRegex.test(reason)) {
+                    errorField.innerText = "Please enter a valid reason for canceling.";
+                    setTimeout(() => {
+                        errorField.innerText = "";
+                    }, 3000);
                 } else {
                     errorField.innerText = "";
 
                     const data = {
                         productId: productId,
+                        productid: productid,
                         orderId: orderId,
                         reason: reason
                     };
-
                     fetch('/cancelOrder', {
                         method: 'POST',
                         headers: {
@@ -545,22 +550,30 @@
                                 location.reload();
                             }, 2000);
                         }
-                    })
+                    });
                 }
             }
 
-            function validateAndReturn(productId, orderId, index) {
+
+
+
+            function validateAndReturn(productId, productid, orderId, index) {
                 const reasonField = document.getElementById(`returnReason_${index}`);
                 const reason = reasonField.value.trim();
                 const errorField = document.getElementById(`returnFieldError_${index}`);
+                const reasonRegex = /^[a-zA-Z\s]{6,}$/;
 
-                if (reason === "") {
-                    errorField.innerText = "Please enter a reason for returning.";
+                if (reason === "" || !reasonRegex.test(reason)) {
+                    errorField.innerText = "Please enter a valid reason for canceling.";
+                    setTimeout(() => {
+                        errorField.innerText = "";
+                    }, 3000);
                 } else {
                     errorField.innerText = "";
 
                     const data = {
                         productId: productId,
+                        productid: productid,
                         orderId: orderId,
                         reason: reason
                     };
@@ -598,14 +611,14 @@
                     },
                     body: JSON.stringify({ orderId: id })
                 }).then((data) => data.json())
-                .then((response)=>{
-                    if(response.order){
-                        razorpay(response.order); // Corrected function name to razorpay
-                    }
-                })
+                    .then((response) => {
+                        if (response.order) {
+                            razorpay(response.order); // Corrected function name to razorpay
+                        }
+                    })
             }
 
-            function razorpay(order){
+            function razorpay(order) {
                 try {
                     let options = {
                         "key": '<%=  process.env.RAZORPAY_KEY_ID %>',  // the key id coming from env file 

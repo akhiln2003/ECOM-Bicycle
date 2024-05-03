@@ -4,6 +4,9 @@ const nodemailer = require('nodemailer');
 const userOtpVerification = require('../models/userOTPVerification');
 const Token = require('../models/tokenModel');
 const Wallet = require('../models/walletModel');
+const Products = require('../models/productModel');
+const Category = require('../models/category');
+const Order = require('../models/orderModel');
 const crypto = require('crypto');
 
 
@@ -30,9 +33,49 @@ const loadContact = async (req, res) => {
 // loading Home
 const loadHome = async (req, res) => {
     try {
-        const id = req.session.user;
-        const user = await User.findOne({ _id: id });
-        res.render('home');
+        const category = await Category.findOne({categoryName:"ACCESSORIES",isDeleted:false});
+        let categoryId = category._id;
+        const accessories = await Products.find({category:categoryId,isDeleted:false});
+
+
+        const featuredProduct = await Products.find({isDeleted:false}).populate('category').sort({ productPrice: -1 }) .limit(5); 
+
+        const topProducts = await Order.aggregate([
+            { $match: { status: "placed" } },
+            { $unwind: "$products" },
+            { $match: { "products.status": "delivered" } },
+            { $group: { _id: "$products.productId", quantity: { $sum: "$products.quantity" } } },
+            { $sort: { quantity: -1 } },
+            { $limit: 5 },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            {
+                $project: {
+                    _id: "$_id",
+                    productName: { $arrayElemAt: ["$productDetails.productName", 0] },
+                    productImg: { $arrayElemAt: ["$productDetails.image", 0] },
+                    productPrice: { $arrayElemAt: ["$productDetails.productPrice", 0] },
+
+                }
+            }
+
+        ]);
+
+        const newArrivals = await Products.find({isDeleted:false}).sort({dateJoined:-1}).limit(6);
+
+        res.render('home',{
+            featuredProduct,
+            accessories,
+            topProducts,
+            newArrivals
+        
+        });
     } catch (error) {
         console.log(error);
     }
@@ -179,8 +222,8 @@ const verifyOtp = async (req, res) => {
                     });
             }
         } else {
-            res.json({incurrect:true});
-           
+            return res.json({ incorrect: true });
+
         }
         const user = await User.findOne({ email: email });
         await userOtpVerification.deleteOne({ email: email });
@@ -191,7 +234,7 @@ const verifyOtp = async (req, res) => {
                     name: user.name,
                     email: user.email
                 }
-                res.json({ok:true});
+                res.json({ incorrect: false });
             } else {
                 req.flash('blocked', "you are blocked for this contact with admin");
                 res.redirect(`/otp?email=${email}`);
@@ -350,11 +393,17 @@ const googleLogin = async (req, res) => {
         const email = req.user.email;
         const userAlready = await User.findOne({ email: email });
         if (userAlready) {
-            req.session.user = userAlready;
-            return res.redirect('/');
+            if (userAlready.blocked == false) {
+                req.session.user = userAlready;
+                return res.redirect('/');
+            }
+            else {
+                req.flash('exists', "This user is blocked in this site");
+                res.redirect('/login');
+            }
 
         } else {
-            const user = new User({ name: name, email });
+            const user = new User({ name: name, email, verified: true });
             await user.save();
             const newWallet = new Wallet({ userId: user._id, balance: 0 });
             await newWallet.save();

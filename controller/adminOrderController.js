@@ -154,16 +154,30 @@ const changeReturnStatus = async (req, res) => {
 
             }
             const wallet = await Wallet.findOne({ userId: userId });
-            wallet.balance += product.productPrice-(product.productPrice*(productPrice/100)) ;
-            wallet.walletHistory.push({
-                amount: product.productPrice-(product.productPrice*(productPrice/100)) ,
-                type: 'Credit',
-                reason: `Order ${status === 'Cancelled' ? 'cancellation' : 'return'} refund`,
-                orderId: orderId,
-                orderId2: order.orderId,
-                date: new Date()
-            });
-            await wallet.save();
+            if(productPrice ==  product.productPrice){
+                wallet.balance += product.productPrice
+                wallet.walletHistory.push({
+                    amount: product.productPrice - (product.productPrice * (productPrice / 100)),
+                    type: 'Credit',
+                    reason: `Order calcel refund`,
+                    orderId: orderId,
+                    orderId2: order.orderId,
+                    date: new Date()
+                });
+                await wallet.save();
+            }else{
+
+                wallet.balance += product.productPrice - (product.productPrice * (productPrice / 100));
+                wallet.walletHistory.push({
+                    amount: product.productPrice - (product.productPrice * (productPrice / 100)),
+                    type: 'Credit',
+                    reason: `Order calcel refund`,
+                    orderId: orderId,
+                    orderId2: order.orderId,
+                    date: new Date()
+                });
+                await wallet.save();
+            }
         }
         res.json({ ok: true })
     } catch (error) {

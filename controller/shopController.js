@@ -24,7 +24,7 @@ const loadShop = async (req, res) => {
 
         const category = await Category.find({ isDeleted: false });
         let products;
-        if (req.query.sort && !req.query.category) {
+        if (req.query.sort && !req.query.category ) {
             if (req.query.sort == "Aa-Zz") {
                 products = await Product.find({ isDeleted: false }).populate('category').sort({ productName: 1 }).limit(limit).skip((page - 1) * limit).exec();
             } else if (req.query.sort == "Low-High") {
@@ -34,13 +34,13 @@ const loadShop = async (req, res) => {
             } else if (req.query.sort == "NewArivals") {
                 products = await Product.find({ isDeleted: false }).populate('category').sort({ dateJoined: 1 }).limit(limit).skip((page - 1) * limit).exec();
             }
-        } else if (!req.query.sort && req.query.category) {
+        } else if (!req.query.sort && req.query.category  ) {
             const category = await Category.find({ isDeleted: false, categoryName: req.query.category });
             products = await Product.find({ isDeleted: false, category: category[0]._id }).populate('category')
 
 
 
-        } else if (req.query.sort && req.query.category) {
+        } else if (req.query.sort && req.query.category  ) {
             if (req.query.sort == "Aa-Zz") {
                 const category = await Category.find({ isDeleted: false, categoryName: req.query.category });
                 products = await Product.find({ isDeleted: false, category: category[0]._id }).populate('category').sort({ productName: 1 }).limit(limit).skip((page - 1) * limit).exec();
@@ -55,9 +55,13 @@ const loadShop = async (req, res) => {
                 products = await Product.find({ isDeleted: false, category: category[0]._id }).populate('category').sort({ dateJoined: 1 }).limit(limit).skip((page - 1) * limit).exec();
             }
 
-        } else {
+        }  else {
+            console.log("else");
             products = await Product.find({ isDeleted: false }).populate('category').limit(limit).skip((page - 1) * limit).exec();
         }
+
+
+
         res.render('shop', { products, category, next, previous, totalPages });
     } catch (error) {
         console.log(error);
@@ -124,12 +128,22 @@ const searchProduct= async(req,res)=>{
     try {
        const {searchName,listedCategory} = req.body;
        const regexPattern = new RegExp(`^${searchName}`, 'i');
-       const products = await Product.find({ productName: { $regex: regexPattern } });  
-        
+       let products;
        if(listedCategory){
+        const category = await Category.findOne({categoryName:listedCategory});
+        const categoryId = category._id;
+
+        products = await Product.find({ productName: { $regex: regexPattern },category:categoryId });  
+
+       }else{
+
+        products = await Product.find({ productName: { $regex: regexPattern } });  
 
        }
+       return res.status(200).json({ message: "interanl " });
+
     } catch (error) {
+        
         console.log(error);
     }
 }

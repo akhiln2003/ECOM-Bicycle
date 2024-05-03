@@ -75,39 +75,48 @@
 									<%= product.productName %>
 								</h3>
 								<div style="margin-top: 2rem; margin-bottom: 2rem;">
-									<% if(existOffer){ %>
-									<% if(existsCategoryOffer){ %>
-										<% if(product.offer.offerPercentage > product.category.offer){ %>
-											<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+									<% if (existOffer && existsCategoryOffer) { %>
+										<% if (product.offer.offerPercentage > product.category.offer.offerPercentage) { %>
+											<div style="display: flex;">
+												<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
 												<h3 style="margin-left: 1rem;">
-													<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
+													<span style="font-weight: bold;">
+														₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
 													</span>
-												</h3></div>
-											<% }else{ %>
-												<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
-													<h3 style="margin-left: 1rem;">
-														<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
-														</span>
-													</h3></div>
+												</h3>
+											</div>
+										<% } else { %>
+											<div style="display: flex;">
+												<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+												<h3 style="margin-left: 1rem;">
+													<span style="font-weight: bold;">
+														₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
+													</span>
+												</h3>
+											</div>
 										<% } %>
-										<% }else{ %>
-											<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
-												<h3 style="margin-left: 1rem;">
-													<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
-													</span>
-												</h3></div>
-											
-											<% } %>
-										<% }else if(existsCategoryOffer){ %>
-											<div style="display: flex;"><h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
-												<h3 style="margin-left: 1rem;">
-													<span style="font-weight: bold;"> ₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
-													</span>
-												</h3></div>
-											<% }else { %>
-										<h1> ₹ <%= product.productPrice %>
-										</h1>
-										<% } %>
+									<% } else if (existOffer) { %>
+										<div style="display: flex;">
+											<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+											<h3 style="margin-left: 1rem;">
+												<span style="font-weight: bold;">
+													₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
+												</span>
+											</h3>
+										</div>
+									<% } else if (existsCategoryOffer) { %>
+										<div style="display: flex;">
+											<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+											<h3 style="margin-left: 1rem;">
+												<span style="font-weight: bold;">
+													₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
+												</span>
+											</h3>
+										</div>
+									<% } else { %>
+										<h1> ₹ <%= product.productPrice %></h1>
+									<% } %>
+									
 									
 								</div>
 								

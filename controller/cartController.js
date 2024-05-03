@@ -10,8 +10,17 @@ const { logOut } = require('./userController');
 const loadCart = async (req, res) => {
     try {
         const id = req.session.user._id;
-        const cart = await Cart.findOne({ userId: id }).populate({ path: 'products', populate: { path: 'productId', populate: { path: 'category',populate:{path:'offer'} } } });
-        res.render('cart', { cart });
+        const cart = await Cart.findOne({ userId: id }).populate({
+            path: 'products',
+            populate: {
+                path: 'productId',
+                populate: [
+                    { path: 'offer' },
+                    { path: 'category', populate: { path: 'offer' } }
+                ]
+            }
+        });
+                res.render('cart', { cart });
     } catch (error) {
         console.log(error);
     }

@@ -23,8 +23,6 @@ app.use(express.static(path.join(__dirname, 'public/assets')));
 
 
 
-// app.use(express.static(path.join(__dirname,'public/uploads')));
-
 //For user rout
 app.use('/', userRout);
 
@@ -32,6 +30,10 @@ app.use('/', userRout);
 const adminRoute = require('./routes/adminRoute');
 app.use('/admin', adminRoute)
 
+app.use('*',(req, res) => {
+    res.status(404).render(path.join(__dirname, 'views/users/error404.ejs'));
+    
+})
 
 
 app.listen(3000, () => {

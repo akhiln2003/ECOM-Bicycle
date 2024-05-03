@@ -3,7 +3,6 @@ const admin_route = express();
 const auth = require('../middleware/adminAuth');
 const multer = require('../middleware/multer');
 const adminController = require("../controller/adminController");
-const brandController = require("../controller/brandController");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const customerController = require("../controller/customerController");
@@ -90,9 +89,7 @@ admin_route.get('/editCoupon', auth.isLogOut, adminCouponController.loadEditcoup
 admin_route.put('/updatecoupon', auth.isLogOut, adminCouponController.updateCoupon);
 
 
-// BRAND
-admin_route.get('/brand', auth.isLogOut, brandController.loadBrand);
-admin_route.get('/addBrand', auth.isLogOut, brandController.loadAddBrand);
+
 
 // OFFER
 admin_route.get('/offer', auth.isLogOut, offerController.loadOffer);

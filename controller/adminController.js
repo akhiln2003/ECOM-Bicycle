@@ -60,13 +60,13 @@ const loadDashboard = async (req, res) => {
         const productscount = await Products.countDocuments({ isDeleted: false });
 
         // Total revenue 
-        const ordres = await Order.find({ status: "placed" }).populate("products.productId");
+        const ordres = await Order.find({ status: "placed" });
 
         let totalRevenue = 0;
         ordres.forEach(order => {
             order.products.forEach(product => {
                 if (product.status == "delivered") {
-                    let totalPriceForProduct = product.productId.productPrice * product.quantity;
+                    let totalPriceForProduct = product.price * product.quantity;
                     totalRevenue += totalPriceForProduct;
                 }
             });
@@ -79,18 +79,9 @@ const loadDashboard = async (req, res) => {
             { $unwind: "$products" },
             { $match: { "products.status": "delivered" } },
             {
-                $lookup: {
-                    from: "products",
-                    localField: "products.productId",
-                    foreignField: "_id",
-                    as: "product"
-                }
-            },
-            { $unwind: "$product" },
-            {
                 $group: {
                     _id: { month: { $month: "$date" } },
-                    totalRevenue: { $sum: { $multiply: ["$product.productPrice", "$products.quantity"] } },
+                    totalRevenue: { $sum: { $multiply: ["$products.price", "$products.quantity"] } },
                     count: { $addToSet: "$_id" } // Count the distinct order IDs
                 }
             },

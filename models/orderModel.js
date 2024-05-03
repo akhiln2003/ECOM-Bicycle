@@ -20,7 +20,7 @@ const orderSchima = mongoose.Schema({
                 required: true
             },
 
-            productPrice: {
+            price: {
                 type: Number,
             },
 

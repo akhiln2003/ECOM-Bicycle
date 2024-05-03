@@ -2,6 +2,7 @@
 const express = require('express');
 const session = require('express-session');
 const auth = require('../middleware/userAuth');
+const isBlocked = require('../middleware/checkUserIsBlock');
 const { loadCartMiddleware } = require('../middleware/cartMiddleware');
 const userController = require("../controller/userController");
 const shopController = require('../controller/shopController');
@@ -69,66 +70,69 @@ user_route.get('/register', userController.loadRegister);
 user_route.post('/register', userController.insertuser);
 
 
+
 //  Shop Page
 user_route.get('/shop', shopController.loadShop);
+user_route.post('/shop', shopController.loadShop);
 user_route.get('/productDetails', shopController.loadProductDetails);
 user_route.post('/searchproduct', shopController.searchProduct);
 
+user_route.get('/about', userController.loadAboutas);
+user_route.get('/contact', userController.loadContact);
 
 // Profile page
-user_route.get('/profile', auth.isLogOut, profileController.loadProfile);
-user_route.get('/address', auth.isLogOut, profileController.loadAddress);
-user_route.get('/editProfile', auth.isLogOut, profileController.loadEditprofile);
-user_route.post('/editProfile', auth.isLogOut, profileController.updateProfile);
-user_route.get('/changePassword', auth.isLogOut, profileController.loadChangepassword);
-user_route.post('/changePassword', auth.isLogOut, profileController.changePassword);
-user_route.get('/addAddress', auth.isLogOut, profileController.loadAddaddress);
-user_route.post('/addAddress', auth.isLogOut, profileController.insertAddress);
-user_route.get('/editAddress', auth.isLogOut, profileController.loadEditaddress);
-user_route.post('/editAddress', auth.isLogOut, profileController.updatEditaddress);
-user_route.post('/deletAddress', auth.isLogOut, profileController.deletAddress);
-user_route.get('/orderHistory', auth.isLogOut, profileController.loadOrHistory);
-user_route.get('/invoice', auth.isLogOut, profileController.loadInvoice);
+user_route.get('/profile', auth.isLogOut,isBlocked, profileController.loadProfile);
+user_route.get('/address', auth.isLogOut,isBlocked, profileController.loadAddress);
+user_route.get('/editProfile', auth.isLogOut, isBlocked, profileController.loadEditprofile);
+user_route.post('/editProfile', auth.isLogOut, isBlocked, profileController.updateProfile);
+user_route.get('/changePassword', auth.isLogOut, isBlocked, profileController.loadChangepassword);
+user_route.post('/changePassword', auth.isLogOut, isBlocked, profileController.changePassword);
+user_route.get('/addAddress', auth.isLogOut, isBlocked, profileController.loadAddaddress);
+user_route.post('/addAddress', auth.isLogOut, isBlocked, profileController.insertAddress);
+user_route.get('/editAddress', auth.isLogOut, isBlocked, profileController.loadEditaddress);
+user_route.post('/editAddress', auth.isLogOut, isBlocked, profileController.updatEditaddress);
+user_route.post('/deletAddress', auth.isLogOut, isBlocked, profileController.deletAddress);
+user_route.get('/orderHistory', auth.isLogOut, isBlocked, profileController.loadOrHistory);
+user_route.get('/invoice', auth.isLogOut, isBlocked, profileController.loadInvoice);
 
 
 
 // CART
-user_route.get('/cart', auth.isLogOut, cartController.loadCart);
-user_route.post('/addtocart', auth.isLogOut, cartController.addtoCart);
-user_route.post('/removeToCart', auth.isLogOut, cartController.removeToCart);
-user_route.post('/updateQuantity', auth.isLogOut, cartController.updateQuantity);
+user_route.get('/cart', auth.isLogOut, isBlocked, cartController.loadCart);
+user_route.post('/addtocart', auth.isLogOut, isBlocked, cartController.addtoCart);
+user_route.post('/removeToCart', auth.isLogOut, isBlocked, cartController.removeToCart);
+user_route.post('/updateQuantity', auth.isLogOut, isBlocked, cartController.updateQuantity);
 
 
 
 // WISHLIST
-user_route.get('/wishlist', auth.isLogOut, wishlistController.loadWishlist);
-user_route.post('/addToWishlist', auth.isLogOut, wishlistController.addtoWishlist);
-user_route.post('/removeToWishlist', auth.isLogOut, wishlistController.removeToWishlist);
-user_route.post('/addingcart', auth.isLogOut, wishlistController.addingCart);
+user_route.get('/wishlist', auth.isLogOut, isBlocked, wishlistController.loadWishlist);
+user_route.post('/addToWishlist', auth.isLogOut, isBlocked, wishlistController.addtoWishlist);
+user_route.post('/removeToWishlist', auth.isLogOut, isBlocked, wishlistController.removeToWishlist);
+user_route.post('/addingcart', auth.isLogOut, isBlocked, wishlistController.addingCart);
 
 
 
 // Checkout
-user_route.get('/checkout', auth.isLogOut, checkoutController.loadCheckout);
-user_route.post('/addaddressCheckout', auth.isLogOut, checkoutController.checkoutAddAddress);
-user_route.post('/placeOrder', auth.isLogOut, checkoutController.placeOrder);
-user_route.post('/verifyPayment', auth.isLogOut, checkoutController.verifyPayment);
-user_route.post('/countinuePayment', auth.isLogOut, checkoutController.paymentCountinue);
-user_route.put('/applycoupon', auth.isLogOut, checkoutController.applyCoupon);
-user_route.put('/removecoupon', auth.isLogOut, checkoutController.removeCoupon);
+user_route.get('/checkout', auth.isLogOut, isBlocked, checkoutController.loadCheckout);
+user_route.post('/addaddressCheckout', auth.isLogOut, isBlocked, checkoutController.checkoutAddAddress);
+user_route.post('/placeOrder', auth.isLogOut, isBlocked, checkoutController.placeOrder);
+user_route.post('/verifyPayment', auth.isLogOut, isBlocked, checkoutController.verifyPayment);
+user_route.post('/countinuePayment', auth.isLogOut, isBlocked, checkoutController.paymentCountinue);
+user_route.put('/applycoupon', auth.isLogOut, isBlocked, checkoutController.applyCoupon);
+user_route.put('/removecoupon', auth.isLogOut, isBlocked, checkoutController.removeCoupon);
 
 
 
 // Oreder
-user_route.get('/orderSuccess/:id', auth.isLogOut, ordreController.loadOrderSuccess);
-user_route.get('/orderDetails', auth.isLogOut, ordreController.loadOrderDetails);
-user_route.post('/cancelOrder', auth.isLogOut, ordreController.cancelOrder);
-user_route.post('/returnOrderRequest', auth.isLogOut, ordreController.returnOrder);
+user_route.get('/orderSuccess/:id', auth.isLogOut, isBlocked, ordreController.loadOrderSuccess);
+user_route.get('/orderDetails', auth.isLogOut, isBlocked, ordreController.loadOrderDetails);
+user_route.post('/cancelOrder', auth.isLogOut, isBlocked, ordreController.cancelOrder);
+user_route.post('/returnOrderRequest', auth.isLogOut, isBlocked, ordreController.returnOrder);
 
 
-user_route.get('/wallet', auth.isLogOut, walletController.loadWallet)
+user_route.get('/wallet', auth.isLogOut, isBlocked, walletController.loadWallet)
 
-user_route.get('/about', userController.loadAboutas);
-user_route.get('/contact', userController.loadContact);
+
 
 module.exports = user_route;

@@ -52,15 +52,22 @@
 					</ul>
 
 
-
-					<div style="display: flex; align-items: center; ">
-						<!-- Search Box -->
+					<!-- <div style="display: flex; align-items: center; ">
+						
 						<div style="margin-left: 10rem; ">
-							<input type="text" id="search" placeholder="Search..."
+							<input onclick="redirectShop()" type="text" id="search" placeholder="Search..."
 								style="color: #000000; background-color: rgb(209, 209, 209); border: 1px solid #ffffff; border-radius: 5px;">
 							<i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
 						</div>
 						<script>
+							function redirectShop(){ 
+								if(!window.location.href === 'http://localhost:3000/shop'){
+
+									window.location.href = '/shop'
+								}
+							}
+							
+
 							function findCategory() {
 								const urlParams = new URLSearchParams(window.location.search);
 								return urlParams.get('category');
@@ -82,77 +89,71 @@
 											'Content-Type': 'application/json',
 										},
 										body: JSON.stringify(data)
-									});
+									}).then((response)=>{
+										window.location.href = 'http://localhost:3000/shop';
+									})
 
-									// Call your search function here
-								}, 2500); // Adjust the debounce time as needed (in milliseconds)
+								}, 2500); 
 							});
 
 
 
 
-						</script>
+						</script> -->
 
 						<!-- User Icon and Dropdown -->
-						<div class="cart-menu-area" style="margin-left: 5rem;">
+						<div class="cart-menu-area" style="margin-left: auto;">
 							<ul>
 								<li class="user-icon-dropdown">
 									<% if(locals.user){ %>
-										<a href="/profile"><i class="fa-regular fa-user"
-												style="color: #ffffff; font-size: 20px;"></i></a>
-										<ul class="cart-menu ">
-											<li class="cart-menu-btn">
-												<a style=" background-color: #e9e9e9; text-decoration: none;"
-													href="/logout">Logout</a>
-												<a style=" background-color: #e9e9e9; text-decoration: none;"
-													href="/profile">Profile</a>
-												<% }else { %>
-													<a href="/login"><i class="fa-regular fa-user"
-															style="color: #ffffff; font-size: 20px;"></i></a>
-													<ul class="cart-menu ">
-														<li class="cart-menu-btn">
-															<a style="margin-left: 4rem; margin-bottom: 1rem; background-color: #e9e9e9; text-decoration: none;"
-																href="/login">Login</a>
-
-															<% } %>
-														</li>
-
-													</ul>
-											</li>
-										</ul>
+									<a href="/profile"><i class="fa-regular fa-user" style="color: #ffffff; font-size: 20px;"></i></a>
+									<ul class="cart-menu ">
+										<li class="cart-menu-btn">
+											<a style="background-color: #e9e9e9; text-decoration: none;" href="/logout">Logout</a>
+											<a style="background-color: #e9e9e9; text-decoration: none;" href="/profile">Profile</a>
+											<% }else { %>
+											<a href="/login"><i class="fa-regular fa-user" style="color: #ffffff; font-size: 20px;"></i></a>
+											<ul class="cart-menu ">
+												<li class="cart-menu-btn">
+													<a style="margin-left: 4rem; margin-bottom: 1rem; background-color: #e9e9e9; text-decoration: none;" href="/login">Login</a>
+													<% } %>
+												</li>
+											</ul>
+										</li>
+									</ul>
 						</div>
-
+			
 						<!-- Cart Icon and Dropdown -->
 						<div class="cart-menu-area">
 							<ul>
 								<% if(locals.user){ %>
-									<li>
-										<a href="/cart">
-											<i class="fa-solid fa-cart-shopping" style="color: #ffffff; font-size: 21px;"></i>
-											<!-- Add a placeholder for the count -->
-											<% if(locals.cartDetais && cartDetais.products && cartDetais.products.length > 0 ){ %>
-												<span ><%= locals.cartDetais.products.length %></span>
-												<% } %>
-										</a>
-										<ul class="cart-menu">
-											<!-- Additional cart items -->
-											<li class="cart-menu-btn">
-												<a style="background-color: #e9e9e9; text-decoration: none;" href="/cart">view cart</a>
-												<a style="background-color: #e9e9e9; text-decoration: none;" href="/wishlist">view wishlist</a>
-											</li>
-										</ul>
-									</li>
+								<li>
+									<a href="/cart">
+										<i class="fa-solid fa-cart-shopping" style="color: #ffffff; font-size: 21px;"></i>
+										<!-- Add a placeholder for the count -->
+										<% if(locals.cartDetais && cartDetais.products && cartDetais.products.length > 0 ){ %>
+										<span ><%= locals.cartDetais.products.length %></span>
+										<% } %>
+									</a>
+									<ul class="cart-menu">
+										<!-- Additional cart items -->
+										<li class="cart-menu-btn">
+											<a style="background-color: #e9e9e9; text-decoration: none;" href="/cart">view cart</a>
+											<a style="background-color: #e9e9e9; text-decoration: none;" href="/wishlist">view wishlist</a>
+										</li>
+									</ul>
+								</li>
 								<% } else { %>
-									<li>
-										<a href="/login">
-											<i class="fa-solid fa-cart-shopping" style="color: #ffffff; font-size: 21px;"></i>
-										</a>
-										<ul class="cart-menu">
-											<li class="cart-menu-btn">
-												<a style="margin-left: 4rem; margin-bottom: 1rem; background-color: #e9e9e9; text-decoration: none;" href="/login">Login</a>
-											</li>
-										</ul>
-									</li>
+								<li>
+									<a href="/login">
+										<i class="fa-solid fa-cart-shopping" style="color: #ffffff; font-size: 21px;"></i>
+									</a>
+									<ul class="cart-menu">
+										<li class="cart-menu-btn">
+											<a style="margin-left: 4rem; margin-bottom: 1rem; background-color: #e9e9e9; text-decoration: none;" href="/login">Login</a>
+										</li>
+									</ul>
+								</li>
 								<% } %>
 							</ul>
 						</div>
