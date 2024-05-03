@@ -124,33 +124,8 @@ const loadProductDetails = async (req, res) => {
 }
 
 
-const searchProduct= async(req,res)=>{
-    try {
-       const {searchName,listedCategory} = req.body;
-       const regexPattern = new RegExp(`^${searchName}`, 'i');
-       let products;
-       if(listedCategory){
-        const category = await Category.findOne({categoryName:listedCategory});
-        const categoryId = category._id;
-
-        products = await Product.find({ productName: { $regex: regexPattern },category:categoryId });  
-
-       }else{
-
-        products = await Product.find({ productName: { $regex: regexPattern } });  
-
-       }
-       return res.status(200).json({ message: "interanl " });
-
-    } catch (error) {
-        
-        console.log(error);
-    }
-}
-
-
 module.exports = {
     loadShop,
     loadProductDetails,
-    searchProduct
+    
 }

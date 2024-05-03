@@ -70,12 +70,9 @@ user_route.get('/register', userController.loadRegister);
 user_route.post('/register', userController.insertuser);
 
 
-
 //  Shop Page
 user_route.get('/shop', shopController.loadShop);
-user_route.post('/shop', shopController.loadShop);
 user_route.get('/productDetails', shopController.loadProductDetails);
-user_route.post('/searchproduct', shopController.searchProduct);
 
 user_route.get('/about', userController.loadAboutas);
 user_route.get('/contact', userController.loadContact);
