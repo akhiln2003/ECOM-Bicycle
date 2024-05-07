@@ -317,7 +317,7 @@ const resetPass = async (email, res) => {
                 pass: "dvrv qguv lbeg ijpu"
             }
         })
-        const resetPage = `http://localhost:3000/resetPassword/${user._id}/${token.token}`
+        const resetPage = `http://cyclecraft.online/resetPassword/${user._id}/${token.token}`
 
         const mailOption = {
             from: "4khiln@gmail.com",
