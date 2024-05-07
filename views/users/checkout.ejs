@@ -323,7 +323,7 @@
                                 <div class="subtotal clearfix" id="total">
                                     <p>Subtotal <strong class="floatright"> ₹ <%= total %></strong></p>
                                     <% if(cart.couponApplyd.couponId){ %>
-                                        <% if( (total- cart.couponApplyd.couponDiscount) > 1000 ){ %>
+                                        <% if( cart.couponApplyd.couponDiscount > 1000 ){ %>
                                             <p>Coupon Discount<strong class="floatright"> ₹ 1000</strong></p>
                                                 <p>Shipping <strong class="floatright">free delivery</strong></p>
                                                 <p>Total <strong class="floatright"><span> ₹ <%= total = total- 1000 %></span></strong></p>

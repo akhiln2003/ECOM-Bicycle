@@ -56,7 +56,6 @@ const loadShop = async (req, res) => {
             }
 
         }  else {
-            console.log("else");
             products = await Product.find({ isDeleted: false }).populate('category').limit(limit).skip((page - 1) * limit).exec();
         }
 
@@ -73,7 +72,10 @@ const loadShop = async (req, res) => {
 const loadProductDetails = async (req, res) => {
     try {
         const productId = req.query.id;
-        const userId = req.session.user._id;
+        const userId = req?.session?.user?._id;
+        if (!userId) {
+            return  res.redirect('/login');
+        }
         let product
         let existOffer =false ;
         let existsCategoryOffer = false;
