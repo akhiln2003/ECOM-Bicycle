@@ -308,14 +308,15 @@ const resetPass = async (email, res) => {
             await token.save();
         }
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
             host: "smtp.gmail.com",
             port: 465,
             secure: true,
+            service: "Gmail",
             auth: {
                 user: "4khiln@gmail.com",
-                pass: "dvrv qguv lbeg ijpu"
-            }
+                pass: "plla ijfe bibq evzc"
+            },
+            debug: true 
         })
         const resetPage = `http://cyclecraft.online/resetPassword/${user._id}/${token.token}`
 
@@ -323,8 +324,9 @@ const resetPass = async (email, res) => {
             from: "4khiln@gmail.com",
             to: email,
             subject: "Verify your email ",
-            html: `your reset password link is ${resetPage}`
+            html:`Your reset password link is <a href="${resetPage}">${resetPage}</a>`
         }
+        
 
         await transporter.sendMail(mailOption);
     } catch (error) {
