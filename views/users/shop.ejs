@@ -621,67 +621,6 @@
 
 
 
-
-
-// 			const name = document.getElementById('search').value;
-// 			const category = getCategoryNameFromUrl();
-// 			let url;
-// 			if (category) {
-
-// 				url = `/shop?category=${category}&search=${name}`
-
-// 			} else {
-// 				url = `/shop?search=${name}`
-
-// 			}
-// 			console.log("dfds");
-// 			let  data = {name:name,search:category}
-// 			console.log(url);
-// 			fetch(url,{
-// 				method:'POST',
-// 				headers:{
-// 					'Content-Type': 'application/json'
-
-// 				},
-// 				body:JSON.stringify(data)
-
-// 			}).then((response)=>response.json())
-// 			.then((result)=>{
-// 				console.log(result.data);
-// 				document.getElementById('results').innerHTML = JSON.stringify(data)
-// 			})
-			
-
-// 		}
-// // Function to extract only the category name from the URL using split
-// function getCategoryNameFromUrl() {
-//     // Get the current URL
-//     const url = window.location.href;
-
-//     // Split the URL by '?' to get the query string
-//     const queryString = url?.split('?')[1];
-
-//     // Split the query string by '&' to get individual parameters
-//     const params = queryString?.split('&');
-// if (params) {
-// 	for (const param of params) {
-//         // Split each parameter by '=' to get the parameter name and value
-//         const [name, value] = param.split('=');
-
-//         // Check if the parameter is 'category'
-//         if (name === 'category') {
-//             // Return the value of the category parameter
-//             return value;
-//         }
-//     }
-// }
-//     // Loop through the parameters to find the category parameter
-  
-
-//     // Return null if the category parameter is not found
-//     return null;
-// }
-
 	</script>
 
 
