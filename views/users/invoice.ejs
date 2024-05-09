@@ -35,6 +35,12 @@
     font-weight: bold;
 }
 
+@media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+
 
 
 </style>
@@ -153,7 +159,7 @@
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row  no-print">
             <div class="col-12 text-end">
               <button type="submit" class="btn btn-primary mb-3" onclick="dowloadInvoice()">Download Invoice</button>
             </div>
