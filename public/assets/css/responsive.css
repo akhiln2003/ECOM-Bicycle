@@ -227,7 +227,6 @@ ul.mega-menu > li {
 	top: 25px;
 }
 .mean-container .mean-nav {
-  background: #ff6600 repeat scroll 0 0;
   position: relative;
   top: 25px;
 }
@@ -464,7 +463,6 @@ a.btn-style {
   top: -10px;
 }
 .mobile-menu-area .mean-bar::after {
-  content: "menu";
   left: 10px;
   position: absolute;
   top: 15px;
@@ -537,7 +535,6 @@ a.btn-style {
   .mobile-menu-area{display:block;}
   .mobile-menu-area .mean-bar {position: relative;}
   .mobile-menu-area .mean-bar::after {
-  	content: "menu";
   	left: 10px;
   	position: absolute;
   	top: 15px;
@@ -550,7 +547,7 @@ a.btn-style {
   	padding: 10px;
   	text-transform: capitalize;
   }
-  .mean-container .mean-bar,.mean-container .mean-nav {
+  .mean-container .mean-nav {
     background: #ff6600 repeat scroll 0 0;
   }
   .header-bottom.sticky .mean-container .mean-bar ,.header-bottom.sticky .mean-container .mean-nav {
