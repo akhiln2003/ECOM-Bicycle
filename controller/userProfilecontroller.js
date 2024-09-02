@@ -1,7 +1,7 @@
 const session = require('express-session');
 const User = require('../models/userModel');
 const Orders = require('../models/orderModel')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { response } = require('express');
 
 

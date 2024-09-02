@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Order = require('../models/orderModel');
 const Products = require('../models/productModel');
 const { isDefined } = require('razorpay/dist/utils/razorpay-utils');
