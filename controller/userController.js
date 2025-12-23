@@ -161,7 +161,7 @@ const sendOtpVerificationMail = async ({ email }, res) => {
             service: "Gmail",
             auth: {
                 user: "4khiln@gmail.com",
-                pass: "plla ijfe bibq evzc"
+                pass: "ppgh vmmx ogtb gljy"
             }
 
         });
