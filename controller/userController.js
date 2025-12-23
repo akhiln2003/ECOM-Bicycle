@@ -32,54 +32,78 @@ const loadContact = async (req, res) => {
 
 // loading Home
 const loadHome = async (req, res) => {
-    try {
-        const category = await Category.findOne({categoryName:"ACCESSORIES",isDeleted:false});
-        let categoryId = category._id;
-        const accessories = await Products.find({category:categoryId,isDeleted:false});
+  try {
+    // --------- ACCESSORIES CATEGORY ----------
+    const category = await Category.findOne({
+      categoryName: "ACCESSORIES",
+      isDeleted: false,
+    });
 
+    let accessories = [];
 
-        const featuredProduct = await Products.find({isDeleted:false}).populate('category').sort({ productPrice: -1 }) .limit(5); 
-
-        const topProducts = await Order.aggregate([
-            { $match: { status: "placed" } },
-            { $unwind: "$products" },
-            { $match: { "products.status": "delivered" } },
-            { $group: { _id: "$products.productId", quantity: { $sum: "$products.quantity" } } },
-            { $sort: { quantity: -1 } },
-            { $limit: 5 },
-            {
-                $lookup: {
-                    from: "products",
-                    localField: "_id",
-                    foreignField: "_id",
-                    as: "productDetails"
-                }
-            },
-            {
-                $project: {
-                    _id: "$_id",
-                    productName: { $arrayElemAt: ["$productDetails.productName", 0] },
-                    productImg: { $arrayElemAt: ["$productDetails.image", 0] },
-                    productPrice: { $arrayElemAt: ["$productDetails.productPrice", 0] },
-
-                }
-            }
-
-        ]);
-
-        const newArrivals = await Products.find({isDeleted:false}).sort({dateJoined:-1}).limit(6);
-
-        res.render('home',{
-            featuredProduct,
-            accessories,
-            topProducts,
-            newArrivals
-        
-        });
-    } catch (error) {
-        console.log(error);
+    if (category) {
+      accessories = await Products.find({
+        category: category._id,
+        isDeleted: false,
+      });
+    } else {
+      console.log("ACCESSORIES category not found");
     }
-}
+
+    // --------- FEATURED PRODUCTS ----------
+    const featuredProduct = await Products.find({ isDeleted: false })
+      .populate("category")
+      .sort({ productPrice: -1 })
+      .limit(5);
+
+    // --------- TOP PRODUCTS ----------
+    const topProducts = await Order.aggregate([
+      { $match: { status: "placed" } },
+      { $unwind: "$products" },
+      { $match: { "products.status": "delivered" } },
+      {
+        $group: {
+          _id: "$products.productId",
+          quantity: { $sum: "$products.quantity" },
+        },
+      },
+      { $sort: { quantity: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      {
+        $project: {
+          _id: "$_id",
+          productName: { $arrayElemAt: ["$productDetails.productName", 0] },
+          productImg: { $arrayElemAt: ["$productDetails.image", 0] },
+          productPrice: { $arrayElemAt: ["$productDetails.productPrice", 0] },
+        },
+      },
+    ]);
+
+    const newArrivals = await Products.find({ isDeleted: false })
+      .sort({ dateJoined: -1 })
+      .limit(6);
+
+    res.render("home", {
+      featuredProduct: featuredProduct || [],
+      accessories: accessories || [],
+      topProducts: topProducts || [],
+      newArrivals: newArrivals || [],
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 
 // loading Login
 const loadLogin = async (req, res) => {

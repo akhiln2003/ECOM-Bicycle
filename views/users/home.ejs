@@ -198,7 +198,7 @@
 									</div>
 								</div>
 								
-								<% }) %> %>
+								<% }) %>
 							
 							</div>
 						</div>
@@ -232,6 +232,7 @@
 			</div>
 			<div class="container-fluid arrival-content">
 				<div class="row text-center">
+					<% if (newArrivals && newArrivals.length > 0) { %>
 					<div class="col-md-6 col-lg-4 arrival-left">
 						<div class="single-arrival left">
 							<div class="product-item">
@@ -245,7 +246,7 @@
 	
 								<div class="arrival-title clearfix">
 									<div class="product-title">
-										<a href="product-details.html">
+										<a href="/productDetails?id=<%= newArrivals[0]._id %>">
 											<h2 class='title'>  <%= newArrivals[0].productName %></h2>
 										</a>
 										<p>Price: <span>₹  <%= newArrivals[0].productPrice %></span></p>
@@ -254,10 +255,12 @@
 							</div>
 						</div>
 					</div>
+					<% } %>
 					<div class="col-md-6 col-lg-4 arrival-middle">
 						<div class="single-arrival middel">
 							<div class="row">
 								<div class="col-md-6">
+									<% if (newArrivals && newArrivals.length > 1) { %>
 									<div class="product-item">
 										<div class="pro-img">
 											<a href="/productDetails?id=<%=  newArrivals[1]._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= newArrivals[1].image[0] %>" width="287"
@@ -268,13 +271,15 @@
 										</div>
 										<div class="arrival-title clearfix">
 											<div class="product-title">
-												<a href="product-details.html">
+												<a href="/productDetails?id=<%= newArrivals[1]._id %>">
 													<h3 class="title">  <%= newArrivals[1].productName %></h3>
 												</a>
 												<p>Price: <span>₹  <%= newArrivals[1].productPrice %></span></p>
 											</div>
 										</div>
 									</div>
+									<% } %>
+									<% if (newArrivals && newArrivals.length > 2) { %>
 									<div class="product-item margin-top">
 										<div class="pro-img">
 											<a href="/productDetails?id=<%=  newArrivals[2]._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= newArrivals[2].image[0] %>" width="287"
@@ -285,15 +290,17 @@
 										</div>
 										<div class="arrival-title clearfix">
 											<div class="product-title">
-												<a href="product-details.html">
+												<a href="/productDetails?id=<%= newArrivals[2]._id %>">
 													<h3 class="title" > <%= newArrivals[2].productName %></h3>
 												</a>
 												<p>Price: <span>₹  <%= newArrivals[2].productPrice %></span></p>
 											</div>
 										</div>
 									</div>
+									<% } %>
 								</div>
 								<div class="col-md-6">
+									<% if (newArrivals && newArrivals.length > 3) { %>
 									<div class="product-item margin-top mt-md-0">
 										<div class="pro-img">
 											<a href="/productDetails?id=<%=  newArrivals[3]._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= newArrivals[3].image[0] %>" width="287"
@@ -306,16 +313,18 @@
 										
 										<div class="arrival-title clearfix">
 											<div class="product-title">
-												<a href="product-details.html">
+												<a href="/productDetails?id=<%= newArrivals[3]._id %>">
 													<h3 class="title"> <%= newArrivals[3].productName %></h3>
 												</a>
 												<p>Price: <span>₹  <%= newArrivals[3].productPrice %></span></p>
 											</div>
 										</div>
 									</div>
+									<% } %>
+									<% if (newArrivals && newArrivals.length > 4) { %>
 									<div class="product-item margin-top">
 										<div class="pro-img">
-											<a href="product-details.html"><img src="/admin/assets/images/product/sharpedproduct/<%= newArrivals[4].image[0] %>" width="287"
+											<a href="/productDetails?id=<%= newArrivals[4]._id %>"><img src="/admin/assets/images/product/sharpedproduct/<%= newArrivals[4].image[0] %>" width="287"
 													height="287" alt="Product" /></a>
 										</div>
 										<div class="tag-new">
@@ -324,17 +333,19 @@
 										
 										<div class="arrival-title clearfix">
 											<div class="product-title">
-												<a href="product-details.html">
+												<a href="/productDetails?id=<%= newArrivals[4]._id %>">
 													<h3 class="title"> <%= newArrivals[4].productName %></h3>
 												</a>
 												<p>Price: <span>₹  <%= newArrivals[4].productPrice %></span></p>
 											</div>
 										</div>
 									</div>
+									<% } %>
 								</div>
 							</div>
 						</div>
 					</div>
+					<% if (newArrivals && newArrivals.length > 5) { %>
 					<div class="col-md-6 col-lg-4 arrival-left">
 						<div class="single-arrival right">
 							<div class="product-item">
@@ -348,7 +359,7 @@
 								
 								<div class="arrival-title clearfix">
 									<div class="product-title">
-										<a href="product-details.html">
+										<a href="/productDetails?id=<%= newArrivals[5]._id %>">
 											<h2 class='title'><%= newArrivals[5].productName %></h2>
 										</a>
 										<p>Price: <span>₹  <%= newArrivals[5].productPrice %> </span></p>
@@ -357,6 +368,7 @@
 							</div>
 						</div>
 					</div>
+					<% } %>
 				</div>
 			</div>
 		</section>
