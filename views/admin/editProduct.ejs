@@ -90,7 +90,7 @@
                         <a href="/admin/products" class="btn btn-primary"><i class="material-icons md-arrow_back"></i>Go
                             Back</a>
                     </div>
-                    <% if (messages.existCategory) { %>
+                    <% if (messages && messages.existCategory) { %>
                         <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                 class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16"
@@ -103,6 +103,15 @@
                                 <%= messages.existCategory %>
                             </div>
                         </div>
+                        <% } %>
+                        <% if (messages && messages.imageError) { %>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function(){
+                                    const msg = <%- JSON.stringify(messages.imageError) %>;
+                                    const el = document.getElementById('imagesError');
+                                    if (el) el.innerText = msg;
+                                });
+                            </script>
                         <% } %>
                             <div class="col-9" style="margin-left: 6rem; margin-top: 2rem;">
                                 <div class="card">
@@ -202,27 +211,32 @@
                                                         </div>
                                                         <!-- row.// -->
                                                         <div class="row mb-4">
-                                                            <% for(let i=0 ; i<4 ; i++){ %>
-                                                                <div class="col-md-6">
-                                                                    <div class="card">
-                                                                        <div class="card-header">
-                                                                            <h4>Media 1</h4>
+                                                            <div class="col-12">
+                                                                <div class="card">
+                                                                    <div class="card-header">
+                                                                        <h4>Product Images</h4>
+                                                                        <small class="text-muted">Existing images shown below. You can add more images. Final image count must be at least 4.</small>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <div id="existingPreviews" style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem">
+                                                                            <% if(product.image && product.image.length){ %>
+                                                                                <% product.image.forEach(img => { %>
+                                                                                    <img src="/admin/assets/images/product/sharpedproduct/<%= img %>" style="width:120px;height:120px;object-fit:cover" />
+                                                                                <% }) %>
+                                                                            <% } %>
                                                                         </div>
-                                                                        <div class="card-body">
-                                                                            <div class="input-upload">
-                                                                                <img src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>"
-                                                                                    alt="Preview"
-                                                                                    id="imagePreview<%= i %>" />
-                                                                                <input id="image1" name="image"
-                                                                                    class="form-control" type="file"
-                                                                                    accept="image/*"
-                                                                                    onchange="previewImage(this,'imagePreview<%= i %>')" />
+                                                                        <div class="input-upload">
+                                                                            <div id="previews" style="display:flex;gap:1rem;flex-wrap:wrap"></div>
+                                                                            <div id="imageSelectorWrapper">
+                                                                                <input id="imageSelector" name="image" class="form-control" type="file" accept="image/*" multiple />
                                                                             </div>
+                                                                            <div id="fileInputsHolder" style="display:none"></div>
+                                                                            <div id="imagesError" class="forml" style="color: red; margin-top:0.5rem"></div>
                                                                         </div>
+                                                                        <input type="hidden" id="existingCount" value="<%= (product.image && product.image.length) || 0 %>" />
                                                                     </div>
                                                                 </div>
-
-                                                                <% } %>
+                                                            </div>
                                                         </div>
                                                         <br />
                                                         <div>

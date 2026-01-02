@@ -49,6 +49,11 @@ const addProducts = async (req, res) => {
                 imagesArray[i] = req.files[i].filename;
             }
         }
+        // ensure at least 4 images
+        if (imagesArray.length < 4) {
+            const category = await Category.find({});
+            return res.render('addProduct', { category, messages: { imageError: 'Please upload at least 4 images.' } });
+        }
         for (i = 0; i < imagesArray.length; i++) {
             await sharp('public/admin/assets/images/product/productImages/' + req.files[i].filename)
                 .resize(500, 500)
@@ -100,33 +105,28 @@ const editProducts = async (req, res) => {
             }
 
         });
-
+        // handle newly uploaded images: append to existing images
         const arrImage = [];
-        for (i = 0; i < req.files.length; i++) {
-            arrImage.push(req.files[i].filename);
-        }
-        for (i = 0; i < arrImage.length; i++) {
-            await sharp('public/admin/assets/images/product/productImages/' + req.files[i].filename)
-                .resize(500, 500)
-                .toFile('public/admin/assets/images/product/sharpedproduct/' + req.files[i].filename)
-        }
+        if (Array.isArray(req.files) && req.files.length > 0) {
+            for (i = 0; i < req.files.length; i++) {
+                arrImage.push(req.files[i].filename);
+            }
+            for (i = 0; i < arrImage.length; i++) {
+                await sharp('public/admin/assets/images/product/productImages/' + req.files[i].filename)
+                    .resize(500, 500)
+                    .toFile('public/admin/assets/images/product/sharpedproduct/' + req.files[i].filename)
+            }
 
-        if (arrImage) {
-            const image1 = arrImage[0] || exist.image[0];
-            const image2 = arrImage[1] || exist.image[1];
-            const image3 = arrImage[2] || exist.image[2];
-            const image4 = arrImage[3] || exist.image[3];
+            const existingImages = Array.isArray(exist.image) ? exist.image : [];
+            const finalImages = existingImages.concat(arrImage);
+            if (finalImages.length < 4) {
+                return res.render('editProduct', { product: exist, category: await Category.find({}), messages: { imageError: 'Final image count must be at least 4.' } });
+            }
             await Product.findOneAndUpdate({ _id: id }, {
                 $set: {
-                    'image.0': image1,
-                    'image.1': image2,
-                    'image.2': image3,
-                    'image.3': image4
+                    image: finalImages
                 }
             })
-
-        } else {
-
         }
         res.redirect('/admin/products');
 
