@@ -16,6 +16,9 @@
 			.zoomable-image img {
 				transition: transform 0.3s ease-in-out;
 			}
+			.large-slider {
+				margin-bottom: 15px;
+			}
 		</style>
 
 
@@ -42,28 +45,27 @@
 						<div class="left">
 							<!-- Single-pro-slider Big-photo start -->
 							<div class="large-slider zoom-gallery">
+								<% product.image.forEach(function(image) { %>
 								<div>
-
 									<div class="zoomable-image" onmousemove="zoomImage(event)"
-										onmouseleave="resetZoom()">
-										<img src="/admin/assets/images/product/sharpedproduct/<%= product.image[0] %>"
-											width="555" height="587" alt="" id="zoomedImage" />
+										onmouseleave="resetZoom(event)">
+										<img src="/admin/assets/images/product/sharpedproduct/<%= image %>"
+											width="555" height="587" alt="" />
 									</div>
 								</div>
-
+								<% }); %>
 							</div>
 							<!-- Single-pro-slider Big-photo end -->
 
 							<!-- Single-pro-slider Small-photo start -->
 							<div class="thumb-slider slider-nav">
-								<% for(i=0;i<4;i++){ %>
+								<% product.image.forEach(function(image) { %>
 									<div>
-										<img onclick="showImage('<%= product.image[i] %>')"
-											src="/admin/assets/images/product/sharpedproduct/<%= product.image[i] %>"
+										<img
+											src="/admin/assets/images/product/sharpedproduct/<%= image %>"
 											width="117" height="123" alt="" />
 									</div>
-									<% } %>
-
+									<% }); %>
 							</div>
 							<!-- Single-pro-slider Small-photo end -->
 						</div>
@@ -556,7 +558,7 @@
 
 
 				function zoomImage(event) {
-					const zoomedImage = document.getElementById('zoomedImage');
+					const zoomedImage = event.currentTarget.querySelector('img');
 					const boundingRect = zoomedImage.getBoundingClientRect();
 
 					const mouseX = event.clientX - boundingRect.left;
@@ -571,13 +573,10 @@
 					zoomedImage.style.transform = `scale(${scale})`;
 				}
 
-				function resetZoom() {
-					const zoomedImage = document.getElementById('zoomedImage');
+				function resetZoom(event) {
+					const zoomedImage = event.currentTarget.querySelector('img');
 					zoomedImage.style.transformOrigin = 'center center';
 					zoomedImage.style.transform = 'scale(1)';
-				}
-				function showImage(imageSrc) {
-					document.getElementById('zoomedImage').src = "/admin/assets/images/product/sharpedproduct/" + imageSrc;
 				}
 			</script>
 

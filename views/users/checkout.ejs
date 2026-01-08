@@ -321,21 +321,19 @@
                                     <h3 style="margin: 0;">Totals</h3>
                                 </div>
                                 <div class="subtotal clearfix" id="total">
-                                    <p>Subtotal <strong class="floatright"> ₹ <%= total %></strong></p>
-                                    <% if(cart.couponApplyd.couponId){ %>
-                                        <% if( cart.couponApplyd.couponDiscount > 1000 ){ %>
-                                            <p>Coupon Discount<strong class="floatright"> ₹ 1000</strong></p>
-                                                <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                                <p>Total <strong class="floatright"><span> ₹ <%= total = total- 1000 %></span></strong></p>
-                                            <% }else{ %>
-                                                <p>Coupon Discount<strong class="floatright"> ₹ <%= cart.couponApplyd.couponDiscount %></strong></p>
-                                                <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                                <p>Total <strong class="floatright"><span> ₹ <%= total = total- cart.couponApplyd.couponDiscount %></span></strong></p>
-                                                <% } %>
-                                        <% } else{ %>
-                                            <p>Shipping <strong class="floatright">free delivery</strong></p>
-                                            <p>Total <strong class="floatright"><span> ₹ <%= total %></span></strong></p>
-                                                            <% } %>
+                                    <p>Subtotal <strong class="floatright"> ₹ <%= total.toFixed(2) %></strong></p>
+                                    <% if(cart.couponApplyd && cart.couponApplyd.couponId){ %>
+                                        <p>Coupon Discount<strong class="floatright"> ₹ <%= cart.couponApplyd.couponDiscount.toFixed(2) %></strong></p>
+                                        <% if(cart.couponApplyd.couponId.type != 'amount' && cart.couponApplyd.couponDiscount == 5000) { %>
+                                            <p style="color: green; text-align: right; margin: 0;">(Max discount of ₹5000 applied)</p>
+                                        <% } %>
+                                        <p>Shipping <strong class="floatright">free delivery</strong></p>
+                                        <% total = total - cart.couponApplyd.couponDiscount; %>
+                                        <p>Total <strong class="floatright"><span> ₹ <%= total.toFixed(2) %></span></strong></p>
+                                    <% } else { %>
+                                        <p>Shipping <strong class="floatright">free delivery</strong></p>
+                                        <p>Total <strong class="floatright"><span> ₹ <%= total.toFixed(2) %></span></strong></p>
+                                    <% } %>
                                 </div>
                             </div>
 

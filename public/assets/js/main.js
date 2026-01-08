@@ -81,8 +81,8 @@
 			centerMode: true,
 			centerPadding: '0px',
 			slidesToShow: 3,
-			prevArrow: '<img class="prev" src="img/icon/prev.png" alt="prev" />',
-			nextArrow: '<img class="next" src="img/icon/next.png" alt="next" />',
+			prevArrow: '<div class="angle-left"><i class="fa fa-angle-left"></i></div>',
+			nextArrow: '<div class="angle-right"><i class="fa fa-angle-right"></i></div>',
 			responsive: [
 				{ breakpoint: 1169, settings: { slidesToShow: 3 } },
 				{ breakpoint: 969, settings: { slidesToShow: 3 } },
@@ -94,15 +94,15 @@
 
 	if ($('.sell-up-right').elExists()) {
 		$('.sell-up-right').slick({
-			prevArrow: '<img class="prev" src="img/icon/prev.png" alt="prev" />',
-			nextArrow: '<img class="next" src="img/icon/next.png" alt="next" />',
+			prevArrow: '<div class="angle-left"><i class="fa fa-angle-left"></i></div>',
+			nextArrow: '<div class="angle-right"><i class="fa fa-angle-right"></i></div>',
 		});
 	}
 	if ($('.four-item').elExists()){
 		$('.four-item').slick({
 			slidesToShow: 4,
-			prevArrow: '<img class="prev" src="img/icon/prev.png" alt="prev" />',
-			nextArrow: '<img class="next" src="img/icon/next.png" alt="next" />',
+			prevArrow: '<div class="angle-left"><i class="fa fa-angle-left"></i></div>',
+			nextArrow: '<div class="angle-right"><i class="fa fa-angle-right"></i></div>',
 			responsive: [
 				{ breakpoint: 1169, settings: { slidesToShow: 3 } },
 				{ breakpoint: 969, settings: { slidesToShow: 3 } },

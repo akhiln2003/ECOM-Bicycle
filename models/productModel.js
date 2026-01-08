@@ -39,8 +39,7 @@ const productSchema = mongoose.Schema({
   //     require:true
   // },
   image: {
-    type: Array,
-    validate: [arrayLimit, "you can pass only 4 images"]
+    type: Array
   },
   isDeleted: {
     type: Boolean,
@@ -53,10 +52,6 @@ const productSchema = mongoose.Schema({
 
 
 });
-
-function arrayLimit(value) {
-  return value.length <= 4
-}
 
 const products = mongoose.model('Product', productSchema);
 

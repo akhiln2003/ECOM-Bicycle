@@ -320,6 +320,7 @@ const applyCoupon = async (req, res) => {
                 discountAmount = coupon.discount;
             } else {
                 discountAmount = subtotal * (coupon.discount / 100);
+                discountAmount = Math.min(discountAmount, 5000);
             }
             await Cart.findOneAndUpdate({ userId: userId }, {
                 $set: {
