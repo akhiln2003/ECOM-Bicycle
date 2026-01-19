@@ -45,20 +45,69 @@ const loadOrderdetails = async (req, res) => {
     }
 }
 
-// CANCEL ORDER
 const cancelOrder = async (req, res) => {
     try {
         const { productId, orderId } = req.body;
-        await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
-            $set: {
-                'products.$.status': 'cancelled'
+        const order = await Orders.findOneAndUpdate(
+            { _id: orderId, 'products._id': productId },
+            { $set: { 'products.$.status': 'cancelled' } },
+            { new: true }
+        ).populate('couponUsed').populate('userId');
+
+        const cancelledProduct = order.products.find(p => p._id.toString() === productId);
+
+        if (!cancelledProduct) {
+            return res.status(404).json({ ok: false, message: "Product not found in order" });
+        }
+
+        await Product.findByIdAndUpdate(cancelledProduct.productId, { $inc: { stock: cancelledProduct.quantity } });
+
+        if (order.paymentMethod !== "COD") {
+            let refundAmount = cancelledProduct.price * cancelledProduct.quantity;
+
+            if (order.couponUsed && order.couponUsed.length > 0) {
+                const coupon = order.couponUsed[0];
+                const totalAmount = order.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+                const discountRatio = (coupon.discountAmount / totalAmount);
+                refundAmount -= refundAmount * discountRatio;
             }
-        });
-        res.json({ ok: true })
+
+            const wallet = await Wallet.findOne({ userId: order.userId._id });
+
+            if (wallet) {
+                wallet.balance += refundAmount;
+                wallet.walletHistory.push({
+                    amount: refundAmount,
+                    type: 'Credit',
+                    reason: 'Order cancellation refund',
+                    orderId: orderId,
+                    orderId2: order.orderId,
+                    date: new Date()
+                });
+                await wallet.save();
+            } else {
+                const newWallet = new Wallet({
+                    userId: order.userId._id,
+                    balance: refundAmount,
+                    walletHistory: [{
+                        amount: refundAmount,
+                        type: 'Credit',
+                        reason: 'Order cancellation refund',
+                        orderId: orderId,
+                        orderId2: order.orderId,
+                        date: new Date()
+                    }]
+                });
+                await newWallet.save();
+            }
+        }
+
+        res.json({ ok: true });
     } catch (error) {
         console.log(error);
+        res.status(500).json({ ok: false, message: "An error occurred" });
     }
-}
+};
 
 
 const changeOrderStatus = async (req, res) => {
@@ -111,77 +160,65 @@ const loadReturnDetails = async (req, res) => {
 
 const changeReturnStatus = async (req, res) => {
     try {
-        const { orderId, productId, status, userId , productid} = req.body;
-       let order = await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
+        const { orderId, productId, status, userId, productid } = req.body;
+        const order = await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, {
             $set: {
                 'products.$.status': status
             }
-        })
-        if (status == "returned") {
-            let existOffer,existsCategoryOffer,product,productPrice;
-            let findProduct = await Product.findOne({ _id: productid }).populate('category');
-            if (findProduct.offer && findProduct.category.offer) {
-                existOffer = true
-                existsCategoryOffer = true
-                product = await Product.findOne({ _id: productid }).populate('offer').populate({ path: 'category', populate: { path: 'offer' } });
+        }).populate('couponUsed');
 
-            } else if (findProduct.category.offer && !findProduct.offer) {
-
-                existsCategoryOffer = true
-                product = await Product.findOne({ _id: productid }).populate({ path: 'category', populate: { path: 'offer' } });
-            } else if (!findProduct.category.offer && findProduct.offer) {
-                existOffer = true
-                product = await Product.findOne({ _id: productid }).populate('offer');
-            } else {
-                product = await Product.findOne({ _id: productid });
+        if (status === "returned") {
+            const returnedProduct = order.products.find(product => product._id.toString() === productId);
+            if (!returnedProduct) {
+                return res.status(404).json({ ok: false, message: 'Product not found in order' });
             }
-             
-            if(existOffer && existsCategoryOffer ){
-                if(product.offer.offerPercentage < product.category.offer.offerPercentage){
-                    productPrice = product.category.offer.offerPercentage
-                }else{
-                    productPrice = product.offer.offerPercentage
 
-                }
-            }else if(!existOffer && existsCategoryOffer ){
-                
-                productPrice = product.category.offer.offerPercentage
-            }else if(existOffer && !existsCategoryOffer ){
-                productPrice = product.offer.offerPercentage
-
-            }else{
-                productPrice = product.productPrice
-
+            const productDetails = await Product.findById(returnedProduct.productId);
+            if (!productDetails) {
+                return res.status(404).json({ ok: false, message: 'Product details not found' });
             }
+
+            let refundAmount = returnedProduct.price * returnedProduct.quantity;
+
+            if (order.couponUsed && order.couponUsed.length > 0) {
+                const coupon = order.couponUsed[0];
+                const totalAmount = order.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+                const discountRatio = (coupon.discountAmount / totalAmount);
+                refundAmount -= refundAmount * discountRatio;
+            }
+            
             const wallet = await Wallet.findOne({ userId: userId });
-            if(productPrice ==  product.productPrice){
-                wallet.balance += product.productPrice
+            if (wallet) {
+                wallet.balance += refundAmount;
                 wallet.walletHistory.push({
-                    amount: product.productPrice - (product.productPrice * (productPrice / 100)),
+                    amount: refundAmount,
                     type: 'Credit',
-                    reason: `Order calcel refund`,
+                    reason: 'Order return refund',
                     orderId: orderId,
                     orderId2: order.orderId,
                     date: new Date()
                 });
                 await wallet.save();
-            }else{
-
-                wallet.balance += product.productPrice - (product.productPrice * (productPrice / 100));
-                wallet.walletHistory.push({
-                    amount: product.productPrice - (product.productPrice * (productPrice / 100)),
-                    type: 'Credit',
-                    reason: `Order calcel refund`,
-                    orderId: orderId,
-                    orderId2: order.orderId,
-                    date: new Date()
+            } else {
+                const newWallet = new Wallet({
+                    userId: userId,
+                    balance: refundAmount,
+                    walletHistory: [{
+                        amount: refundAmount,
+                        type: 'Credit',
+                        reason: 'Order return refund',
+                        orderId: orderId,
+                        orderId2: order.orderId,
+                        date: new Date()
+                    }]
                 });
-                await wallet.save();
+                await newWallet.save();
             }
         }
-        res.json({ ok: true })
+        res.json({ ok: true });
     } catch (error) {
         console.log(error);
+        res.status(500).json({ ok: false, message: 'An error occurred' });
     }
 }
 

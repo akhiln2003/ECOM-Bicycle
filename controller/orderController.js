@@ -39,78 +39,67 @@ const loadOrderDetails = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
     try {
-        const { productId, productid, orderId, resion } = req.body;
-        let existOffer,existsCategoryOffer;
-        const order = await Orders.findOneAndUpdate({ _id: orderId, 'products._id': productId }, { $set: { 'products.$.status': 'cancelled', 'products.$.cancelReason': resion } });
-        const quantity = order.products[0].quantity;
-        await Product.findOneAndUpdate({ _id: productid }, { $inc: { stock: quantity } })
+        const { productId, orderId, resion } = req.body;
+        const order = await Orders.findOneAndUpdate(
+            { _id: orderId, 'products._id': productId },
+            { $set: { 'products.$.status': 'cancelled', 'products.$.cancelReason': resion } },
+            { new: true }
+        ).populate('couponUsed');
+
+        const cancelledProduct = order.products.find(p => p._id.toString() === productId);
+
+        if (!cancelledProduct) {
+            return res.status(404).json({ ok: false, message: "Product not found in order" });
+        }
+
+        await Product.findByIdAndUpdate(cancelledProduct.productId, { $inc: { stock: cancelledProduct.quantity } });
+
         if (order.paymentMethod !== "COD") {
-            let findProduct = await Product.findOne({ _id: productid }).populate('category');
-            let product;
-            if (findProduct.offer && findProduct.category.offer) {
-                existOffer = true
-                existsCategoryOffer = true
-                product = await Product.findOne({ _id: productid }).populate('offer').populate({ path: 'category', populate: { path: 'offer' } });
+            let refundAmount = cancelledProduct.price * cancelledProduct.quantity;
 
-            } else if (findProduct.category.offer && !findProduct.offer) {
-
-                existsCategoryOffer = true
-                product = await Product.findOne({ _id: productid }).populate({ path: 'category', populate: { path: 'offer' } });
-            } else if (!findProduct.category.offer && findProduct.offer) {
-                existOffer = true
-                product = await Product.findOne({ _id: productid }).populate('offer');
-            } else {
-                product = await Product.findOne({ _id: productid });
+            if (order.couponUsed && order.couponUsed.length > 0) {
+                const coupon = order.couponUsed[0];
+                const totalAmount = order.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+                const discountRatio = (coupon.discountAmount / totalAmount);
+                refundAmount -= refundAmount * discountRatio;
             }
 
-            if (existOffer && existsCategoryOffer) {
-                if (product.offer.offerPercentage < product.category.offer.offerPercentage) {
-                    productPrice = product.category.offer.offerPercentage
-                } else {
-                    productPrice = product.offer.offerPercentage
-
-                }
-            } else if (!existOffer && existsCategoryOffer) {
-
-                productPrice = product.category.offer.offerPercentage
-            } else if (existOffer && !existsCategoryOffer) {
-                productPrice = product.offer.offerPercentage
-
-            } else {
-                productPrice = product.productPrice
-
-            }
             const wallet = await Wallet.findOne({ userId: req.session.user._id });
-            if(productPrice ==  product.productPrice){
-                wallet.balance += product.productPrice
-                wallet.walletHistory.push({
-                    amount: product.productPrice - (product.productPrice * (productPrice / 100)),
-                    type: 'Credit',
-                    reason: `Order calcel refund`,
-                    orderId: orderId,
-                    orderId2: order.orderId,
-                    date: new Date()
-                });
-                await wallet.save();
-            }else{
 
-                wallet.balance += product.productPrice - (product.productPrice * (productPrice / 100));
+            if (wallet) {
+                wallet.balance += refundAmount;
                 wallet.walletHistory.push({
-                    amount: product.productPrice - (product.productPrice * (productPrice / 100)),
+                    amount: refundAmount,
                     type: 'Credit',
-                    reason: `Order calcel refund`,
+                    reason: 'Order cancellation refund',
                     orderId: orderId,
                     orderId2: order.orderId,
                     date: new Date()
                 });
                 await wallet.save();
+            } else {
+                const newWallet = new Wallet({
+                    userId: req.session.user._id,
+                    balance: refundAmount,
+                    walletHistory: [{
+                        amount: refundAmount,
+                        type: 'Credit',
+                        reason: 'Order cancellation refund',
+                        orderId: orderId,
+                        orderId2: order.orderId,
+                        date: new Date()
+                    }]
+                });
+                await newWallet.save();
             }
         }
+
         res.json({ ok: true });
     } catch (error) {
         console.log(error);
+        res.status(500).json({ ok: false, message: "An error occurred" });
     }
-}
+};
 
 const returnOrder = async (req, res) => {
     try {
