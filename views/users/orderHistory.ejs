@@ -129,6 +129,7 @@
 
                     <!-- Address Listing Table -->
                     <table class="address-table" id="Reload" style="margin-bottom: 3rem;">
+                        <% if(orders && orders.length > 0) { %>
                         <thead>
                             <tr>
                                 <th>no</th>
@@ -205,6 +206,11 @@
                             </div>
                         </div>
                     </div>
+                    <% } else { %>
+                        <div class="text-center">
+                            <h4>No orders found.</h4>
+                        </div>
+                    <% } %>
 
 
                 </div>

@@ -97,7 +97,7 @@
 
                         <div class="card-body">
                             <div class="table-responsive" id="Reload">
-                               <% if( offer.length >0){ %>
+                               <% if( offer && offer.length > 0){ %>
                                 <table class="table table-hover">
                                     <thead>
                                         </th>
@@ -146,8 +146,10 @@
                                     </tbody>
                                 </table>
                                 <% }else{ %>
-                                    <h1 style="margin-left: 25rem;">NO OFFERS</h1>
-                                    <%} %>
+                                    <div class="text-center">
+                                        <h4>No offers found.</h4>
+                                    </div>
+                                <%} %>
                             </div>
 
                         </div>

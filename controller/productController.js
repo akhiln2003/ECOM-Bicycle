@@ -15,14 +15,29 @@ const loadProducts = async (req, res) => {
             page = parseInt(req.query.page);
         }
 
+        let search = '';
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        let query = {};
+        if (search) {
+            query = {
+                $or: [
+                    { productName: { $regex: search, $options: 'i' } },
+                    { description: { $regex: search, $options: 'i' } }
+                ]
+            };
+        }
+
         let limit = 5;
-        const count = await Product.countDocuments();
+        const count = await Product.countDocuments(query);
         const totalPages = Math.ceil(count / limit);
         let previous = page > 1 ? page - 1 : 1;
         let next = page < totalPages ? page + 1 : totalPages;
         const category = await Category.find({});
-        const product = await Product.find({}).populate('category').sort({ dateJoined: -1 }).limit(limit).skip((page - 1) * limit);
-        res.render('products', { category, product, totalPages, next, previous });
+        const product = await Product.find(query).populate('category').sort({ dateJoined: -1 }).limit(limit).skip((page - 1) * limit);
+        res.render('products', { category, product, totalPages, next, previous, search });
     } catch (error) {
         console.log(error);
     }

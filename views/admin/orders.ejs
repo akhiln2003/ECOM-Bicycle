@@ -85,12 +85,21 @@
                         <h2 class="content-title card-title">Order List</h2>
                         <p>Whole data about your orders here</p>
                     </div>
+                    <div class="col-search">
+                        <form action="/admin/orders" method="GET" class="searchform">
+                            <div class="input-group">
+                                <input type="text" placeholder="Search orders..." class="form-control bg-white" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>"/>
+                                <button type="submit" class="btn btn-light bg-light"><i class="material-icons md-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="card mb-4">
                     
                     <!-- card-header end// -->
                     <div class="card-body">
                         <div class="card-body" id="Reload">
+                            <% if(orders && orders.length > 0) { %>
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -163,6 +172,11 @@
                         </ul>
                     </nav>
                 </div>
+                <% } else { %>
+                    <div class="text-center">
+                        <h4>No orders found.</h4>
+                    </div>
+                <% } %>
             </section>
             <!-- content-main end// -->
 

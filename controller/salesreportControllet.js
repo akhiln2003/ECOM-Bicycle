@@ -13,17 +13,36 @@ const loadSalesreport = async (req, res) => {
 
 const listOrders = async (req, res) => {
     try {
-        const { start, end } = req.body;
+        const { start, end, search } = req.query;
 
-        // Convert start and end dates to JavaScript Date objects
-        const startDate = new Date(start);
-        const endDate = new Date(end);
+        let query = { "products.status": "delivered" };
 
-        // Adjust endDate to include the entire end day by setting the time to the end of the day
-        endDate.setHours(23, 59, 59, 999);
+        // Date filtering
+        if (start && end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            endDate.setHours(23, 59, 59, 999);
+            query.date = { $gte: startDate, $lte: endDate };
+        }
 
-        const orders = await Orders.find({ date: { $gte: startDate, $lte: endDate } , "products.status":"delivered" }).populate('userId').populate('products.productId');
-        res.render('listSales', { orders });
+        // Search filtering
+        if (search) {
+            // To search by userId.name, we need to find user IDs matching the search term first.
+            const ordersWithMatchingUsers = await Orders.find({ "products.status": "delivered" }).populate({
+                path: 'userId',
+                match: { name: { $regex: search, $options: 'i' } }
+            }).select('_id');
+
+            const orderIdsFromUserSearch = ordersWithMatchingUsers.filter(order => order.userId !== null).map(order => order._id);
+
+            query.$or = [
+                { orderId: { $regex: search, $options: 'i' } },
+                { _id: { $in: orderIdsFromUserSearch } }
+            ];
+        }
+
+        const orders = await Orders.find(query).populate('userId').populate('products.productId');
+        res.render('listSales', { orders, search });
     } catch (error) {
         console.log(error);
     }

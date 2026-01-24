@@ -8,18 +8,35 @@ const loadCustomers = async (req, res) => {
     if (req.query.page) {
       page = req.query.page
     }
+    
+    let search = '';
+    if (req.query.search) {
+        search = req.query.search;
+    }
+
+    let query = {};
+    if (search) {
+        query = {
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } },
+                { mobile: { $regex: search, $options: 'i' } }
+            ]
+        };
+    }
+
     let next = page + 1;
     let previous = page > 1 ? page - 1 : 1;
     let limit = 10;
-    const count = await User.find().count();
+    const count = await User.countDocuments(query);
     const totalPages = Math.ceil(count / limit);
 
     if (next > totalPages) {
       next = totalPages
     }
 
-    const users = await User.find({}).sort({ dateJoined: -1 }).limit(limit).skip((page - 1) * limit).exec()
-    res.render('customers', { users, totalPages, next, previous });
+    const users = await User.find(query).sort({ dateJoined: -1 }).limit(limit).skip((page - 1) * limit).exec()
+    res.render('customers', { users, totalPages, next, previous, search });
 
   } catch (error) {
     console.log(error);

@@ -37,6 +37,7 @@ admin_route.get('/dashboard', auth.isLogOut, adminController.loadDashboard);
 
 admin_route.get('/salesreport', auth.isLogOut, adminSalesreport.loadSalesreport);
 admin_route.post('/listsales', auth.isLogOut, adminSalesreport.listOrders);
+admin_route.get('/listsales', auth.isLogOut, adminSalesreport.listOrders);
 admin_route.post("/downloadExcel", auth.isLogOut, adminSalesreport.dowloadExcel);
 
 //CUSTEMERS

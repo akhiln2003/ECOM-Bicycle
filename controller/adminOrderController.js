@@ -10,18 +10,40 @@ const loadOrders = async (req, res) => {
         if (req.query.page) {
             page = parseInt(req.query.page);
         }
+        
+        let search = '';
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        let query = {};
+        if (search) {
+            const users = await Orders.find().populate({
+                path: 'userId',
+                match: { email: { $regex: search, $options: 'i' } }
+            }).select('_id');
+            const userIds = users.filter(user => user.userId !== null).map(user => user._id);
+            
+            query = {
+                $or: [
+                    { 'deliveryAddress.name': { $regex: search, $options: 'i' } },
+                    { _id: { $in: userIds } }
+                ]
+            };
+        }
+
         let next = page + 1;
         let previous = page > 1 ? page - 1 : 1;
         let limit = 10;
-        const count = await Orders.find().count();
+        const count = await Orders.countDocuments(query);
         const totalPages = Math.ceil(count / limit);
 
         if (next > totalPages) {
             next = totalPages
         }
 
-        const orders = await Orders.find().populate('userId').sort({ date: -1 }).limit(limit).skip((page - 1) * limit);
-        res.render('orders', { orders, totalPages, next, previous });
+        const orders = await Orders.find(query).populate('userId').sort({ date: -1 }).limit(limit).skip((page - 1) * limit);
+        res.render('orders', { orders, totalPages, next, previous, search });
     } catch (error) {
         console.log(error);
     }

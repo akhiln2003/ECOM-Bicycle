@@ -87,6 +87,14 @@
                         <h2 class="content-title card-title">Categories</h2>
                         <p>Add, edit or delete a category</p>
                     </div>
+                    <div class="col-search">
+                        <form action="/admin/category" method="GET" class="searchform">
+                            <div class="input-group">
+                                <input type="text" placeholder="Search categories..." class="form-control bg-white" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>"/>
+                                <button type="submit" class="btn btn-light bg-light"><i class="material-icons md-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
                     <div>
                         <a href="/admin/addcategory" class="btn btn-primary"><i
                                 class="text-muted material-icons md-post_add"></i>Add New Category</a>
@@ -97,6 +105,7 @@
 
                         <div class="card-body">
                             <div class="table-responsive" id="Reload">
+                                <% if(category && category.length > 0) { %>
                                 <table class="table table-hover">
                                     <thead>
                                         </th>
@@ -110,51 +119,54 @@
                                     </thead>
                                     <tbody>
                                         <% let num=0 %>
-                                            <% if(category.length>0 ){ %>
-                                                <% if(category.map((value,index)=>{ %>
-                                                    <% if(value.isDeleted==false){ %>
-                                                        <% num++ %>
-                                                            <tr>
-                                                                <td>
-                                                                    <%= num %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= value.categoryName %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= value.description %>
-                                                                </td>
-                                                                <td>
-                                                                    <% if(value.offer){ %>
-                                                                        <button type="button"
-                                                                            class="btn btn-sm btn-warning rounded font-sm mt-15"
-                                                                            onclick="removeOffer('<%= value._id %>')">
-                                                                            Remove
-                                                                        </button>
-                                                                        <% }else{ %>
-                                                                            <button type="button"
-                                                                                class="btn btn-sm btn-success rounded font-sm mt-15">
-                                                                                <a style="text-decoration: none; color: white;"
-                                                                                    href="/admin/showcategoryOffers?id=<%= value._id %>">Available</a>
-                                                                            </button>
-                                                                            <% } %>
-                                                                </td>
-
-                                                                <td><a href="/admin/editCategory?id=<%= value._id %>"><i
-                                                                            class="material-icons md-edit"></i></a></td>
-                                                                <td class="text-end">
+                                            <% category.forEach((value)=>{ %>
+                                                <% if(value.isDeleted==false){ %>
+                                                    <% num++ %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= num %>
+                                                            </td>
+                                                            <td>
+                                                                <%= value.categoryName %>
+                                                            </td>
+                                                            <td>
+                                                                <%= value.description %>
+                                                            </td>
+                                                            <td>
+                                                                <% if(value.offer){ %>
                                                                     <button type="button"
-                                                                        class="btn btn-sm btn-danger rounded font-sm mt-15"
-                                                                        onclick="deleteCategory('<%= value._id %>')">
-                                                                        Delete </button>
-                                                                </td>
-                                                            </tr>
-                                                            <%}%>
-                                                                <% })) %>
-                                                                    <% } %>
+                                                                        class="btn btn-sm btn-warning rounded font-sm mt-15"
+                                                                        onclick="removeOffer('<%= value._id %>')">
+                                                                        Remove
+                                                                    </button>
+                                                                    <% }else{ %>
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-success rounded font-sm mt-15">
+                                                                            <a style="text-decoration: none; color: white;"
+                                                                                href="/admin/showcategoryOffers?id=<%= value._id %>">Available</a>
+                                                                        </button>
+                                                                        <% } %>
+                                                            </td>
+
+                                                            <td><a href="/admin/editCategory?id=<%= value._id %>"><i
+                                                                        class="material-icons md-edit"></i></a></td>
+                                                            <td class="text-end">
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                                                    onclick="deleteCategory('<%= value._id %>')">
+                                                                    Delete </button>
+                                                            </td>
+                                                        </tr>
+                                                        <%}%>
+                                                            <% }) %>
 
                                     </tbody>
                                 </table>
+                                <% } else { %>
+                                    <div class="text-center">
+                                        <h4>No categories found.</h4>
+                                    </div>
+                                <% } %>
                             </div>
 
                         </div>

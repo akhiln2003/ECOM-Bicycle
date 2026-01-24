@@ -4,8 +4,23 @@ const Coupon = require('../models/couponModel');
 
 const loadCoupon = async (req, res) => {
     try {
-        const coupons = await Coupon.find();
-        res.render('coupon', { coupons });
+        let search = '';
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        let query = {};
+        if (search) {
+            query = {
+                $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { couponCod: { $regex: search, $options: 'i' } }
+                ]
+            };
+        }
+
+        const coupons = await Coupon.find(query);
+        res.render('coupon', { coupons, search });
     } catch (error) {
         console.log(error);
     }

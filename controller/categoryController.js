@@ -5,8 +5,20 @@ const offer = require('../models/offerModel');
 // Load List Category         
 const loadCategory = async (req, res) => {
     try {
-        const category = await Category.find({});
-        res.render('category', { category })
+        let search = '';
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        let query = {};
+        if (search) {
+            query = {
+                categoryName: { $regex: search, $options: 'i' }
+            };
+        }
+
+        const category = await Category.find(query);
+        res.render('category', { category, search });
     } catch (error) {
         console.log(error);
     }
