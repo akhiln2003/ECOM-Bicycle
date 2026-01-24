@@ -2,6 +2,7 @@ const Product = require('../models/productModel');
 const Category = require('../models/category');
 const Offers = require('../models/offerModel');
 const sharp = require('sharp');
+const fs = require('fs');
 
 
 
@@ -38,27 +39,29 @@ const loadAddproduct = async (req, res) => {
     }
 }
 
-// insert products
 const addProducts = async (req, res) => {
     try {
         const details = req.body;
         const files = req.files;
         let imagesArray = [];
-        if (Array.isArray(req.files)) {
-            for (i = 0; i < files.length; i++) {
-                imagesArray[i] = req.files[i].filename;
-            }
-        }
-        // ensure at least 4 images
-        if (imagesArray.length < 4) {
+
+        if (!files || files.length < 4) {
             const category = await Category.find({});
             return res.render('addProduct', { category, messages: { imageError: 'Please upload at least 4 images.' } });
         }
+
+        if (Array.isArray(files)) {
+            for (i = 0; i < files.length; i++) {
+                imagesArray.push(req.files[i].filename);
+            }
+        }
+
         for (i = 0; i < imagesArray.length; i++) {
             await sharp('public/admin/assets/images/product/productImages/' + req.files[i].filename)
                 .resize(500, 500)
                 .toFile('public/admin/assets/images/product/sharpedproduct/' + req.files[i].filename)
         }
+
         const product = new Product({
             productName: details.productName,
             productPrice: details.productPrice,
@@ -69,9 +72,6 @@ const addProducts = async (req, res) => {
         });
         await product.save();
         res.redirect('/admin/products')
-
-
-
 
     } catch (error) {
         console.log(error);
@@ -90,11 +90,10 @@ const loadEditproduct = async (req, res) => {
         console.log(error);
     }
 }
-// Edit products
 const editProducts = async (req, res) => {
     try {
-        const { id, productName, productPrice, productQuentity, category, description } = req.body;
-        const exist = await Product.findOne({ _id: id });
+        const { id, productName, productPrice, productQuentity, category, description, removeImages } = req.body;
+        
         await Product.updateOne({ _id: id }, {
             $set: {
                 productName: productName,
@@ -103,8 +102,23 @@ const editProducts = async (req, res) => {
                 category: category,
                 description: description
             }
-
         });
+
+        if (removeImages) {
+            const imagesToRemove = Array.isArray(removeImages) ? removeImages : [removeImages];
+            imagesToRemove.forEach(image => {
+                fs.unlink(`public/admin/assets/images/product/productImages/${image}`, (err) => {
+                    if (err) console.log(err);
+                });
+                fs.unlink(`public/admin/assets/images/product/sharpedproduct/${image}`, (err) => {
+                    if (err) console.log(err);
+                });
+            });
+            await Product.updateOne({ _id: id }, { $pull: { image: { $in: imagesToRemove } } });
+        }
+
+        const updatedProduct = await Product.findOne({ _id: id });
+
         // handle newly uploaded images: append to existing images
         const arrImage = [];
         if (Array.isArray(req.files) && req.files.length > 0) {
@@ -117,10 +131,11 @@ const editProducts = async (req, res) => {
                     .toFile('public/admin/assets/images/product/sharpedproduct/' + req.files[i].filename)
             }
 
-            const existingImages = Array.isArray(exist.image) ? exist.image : [];
+            const existingImages = Array.isArray(updatedProduct.image) ? updatedProduct.image : [];
             const finalImages = existingImages.concat(arrImage);
             if (finalImages.length < 4) {
-                return res.render('editProduct', { product: exist, category: await Category.find({}), messages: { imageError: 'Final image count must be at least 4.' } });
+                const category = await Category.find({});
+                return res.render('editProduct', { product: updatedProduct, category: category, messages: { imageError: 'Final image count must be at least 4.' } });
             }
             await Product.findOneAndUpdate({ _id: id }, {
                 $set: {
