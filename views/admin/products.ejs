@@ -127,7 +127,7 @@
                                                         <%= value.productName %>
                                                     </td>
                                                     <td>
-                                                        <%= value.productPrice %>
+                                                        <%= value.productPrice.toFixed(2) %>
                                                     </td>
                                                     <% if(value.category && value.category.isDeleted==false) { %>
                                                         <td style="max-width:140px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">

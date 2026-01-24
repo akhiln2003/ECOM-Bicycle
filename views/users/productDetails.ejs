@@ -78,45 +78,44 @@
 								</h3>
 								<div style="margin-top: 2rem; margin-bottom: 2rem;">
 									<% if (existOffer && existsCategoryOffer) { %>
-										<% if (product.offer.offerPercentage > product.category.offer.offerPercentage) { %>
-											<div style="display: flex;">
-												<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
-												<h3 style="margin-left: 1rem;">
+										                                        <% if (product.offer.offerPercentage > product.category.offer.offerPercentage) { %>
+										                                            <div style="display: flex;">
+										                                                <h5><del style="color: red;"> ₹ <%= product.productPrice.toFixed(2) %></del></h5>												<h3 style="margin-left: 1rem;">
 													<span style="font-weight: bold;">
-														₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
+														₹<%= (product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100))).toFixed(2) %>
 													</span>
 												</h3>
 											</div>
 										<% } else { %>
 											<div style="display: flex;">
-												<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+												<h5><del style="color: red;"> ₹ <%= product.productPrice.toFixed(2) %></del></h5>
 												<h3 style="margin-left: 1rem;">
 													<span style="font-weight: bold;">
-														₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
+														₹<%= (product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100))).toFixed(2) %>
 													</span>
 												</h3>
 											</div>
 										<% } %>
 									<% } else if (existOffer) { %>
 										<div style="display: flex;">
-											<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+											<h5><del style="color: red;"> ₹ <%= product.productPrice.toFixed(2) %></del></h5>
 											<h3 style="margin-left: 1rem;">
 												<span style="font-weight: bold;">
-													₹<%= product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100)) %>
+													₹<%= (product.productPrice - (product.productPrice * (product.offer.offerPercentage / 100))).toFixed(2) %>
 												</span>
 											</h3>
 										</div>
 									<% } else if (existsCategoryOffer) { %>
 										<div style="display: flex;">
-											<h5><del style="color: red;"> ₹ <%= product.productPrice %></del></h5>
+											<h5><del style="color: red;"> ₹ <%= product.productPrice.toFixed(2) %></del></h5>
 											<h3 style="margin-left: 1rem;">
 												<span style="font-weight: bold;">
-													₹<%= product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100)) %>
+													₹<%= (product.productPrice - (product.productPrice * (product.category.offer.offerPercentage / 100))).toFixed(2) %>
 												</span>
 											</h3>
 										</div>
 									<% } else { %>
-										<h1> ₹ <%= product.productPrice %></h1>
+										<h1> ₹ <%= product.productPrice.toFixed(2) %></h1>
 									<% } %>
 									
 									
@@ -360,7 +359,7 @@
 														<i class="fa fa-star"></i>
 														<i class="fa fa-star gray-star"></i>
 													</div>
-													<p><span>₹ <%= product.productPrice %></span></p>
+													<p><span>₹ <%= product.productPrice.toFixed(2) %></span></p>
 												</div>
 											</div>
 
@@ -392,7 +391,7 @@
 																	<i class="fa fa-star gray-star"></i>
 																	<i class="fa fa-star gray-star"></i>
 																</div>
-																<p><span>₹ <%= product.productPrice %></span>
+																<p><span>₹ <%= product.productPrice.toFixed(2) %></span>
 																	<del></del></p>
 															</div>
 														</div>

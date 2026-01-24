@@ -153,7 +153,7 @@
                                                         <%= value.quantity %>
                                                     </td>
                                                     <td>
-                                                        <%= value.productId.productPrice %>
+                                                        <%= value.productId.productPrice.toFixed(2) %>
                                                     </td>
                                                     <% if(value.status=="returnRequested" ){ %>
                                                         <td><span class="badge rounded-pill alert-warning">

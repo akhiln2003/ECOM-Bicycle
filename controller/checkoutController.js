@@ -187,7 +187,7 @@ const placeOrder = async (req, res) => {
             // RAZORPAY PAYMENT 
             else if (orderDetails.paymentMethod == "RAZORPAY") {
                 const options = {
-                    amount: subTotal * 100,
+                    amount: Math.round(subTotal * 100),
                     currency: "INR",
                     receipt: "" + orderId,
                 };
@@ -285,7 +285,7 @@ const paymentCountinue = async (req, res) => {
         const order = await Order.findOne({ orderId: orderId }).populate('userId');
 
         const option = {
-            amount: order.totalAmount * 100,
+            amount: Math.round(order.totalAmount * 100),
             currency: "INR",
             receipt: "" + order.orderId,
         };

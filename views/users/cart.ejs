@@ -144,7 +144,7 @@
 
                                                                                                             <% total +=( productPrice * product.quantity ) %>
 
-                                                                                                            <td><%= productPrice %></td>
+                                                                                                            <td><%= productPrice.toFixed(2) %></td>
                                                                                                                 <td>
                                                                                                                     <form
                                                                                                                         action="#">
@@ -167,9 +167,9 @@
                                                                                                                 </td>
 
                                                                                                                 <td> ₹
-                                                                                                                    <%= productPrice
+                                                                                                                    <%= (productPrice
                                                                                                                         *
-                                                                                                                        product.quantity
+                                                                                                                        product.quantity).toFixed(2)
                                                                                                                         %>
                                                                                                                 </td>
                                                                                                                 <td><i class="fa fa-trash"

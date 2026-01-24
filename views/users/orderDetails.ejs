@@ -192,7 +192,7 @@
                                                             <td>
                                                                 <%= orders.deliveryAddress.name %>
                                                             </td>
-                                                            <td> ₹ <%= product.productId.productPrice %>
+                                                            <td> ₹ <%= product.productId.productPrice.toFixed(2) %>
                                                             </td>
                                                             <td>
                                                                 <%= product.quantity %>
@@ -291,7 +291,7 @@
                                                                 <td>
                                                                     <%= orders.deliveryAddress.name %>
                                                                 </td>
-                                                                <td> ₹ <%= product.price %>
+                                                                <td> ₹ <%= product.price.toFixed(2) %>
                                                                 </td>
                                                                 <td>
                                                                     <%= product.quantity %>

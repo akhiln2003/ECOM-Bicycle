@@ -125,8 +125,8 @@
                       <th scope="row"><%= product.quantity %></th>
                       <td><%= product.productId.productName %></td>
                       <td><%= product.status %></td>
-                      <td class="text-end"><%= product.productId.productPrice %></td>
-                      <td class="text-end"><%=  product.quantity*product.productId.productPrice %></td>
+                      <td class="text-end"><%= product.productId.productPrice.toFixed(2) %></td>
+                      <td class="text-end"><%= (product.quantity*product.productId.productPrice).toFixed(2) %></td>
                     </tr>
                     <% }) %>
                 </tbody>

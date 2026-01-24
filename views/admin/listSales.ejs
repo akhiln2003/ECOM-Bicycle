@@ -63,10 +63,10 @@
                                                 <%= order.userId.name %>
                                             </td>
                                             <td>
-                                                <%= product.price %> x <%= product.quantity %>
+                                                <%= product.price.toFixed(2) %> x <%= product.quantity %>
                                             </td>
                                             <td>
-                                                <%= product.price * product.quantity %>
+                                                <%= (product.price * product.quantity).toFixed(2) %>
                                             </td>
                                             <td>
                                                 <%= order.date.toLocaleString('en-US', { day: 'numeric' , month: 'short'

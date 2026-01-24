@@ -102,7 +102,7 @@
                                                 <td>
                                                     <%= product.productId.productName %>
                                                 </td>
-                                                <td> ₹ <%= product.productId.productPrice %>
+                                                <td> ₹ <%= product.productId.productPrice.toFixed(2) %>
                                                 </td>
                                                 <% if(product.productId.stock>0){ %>
 
