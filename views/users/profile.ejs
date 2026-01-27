@@ -130,6 +130,22 @@
                                         </div>
                                     </div>
                                     <hr>
+                                    <!-- Referral ID -->
+                                    <% if (user.referralCode) { %>
+                                    <div class="row align-items-center">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Referral ID</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary d-flex align-items-center">
+                                            <span id="referralCodeText"><%= user.referralCode %></span>
+                                            <button type="button" class="btn btn-sm btn-outline-primary ms-3"
+                                                onclick="copyReferralCode()">
+                                                Copy
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <% } %>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <a class="btn btn-success" href="/editProfile?id=<%= user._id %>">Edit
@@ -145,6 +161,33 @@
                 </div>
             </div>
         </div>
+
+
+        <script>
+            function copyReferralCode() {
+                const text = document.getElementById('referralCodeText').innerText;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function () {
+                        alert('Referral ID copied to clipboard');
+                    }).catch(function () {
+                        // Fallback if clipboard API fails
+                        fallbackCopy(text);
+                    });
+                } else {
+                    fallbackCopy(text);
+                }
+            }
+
+            function fallbackCopy(text) {
+                const tempInput = document.createElement('input');
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert('Referral ID copied to clipboard');
+            }
+        </script>
 
 
         <%- include('../layout/user/footbar.ejs') %>

@@ -105,6 +105,23 @@ const loadHome = async (req, res) => {
 };
 
 
+// Helper to generate a unique referral code for each user
+const generateReferralCode = async () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code;
+    let existingUser;
+
+    do {
+        code = '';
+        for (let i = 0; i < 8; i++) {
+            code += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        existingUser = await User.findOne({ referralCode: code });
+    } while (existingUser);
+
+    return code;
+};
+
 // loading Login
 const loadLogin = async (req, res) => {
     try {
@@ -137,9 +154,21 @@ const loadRegister = async (req, res) => {
 const insertuser = async (req, res) => {
 
     try {
-        const { email, name } = req.body;
+        const { email, name, referralCode } = req.body;
         const findUserByEmale = await User.findOne({ email: email });
         const findUserByName = await User.findOne({ name: name });
+        let referredByUserId = null;
+
+        // If a referral code is provided, validate it and find the referrer
+        if (referralCode && referralCode.trim() !== '') {
+            const referrer = await User.findOne({ referralCode: referralCode.trim() });
+            if (!referrer) {
+                req.flash('exists', "Invalid referral ID");
+                return res.redirect('/register');
+            }
+            referredByUserId = referrer._id;
+        }
+
         if (findUserByEmale) {
             req.flash('exists', "user alredy exists with this email ");
             res.redirect('/register');
@@ -150,12 +179,15 @@ const insertuser = async (req, res) => {
 
         } else if (req.body.password === req.body.ConformPassword) {
             const securePass = await securePassword(req.body.password)
+            const newReferralCode = await generateReferralCode();
             const user = new User({
                 name: req.body.name,
                 email: req.body.email,
                 dateofbirth: req.body.dateofbirth,
                 gender: req.body.gender,
                 password: securePass,
+                referralCode: newReferralCode,
+                referredBy: referredByUserId || undefined
             });
 
             await user.save();
@@ -252,6 +284,26 @@ const verifyOtp = async (req, res) => {
         const user = await User.findOne({ email: email });
         await userOtpVerification.deleteOne({ email: email });
         if (user.verified) {
+            // Handle referral reward after user successfully verifies their account
+            if (user.referredBy && !user.referralRewarded) {
+                try {
+                    const referrerWallet = await Wallet.findOne({ userId: user.referredBy });
+                    if (referrerWallet) {
+                        const bonusAmount = 500;
+                        referrerWallet.balance += bonusAmount;
+                        referrerWallet.walletHistory.push({
+                            amount: bonusAmount,
+                            type: 'Credit',
+                            reason: `Referral bonus for inviting ${user.name || user.email}`
+                        });
+                        await referrerWallet.save();
+                    }
+                    user.referralRewarded = true;
+                    await user.save();
+                } catch (err) {
+                    console.log('Error applying referral bonus:', err);
+                }
+            }
             if (!user.blocked) {
                 req.session.user = {
                     _id: user._id,
@@ -429,7 +481,8 @@ const googleLogin = async (req, res) => {
             }
 
         } else {
-            const user = new User({ name: name, email, verified: true });
+            const newReferralCode = await generateReferralCode();
+            const user = new User({ name: name, email, verified: true, referralCode: newReferralCode });
             await user.save();
             const newWallet = new Wallet({ userId: user._id, balance: 0 });
             await newWallet.save();

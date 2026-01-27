@@ -31,6 +31,22 @@ const userScchema = mongoose.Schema({
     type: Boolean,
     default: false
   },
+  // Unique referral code for each user to share with others
+  referralCode: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  // Who referred this user (if any)
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  // To ensure referral reward is only given once
+  referralRewarded: {
+    type: Boolean,
+    default: false
+  },
   address: [
     {
       name: {
