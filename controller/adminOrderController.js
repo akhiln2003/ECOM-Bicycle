@@ -87,11 +87,11 @@ const cancelOrder = async (req, res) => {
         if (order.paymentMethod !== "COD") {
             let refundAmount = cancelledProduct.price * cancelledProduct.quantity;
 
-            if (order.couponUsed && order.couponUsed.length > 0) {
-                const coupon = order.couponUsed[0];
-                const totalAmount = order.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
-                const discountRatio = (coupon.discountAmount / totalAmount);
-                refundAmount -= refundAmount * discountRatio;
+            if (order.couponUsed) {
+                const originalTotal = order.products.reduce((acc, p) => acc + (p.price * p.quantity), 0);
+                const discountApplied = originalTotal - order.totalAmount;
+                const discountShare = (refundAmount / originalTotal) * discountApplied;
+                refundAmount -= discountShare;
             }
 
             const wallet = await Wallet.findOne({ userId: order.userId._id });
@@ -195,18 +195,15 @@ const changeReturnStatus = async (req, res) => {
                 return res.status(404).json({ ok: false, message: 'Product not found in order' });
             }
 
-            const productDetails = await Product.findById(returnedProduct.productId);
-            if (!productDetails) {
-                return res.status(404).json({ ok: false, message: 'Product details not found' });
-            }
+            await Product.findByIdAndUpdate(returnedProduct.productId, { $inc: { stock: returnedProduct.quantity } });
 
             let refundAmount = returnedProduct.price * returnedProduct.quantity;
 
-            if (order.couponUsed && order.couponUsed.length > 0) {
-                const coupon = order.couponUsed[0];
-                const totalAmount = order.products.reduce((acc, product) => acc + (product.price * product.quantity), 0);
-                const discountRatio = (coupon.discountAmount / totalAmount);
-                refundAmount -= refundAmount * discountRatio;
+            if (order.couponUsed) {
+                const originalTotal = order.products.reduce((acc, p) => acc + (p.price * p.quantity), 0);
+                const discountApplied = originalTotal - order.totalAmount;
+                const discountShare = (refundAmount / originalTotal) * discountApplied;
+                refundAmount -= discountShare;
             }
             
             const wallet = await Wallet.findOne({ userId: userId });
