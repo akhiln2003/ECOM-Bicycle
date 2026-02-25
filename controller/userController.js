@@ -244,8 +244,10 @@ const sendOtpVerificationMail = async ({ email }, res) => {
 //load Otp
 const loadOtp = async (req, res) => {
     try {
-        const email = req.query.email
-        res.render('otp', { email: email })
+        const email = req.query.email;
+        const type = req.query.type || 'signup';
+        const userId = req.query.userId || '';
+        res.render('otp', { email: email, type: type, userId: userId })
     } catch (error) {
         console.log(error);
     }
@@ -283,7 +285,7 @@ const verifyOtp = async (req, res) => {
         }
         const user = await User.findOne({ email: email });
         await userOtpVerification.deleteOne({ email: email });
-        if (user.verified) {
+        if (user && user.verified) {
             // Handle referral reward after user successfully verifies their account
             if (user.referredBy && !user.referralRewarded) {
                 try {

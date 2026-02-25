@@ -64,6 +64,7 @@ user_route.get('/success', userController.googleLogin)
 //Otp Page
 user_route.get('/otp', userController.loadOtp);
 user_route.post('/otp', userController.verifyOtp);
+user_route.post('/verifyEmailOtp', profileController.verifyEmailOtp);
 
 //Register Page
 user_route.get('/register', userController.loadRegister);
@@ -82,6 +83,7 @@ user_route.get('/profile', auth.isLogOut,isBlocked, profileController.loadProfil
 user_route.get('/address', auth.isLogOut,isBlocked, profileController.loadAddress);
 user_route.get('/editProfile', auth.isLogOut, isBlocked, profileController.loadEditprofile);
 user_route.post('/editProfile', auth.isLogOut, isBlocked, profileController.updateProfile);
+user_route.post('/checkEmailAvailability', profileController.checkEmailAvailability);
 user_route.get('/changePassword', auth.isLogOut, isBlocked, profileController.loadChangepassword);
 user_route.post('/changePassword', auth.isLogOut, isBlocked, profileController.changePassword);
 user_route.get('/addAddress', auth.isLogOut, isBlocked, profileController.loadAddaddress);

@@ -48,12 +48,19 @@
                                                 <input type="hidden" name="id" value="<%= user._id %>">
                                                 <input type="text" class="form-control" id="editName" name="editName"
                                                     value="<%= user.name %>" required>
-
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editEmail" class="form-label">Email:</label>
+                                                <input type="email" class="form-control" id="editEmail" name="editEmail"
+                                                    value="<%= user.email %>" required>
+                                                <small class="text-muted d-block mt-2">If you change your email, you'll need to verify it with an OTP.</small>
+                                                <small class="text-danger d-none mt-1" id="emailError"></small>
+                                                <small class="text-success d-none mt-1" id="emailSuccess"></small>
                                             </div>
                                             <div class="mb-3 text-end">
                                                 <button type="button" class="btn btn-secondary"
                                                     onclick="window.location='/profile'">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
                                             </div>
                                         </form>
                             </div>
@@ -65,3 +72,80 @@
 
         <%- include('../layout/user/footbar.ejs') %>
             <%- include('../layout/user/footer.ejs') %>
+
+            <script>
+                const currentEmail = '<%= user.email %>';
+                const userId = '<%= user._id %>';
+                const editEmailInput = document.getElementById('editEmail');
+                const emailError = document.getElementById('emailError');
+                const emailSuccess = document.getElementById('emailSuccess');
+                const saveBtn = document.getElementById('saveBtn');
+                let isEmailValid = true;
+
+                // Check email availability as user types
+                editEmailInput.addEventListener('change', async function() {
+                    const newEmail = this.value.trim();
+
+                    // If email hasn't changed, hide messages and allow submit
+                    if (newEmail.toLowerCase() === currentEmail.toLowerCase()) {
+                        emailError.classList.add('d-none');
+                        emailSuccess.classList.add('d-none');
+                        isEmailValid = true;
+                        return;
+                    }
+
+                    // If email field is empty, hide messages
+                    if (!newEmail) {
+                        emailError.classList.add('d-none');
+                        emailSuccess.classList.add('d-none');
+                        isEmailValid = true;
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/checkEmailAvailability', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ email: newEmail, userId: userId })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.available) {
+                            emailError.classList.add('d-none');
+                            emailSuccess.classList.remove('d-none');
+                            emailSuccess.textContent = '✓ Email is available';
+                            isEmailValid = true;
+                        } else {
+                            emailSuccess.classList.add('d-none');
+                            emailError.classList.remove('d-none');
+                            emailError.textContent = '✗ ' + data.message;
+                            isEmailValid = false;
+                        }
+                    } catch (error) {
+                        console.error('Error checking email:', error);
+                        emailError.classList.remove('d-none');
+                        emailError.textContent = 'Error checking email availability';
+                        isEmailValid = false;
+                    }
+                });
+
+                // Validate on form submit
+                document.querySelector('form').addEventListener('submit', function(e) {
+                    const newEmail = editEmailInput.value.trim();
+
+                    // If email did not change, allow submit
+                    if (newEmail.toLowerCase() === currentEmail.toLowerCase()) {
+                        return true;
+                    }
+
+                    // If email changed but not valid, prevent submit
+                    if (!isEmailValid) {
+                        e.preventDefault();
+                        emailError.classList.remove('d-none');
+                        return false;
+                    }
+                });
+            </script>

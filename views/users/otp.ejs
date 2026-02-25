@@ -62,85 +62,90 @@
 							aria-label="Warning:">
 							<path
 								d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-						</svg>
-						<div>
-							<strong>Hey !</strong>
-							<%= message %>
+							</svg>
+							<div>
+								<strong>Hey !</strong>
+								<%= message %>
 
+							</div>
 						</div>
-					</div>
-					<% } %>
+						<% } %>
 
-						<form id="verificationForm" onsubmit="return validateForm()" style="margin-top: 2rem;">
+							<form id="verificationForm" style="margin-top: 2rem;">
 
 
-							<% if(locals.email) { %>
-								<input type="hidden" name="email" value="<%= email %>">
-								<% } %>
-									<h5 class="m-0">E-mail verification</h5>
-									<%if(messages.incorrect) {%>
+								<% if(locals.email) { %>
+									<input type="hidden" name="email" value="<%= email %>">
+									<% } %>
+									<% if(locals.type) { %>
+										<input type="hidden" name="type" value="<%= type %>">
+										<% } %>
+										<% if(locals.userId) { %>
+											<input type="hidden" name="userId" value="<%= userId %>">
+											<% } %>
+												<h5 class="m-0">E-mail verification</h5>
+												<%if(messages.incorrect) {%>
 
-										<div class="alert alert-danger d-flex align-items-center  " role="alert"
-											id="error-alert">
-											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-												fill="currentColor"
-												class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 "
-												viewBox="0 0 16 16" role="img" aria-label="Warning:">
-												<path
-													d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-											</svg>
-											<div>
-												<strong>Hey !</strong>
-												<%= messages.incorrect %>
-											</div>
-										</div>
-										<%}%>
-											<%if(messages.expire) {%>
-
-												<div class="alert alert-danger d-flex align-items-center  " role="alert"
-													id="error-alert">
-													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-														fill="currentColor"
-														class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 "
-														viewBox="0 0 16 16" role="img" aria-label="Warning:">
-														<path
-															d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-													</svg>
-													<div>
-														<strong>Hey !</strong>
-														<%= messages.expire %>
+													<div class="alert alert-danger d-flex align-items-center  " role="alert"
+														id="error-alert">
+														<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+															fill="currentColor"
+															class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 "
+															viewBox="0 0 16 16" role="img" aria-label="Warning:">
+															<path
+																d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+														</svg>
+														<div>
+															<strong>Hey !</strong>
+															<%= messages.incorrect %>
+														</div>
 													</div>
-												</div>
-												<%}%>
-													<span class="mobile-text">Enter the code we just sent to your Email
-														<b class="text-danger">
-															<%= locals.email %>
-														</b></span>
-													<div class="d-flex flex-row mt-5">
-														<input type="text" class="form-control" id="digit1"
-															name="digit1" maxlength="1" oninput="moveToNext(this)"
-															autofocus required>
-														<input type="text" class="form-control" id="digit2"
-															name="digit2" maxlength="1" oninput="moveToNext(this)"
-															required>
-														<input type="text" class="form-control" id="digit3"
-															name="digit3" maxlength="1" oninput="moveToNext(this)"
-															required>
-														<input type="text" class="form-control" id="digit4"
-															name="digit4" maxlength="1" oninput="moveToNext(this)"
-															required>
-													</div>
-													<button type="submit" class="btn d-block w-100 my-4"
-														style="background-color: #198754;"
-														onclick="enterOTP('<%= locals.email %>')">Submit</button>
-						</form>
-						<span class="time text-center" id="time"></span>
-						<div class="text-center ">
-							<span class="d-block mobile-text">Don't receive the code?</span>
-							<span class="font-weight-bold text-danger cursor" id="resend">Resend</span>
-						</div>
+													<%}%>
+														<%if(messages.expire) {%>
+
+															<div class="alert alert-danger d-flex align-items-center  " role="alert"
+																id="error-alert">
+																<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+																	fill="currentColor"
+																	class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 "
+																	viewBox="0 0 16 16" role="img" aria-label="Warning:">
+																	<path
+																		d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+																	</svg>
+																	<div>
+																		<strong>Hey !</strong>
+																		<%= messages.expire %>
+																	</div>
+																</div>
+																<%}%>
+																	<span class="mobile-text">Enter the code we just sent to your Email
+																		<b class="text-danger">
+																			<%= locals.email %>
+																		</b></span>
+																	<div class="d-flex flex-row mt-5">
+																		<input type="text" class="form-control" id="digit1"
+																			name="digit1" maxlength="1" oninput="moveToNext(this)"
+																			autofocus required>
+																		<input type="text" class="form-control" id="digit2"
+																			name="digit2" maxlength="1" oninput="moveToNext(this)"
+																			required>
+																		<input type="text" class="form-control" id="digit3"
+																			name="digit3" maxlength="1" oninput="moveToNext(this)"
+																			required>
+																		<input type="text" class="form-control" id="digit4"
+																			name="digit4" maxlength="1" oninput="moveToNext(this)"
+																			required>
+																	</div>
+																	<button type="submit" class="btn d-block w-100 my-4"
+																		style="background-color: #198754;">Submit</button>
+							</form>
+							<span class="time text-center" id="time"></span>
+							<div class="text-center ">
+								<span class="d-block mobile-text">Don't receive the code?</span>
+								<span class="font-weight-bold text-danger cursor" id="resend">Resend</span>
+							</div>
+				</div>
 			</div>
-		</div>
 		<%- include('../layout/user/footbar.ejs') %>
 			<%- include('../layout/user/footer.ejs') %>
 
@@ -194,7 +199,7 @@
 					}
 
 
-					function enterOTP(email) {
+					function enterOTP(email, type = 'signup', userId = '') {
 						document.getElementById('verificationForm').addEventListener('submit', function (event) {
 							// Prevent the default form submission
 							event.preventDefault();
@@ -205,6 +210,18 @@
 							const digit3 = document.getElementById('digit3').value;
 							const digit4 = document.getElementById('digit4').value;
 
+							// Check if all fields are filled
+							if (!digit1 || !digit2 || !digit3 || !digit4) {
+								Swal.fire({
+									icon: 'error',
+									title: 'Incomplete',
+									text: 'Please enter all 4 digits of the OTP',
+									showConfirmButton: false,
+									timer: 2000
+								});
+								return false;
+							}
+
 							// Construct JSON object with OTP data
 							const otpData = {
 								digit1: digit1,
@@ -214,54 +231,107 @@
 								email: email
 							};
 
-							// Send POST request with OTP data
-							fetch('/otp', {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								},
-								body: JSON.stringify(otpData)
-							}).then(data => data.json())
-								.then(response => {
-									// Handle response from server
-									if (response.incorrect) {
-										// Handle incorrect OTP response
-										// Set border color of input fields to red
+							// If it's an email change OTP, add userId
+							if (type === 'changeEmail') {
+								otpData.userId = userId;
+							}
 
+							// Determine which endpoint to use
+							const endpoint = (type === 'changeEmail') ? '/verifyEmailOtp' : '/otp';
+
+						console.log('Sending OTP to endpoint:', endpoint, 'with data:', otpData);
+
+						// Send POST request with OTP data
+						fetch(endpoint, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(otpData)
+						})
+							.then(response => {
+								console.log('Response status:', response.status, response.ok);
+								// Try to parse JSON regardless of status
+								return response.text().then(text => {
+									console.log('Response text:', text);
+									try {
+										return JSON.parse(text);
+									} catch (e) {
+										console.error('Failed to parse JSON:', e);
+										throw new Error('Server returned invalid response: ' + text.substring(0, 100));
+									}
+								});
+							})
+							.then(response => {
+								console.log('Parsed response:', response);
+								// Handle response from server
+								if (response.incorrect) {
+									// Handle incorrect OTP response
+									Swal.fire({
+										icon: 'error',
+										title: 'Oops...',
+										text: 'Incorrect OTP! Please try again.',
+										showConfirmButton: false,
+										timer: 2000
+									});
+
+									document.getElementById('digit1').style.borderColor = 'red';
+									document.getElementById('digit2').style.borderColor = 'red';
+									document.getElementById('digit3').style.borderColor = 'red';
+									document.getElementById('digit4').style.borderColor = 'red';
+
+									// Reset border colors after 3 seconds
+									setTimeout(function () {
+										document.getElementById('digit1').style.borderColor = '';
+										document.getElementById('digit2').style.borderColor = '';
+										document.getElementById('digit3').style.borderColor = '';
+										document.getElementById('digit4').style.borderColor = '';
+									}, 3000);
+								} else if (response.error) {
+									Swal.fire({
+										icon: 'error',
+										title: 'Error',
+										text: response.error,
+										showConfirmButton: false,
+										timer: 2000
+									});
+								} else if (response.success || (!response.incorrect && !response.error)) {
+									if (type === 'changeEmail') {
 										Swal.fire({
-											icon: 'error',
-											title: 'Oops...',
-											text: 'Incorrect OTP! Please try again.',
-											showConfirmButton: false, // Hide the "OK" button
-											timer: 2000 // Auto-close the popup after 2000 milliseconds (2 seconds)
+											icon: 'success',
+											title: 'Success!',
+											text: response.message || 'Email updated successfully',
+											showConfirmButton: false,
+											timer: 2000
+										}).then(() => {
+											location.href = '/profile'
 										});
-
-										document.getElementById('digit1').style.borderColor = 'red';
-										document.getElementById('digit2').style.borderColor = 'red';
-										document.getElementById('digit3').style.borderColor = 'red';
-										document.getElementById('digit4').style.borderColor = 'red';
-
-										// Display error message
-
-										// alert('Incorrect OTP! Please try again.');
-
-										// Reset border colors after 3 seconds
-										setTimeout(function () {
-											document.getElementById('digit1').style.borderColor = '';
-											document.getElementById('digit2').style.borderColor = '';
-											document.getElementById('digit3').style.borderColor = '';
-											document.getElementById('digit4').style.borderColor = '';
-										}, 3000);
-									} if (!response.incorrect) {
+									} else {
 										location.href = '/login'
 									}
-								})
-								.catch(error => {
-									// Handle network error
-									console.error('Error:', error);
+								}
+							})
+							.catch(error => {
+								// Handle network error
+								console.error('Error:', error);
+								Swal.fire({
+									icon: 'error',
+									title: 'Network Error',
+									text: 'Failed to verify OTP. Please try again.',
+									showConfirmButton: false,
+									timer: 2000
 								});
+							});
 						});
 					}
+
+					// Initialize form when page loads
+					document.addEventListener('DOMContentLoaded', function() {
+						const email = document.querySelector('input[name="email"]')?.value || '';
+						const type = document.querySelector('input[name="type"]')?.value || 'signup';
+						const userId = document.querySelector('input[name="userId"]')?.value || '';
+						enterOTP(email, type, userId);
+					});
 
 				</script>
 							<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

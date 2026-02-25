@@ -3,6 +3,49 @@ const User = require('../models/userModel');
 const Orders = require('../models/orderModel')
 const bcrypt = require('bcryptjs');
 const { response } = require('express');
+const nodemailer = require('nodemailer');
+const userOtpVerification = require('../models/userOTPVerification');
+
+
+
+// Send OTP for profile email change
+const sendOtpVerificationMail = async (emailData, res, type) => {
+    try {
+        const { email, userId } = emailData;
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            service: "Gmail",
+            auth: {
+                user: "4khiln@gmail.com",
+                pass: "ppgh vmmx ogtb gljy"
+            }
+        });
+
+        // Create OTP
+        const createdOtp = `${Math.floor(1000 + Math.random() * 9000)}`;
+        console.log(createdOtp);
+
+        const mailOption = {
+            from: "4khiln@gmail.com",
+            to: email,
+            subject: "OTP Verification for Email Change",
+            html: `Your OTP for email change is ${createdOtp}`
+        };
+
+        const hashedOtp = await bcrypt.hash(createdOtp, 10);
+        const newOtpVerification = await new userOtpVerification({ email: email, otp: hashedOtp });
+        await newOtpVerification.save();
+
+        await transporter.sendMail(mailOption);
+        res.redirect(`/otp?email=${email}&type=changeEmail&userId=${userId}`);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Failed to send OTP' });
+    }
+}
 
 
 
@@ -47,20 +90,66 @@ const loadEditprofile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { id, editName, editPhone } = req.body;
+        const { id, editName, editEmail } = req.body;
+        
+        // Validate inputs
+        if (!id || !editName || !editEmail) {
+            req.flash('error', "All fields are required");
+            res.redirect(`/editProfile?id=${id}`);
+            return;
+        }
+
+        const user = await User.findOne({ _id: id });
+        if (!user) {
+            req.flash('error', "User not found");
+            res.redirect(`/editProfile?id=${id}`);
+            return;
+        }
+
+        // Check if name already exists (excluding current user)
         const existname = await User.findOne({ _id: { $ne: id }, name: editName });
         if (existname) {
-            req.flash('error', "Name is alredy existed");
+            req.flash('error', "Name is already existed");
             res.redirect(`/editProfile?id=${id}`);
-        } else {
+            return;
+        }
+
+        // Trim and validate email
+        const trimmedEmail = editEmail.trim();
+        
+        // Check if email is being changed
+        if (trimmedEmail.toLowerCase() !== user.email.toLowerCase()) {
+            // Check if new email already exists (case-insensitive)
+            const existEmail = await User.findOne({ 
+                _id: { $ne: id }, 
+                email: { $regex: `^${trimmedEmail}$`, $options: 'i' } 
+            });
+            
+            if (existEmail) {
+                req.flash('error', "This email is already registered. Please use a different email.");
+                res.redirect(`/editProfile?id=${id}`);
+                return;
+            }
+
+            // Update name first
             await User.findOneAndUpdate({ _id: id }, { name: editName });
+
+            // Send OTP for email change
+            req.session.tempEmail = trimmedEmail;
+            req.session.tempUserId = id;
+            console.log('Sending OTP for email change to:', trimmedEmail);
+            await sendOtpVerificationMail({ email: trimmedEmail, userId: id }, res, 'changeEmail');
+        } else {
+            // Only name changed, update directly
+            await User.findOneAndUpdate({ _id: id }, { name: editName });
+            req.flash('success', "Profile updated successfully");
             res.redirect('/profile');
         }
 
-
     } catch (error) {
-
         console.log(error);
+        req.flash('error', 'An error occurred while updating profile');
+        res.redirect(`/editProfile?id=${req.body.id}`);
     }
 }
 // Lod Change Password 
@@ -217,6 +306,77 @@ const loadInvoice = async (req, res) => {
 
 
 
+// Check if email is available
+const checkEmailAvailability = async (req, res) => {
+    try {
+        const { email, userId } = req.body;
+        
+        if (!email) {
+            return res.json({ available: false, message: "Email is required" });
+        }
+
+        const trimmedEmail = email.trim();
+
+        // Check if email exists (excluding current user)
+        const existingUser = await User.findOne({ 
+            _id: { $ne: userId }, 
+            email: { $regex: `^${trimmedEmail}$`, $options: 'i' } 
+        });
+
+        if (existingUser) {
+            return res.json({ available: false, message: "This email is already registered" });
+        }
+
+        return res.json({ available: true, message: "Email is available" });
+
+    } catch (error) {
+        console.log(error);
+        return res.json({ available: false, message: "Error checking email availability" });
+    }
+}
+
+
+// Verify OTP for email change
+const verifyEmailOtp = async (req, res) => {
+    try {
+        const { email, userId, digit1, digit2, digit3, digit4 } = req.body;
+        console.log('verifyEmailOtp called with:', { email, userId, digit1, digit2, digit3, digit4 });
+        
+        const otp = digit1 + digit2 + digit3 + digit4;
+
+        const userVerification = await userOtpVerification.findOne({ email: email });
+
+        if (!userVerification) {
+            console.log('No user verification found for email:', email);
+            return res.json({ error: "OTP verification data not found" });
+        }
+
+        console.log('Found user verification, comparing OTP');
+        const { otp: hashedOtp } = userVerification;
+        const validOtp = await bcrypt.compare(otp, hashedOtp);
+
+        if (validOtp) {
+            console.log('OTP is valid, updating email for user:', userId);
+            // Update email
+            const updatedUser = await User.findOneAndUpdate({ _id: userId }, { email: email }, { new: true });
+            
+            // Delete OTP verification record
+            await userOtpVerification.deleteOne({ email: email });
+
+            console.log('Email updated successfully for user:', userId);
+            return res.json({ success: true, message: "Email updated successfully" });
+        } else {
+            console.log('OTP is invalid');
+            return res.json({ incorrect: true, message: "OTP is incorrect" });
+        }
+
+    } catch (error) {
+        console.log('Error in verifyEmailOtp:', error);
+        return res.status(500).json({ error: 'An error occurred during OTP verification: ' + error.message });
+    }
+}
+
+
 module.exports = {
     loadProfile,
     loadAddress,
@@ -230,6 +390,8 @@ module.exports = {
     loadEditaddress,
     updatEditaddress,
     loadOrHistory,
-    loadInvoice
+    loadInvoice,
+    verifyEmailOtp,
+    checkEmailAvailability
 
 }
