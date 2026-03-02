@@ -180,8 +180,10 @@
                                                                     class="text-muted font-sm mb-10">Category</label>
                                                                 <select name="category" id="category"
                                                                     class="form-control">
+                                                                    <option value="" selected >Select Category</option>
                                                                     <% category.forEach(category=> { %>
-                                                                        <option value="<%= category._id %>">
+                                                                        <option value="<%= category._id %>" <% if (typeof product !=='undefined' &&
+                                                                            product.category.equals(category._id)) { %> selected <% } %>>
                                                                             <%= category.categoryName %>
                                                                         </option>
                                                                         <% }); %>

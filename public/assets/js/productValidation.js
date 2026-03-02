@@ -19,6 +19,10 @@ function productValidation() {
         showError('quantityError', 'Only use numbers');
         removeErrorsAfterDelay('quantityError');
         return false;
+    } else if (category.trim() === '') {
+        showError('categoryError', 'Please select a category');
+        removeErrorsAfterDelay('categoryError');
+        return false;
     } else if (description.length <= 10 || description.trim() === '') {
         showError('descriptionError', 'Only use Alphabets and more than 10 letters');
         removeErrorsAfterDelay('descriptionError');

@@ -316,6 +316,15 @@ const applyCoupon = async (req, res) => {
         const userId = req.session.user._id;
         const coupon = await Coupon.findOne({ couponCod: couponcod });
         if (coupon) {
+            if (coupon.expiryDate < new Date()) {
+                return res.json({ notFount: true, message: 'Coupon has expired' });
+            }
+            if (coupon.user.includes(userId)) {
+                return res.json({ notFount: true, message: 'Coupon already used' });
+            }
+            if (coupon.minSpend > subtotal) {
+                return res.json({ notFount: true, message: 'Minimum spend not met' });
+            }
             if (coupon.type == "amount") {
                 discountAmount = coupon.discount;
             } else {
@@ -332,7 +341,7 @@ const applyCoupon = async (req, res) => {
             })
             res.json({ ok: true, coupon });
         } else {
-            res.json({ notFount: true })
+            res.json({ notFount: true, message: 'Not a valid Coupon' })
         }
 
 

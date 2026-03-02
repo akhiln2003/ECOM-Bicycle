@@ -47,7 +47,11 @@ const addCoupon = async (req, res) => {
         if (exist) {
             req.flash('exist', "this coupon name is alredy exist");
             res.redirect('/admin/addcoupon');
-        } else {
+        } else if (type === 'amount' && parseFloat(Discount) >= parseFloat(limitOfUse)) {
+            req.flash('exist', "Minimum spend must be greater than the discount amount.");
+            res.redirect('/admin/addcoupon');
+        }
+        else {
             const newCoupon = new Coupon({
                 name: couponName,
                 couponCod: `${firstName}${randomString}${randomNumber}`,
@@ -92,18 +96,23 @@ const loadEditcoupon = async (req, res) => {
 
 const updateCoupon = async (req, res) => {
     try {
-        const { id, couponName, expiryDate, limitOfUse, Discount } = req.body;
+        const { id, couponName, expiryDate, limitOfUse, Discount, type } = req.body;
         const exist = await Coupon.findOne({ _id: { $ne: id }, name: couponName });
         if (exist) {
             req.flash('exists', "coupon alredy exists with this name ");
             res.redirect(`/admin/editCoupon?id=${id}`);
-        } else {
+        } else if (type === 'amount' && parseFloat(Discount) >= parseFloat(limitOfUse)) {
+            req.flash('exists', "Minimum spend must be greater than the discount amount.");
+            res.redirect(`/admin/editCoupon?id=${id}`);
+        }
+        else {
             await Coupon.updateOne({ _id: id }, {
                 $set: {
                     name: couponName,
                     expiryDate: expiryDate,
                     minSpend: limitOfUse,
-                    discount: Discount
+                    discount: Discount,
+                    type: type
                 }
             })
             res.redirect('/admin/coupon');

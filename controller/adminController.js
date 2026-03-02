@@ -67,13 +67,10 @@ const loadDashboard = async (req, res) => {
         ]);
 
         let totalRevenue = 0;
-        revenueData.forEach(item => {
-            if (item._id === 'delivered') {
-                totalRevenue += item.total;
-            } else if (item._id === 'returned' || item._id === 'cancelled') {
-                totalRevenue -= item.total;
-            }
-        });
+        const deliveredRevenue = revenueData.find(item => item._id === 'delivered')?.total || 0;
+        const returnedRevenue = revenueData.find(item => item._id === 'returned')?.total || 0;
+        totalRevenue = deliveredRevenue - returnedRevenue;
+
 
         const monthlyData = await Order.aggregate([
             { $unwind: "$products" },
@@ -94,7 +91,7 @@ const loadDashboard = async (req, res) => {
             if (item._id.status === 'delivered') {
                 monthlyEarnings[monthIndex] += item.total;
                 monthlyOrders[monthIndex] += item.count;
-            } else if (item._id.status === 'returned' || item._id.status === 'cancelled') {
+            } else if (item._id.status === 'returned') {
                 monthlyEarnings[monthIndex] -= item.total;
             }
         });

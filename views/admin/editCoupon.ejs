@@ -207,8 +207,8 @@
                 showError('discountError', 'Only asepted Numbers');
                 removeErrorsAfterDelay('discountError');
                 return false;
-            } else if (type == "amount" && parseFloat(discount) > parseFloat(limit)) {
-                showError('discountError', 'Discount must be less than min amount spend');
+            } else if (type == "amount" && parseFloat(discount) >= parseFloat(limit)) {
+                showError('discountError', 'Minimum spend must be greater than the discount amount.');
                 removeErrorsAfterDelay('discountError');
                 return false;
             } else if (type == 'percentage' && !discountRejex.test(discount)) {
